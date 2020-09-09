@@ -1,0 +1,65 @@
+Date : 2020-08-12 22:31:25
+Directory : c:\programs\LandlordPlus
+Total : 30 files,  1318 codes, 277 comments, 223 blanks, all 1818 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C++      |         24 |        986 |        186 |        175 |      1,347 |
+| C        |          1 |        299 |         90 |         38 |        427 |
+| Batch    |          3 |         24 |          0 |          4 |         28 |
+| Ini      |          1 |          5 |          1 |          2 |          8 |
+| Markdown |          1 |          4 |          0 |          4 |          8 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                               | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                  |         30 |      1,318 |        277 |        223 |      1,818 |
+| bin                                                                |          1 |          5 |          1 |          2 |          8 |
+| include                                                            |         13 |        361 |        161 |         98 |        620 |
+| include\game_states                                                |          2 |         43 |          0 |         12 |         55 |
+| include\map_generators                                             |          1 |         49 |          0 |          2 |         51 |
+| src                                                                |         12 |        924 |        115 |        115 |      1,154 |
+| src\game_states                                                    |          2 |        204 |          6 |         19 |        229 |
+| src\map_generators                                                 |          1 |         23 |          0 |          5 |         28 |
++--------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                           | language | code       | comment    | blank      | total      |
++--------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\programs\LandlordPlus\README.md                                 | Markdown |          4 |          0 |          4 |          8 |
+| c:\programs\LandlordPlus\bin\config.ini                            | Ini      |          5 |          1 |          2 |          8 |
+| c:\programs\LandlordPlus\build.bat                                 | Batch    |         13 |          0 |          3 |         16 |
+| c:\programs\LandlordPlus\doall.bat                                 | Batch    |          5 |          0 |          0 |          5 |
+| c:\programs\LandlordPlus\include\base.h                            | C++      |         32 |          0 |          3 |         35 |
+| c:\programs\LandlordPlus\include\button.h                          | C++      |         22 |          0 |          6 |         28 |
+| c:\programs\LandlordPlus\include\draw_funcs.h                      | C++      |          6 |          0 |          4 |         10 |
+| c:\programs\LandlordPlus\include\entity.h                          | C++      |         24 |          0 |          5 |         29 |
+| c:\programs\LandlordPlus\include\fov.h                             | C++      |         60 |        155 |         31 |        246 |
+| c:\programs\LandlordPlus\include\game.h                            | C++      |         29 |          0 |          9 |         38 |
+| c:\programs\LandlordPlus\include\game_states\mainmenu_state.h      | C++      |         21 |          0 |          6 |         27 |
+| c:\programs\LandlordPlus\include\game_states\play_state.h          | C++      |         22 |          0 |          6 |         28 |
+| c:\programs\LandlordPlus\include\gamestate.h                       | C++      |         12 |          0 |          4 |         16 |
+| c:\programs\LandlordPlus\include\map.h                             | C++      |         44 |          0 |          9 |         53 |
+| c:\programs\LandlordPlus\include\map_generators\perlin_generator.h | C++      |         49 |          0 |          2 |         51 |
+| c:\programs\LandlordPlus\include\settings.h                        | C++      |         10 |          2 |          5 |         17 |
+| c:\programs\LandlordPlus\include\world.h                           | C++      |         30 |          4 |          8 |         42 |
+| c:\programs\LandlordPlus\run.bat                                   | Batch    |          6 |          0 |          1 |          7 |
+| c:\programs\LandlordPlus\src\button.cpp                            | C++      |         34 |          0 |          5 |         39 |
+| c:\programs\LandlordPlus\src\draw_funcs.cpp                        | C++      |         28 |          0 |          3 |         31 |
+| c:\programs\LandlordPlus\src\entity.cpp                            | C++      |         73 |          8 |          3 |         84 |
+| c:\programs\LandlordPlus\src\fov.c                                 | C        |        299 |         90 |         38 |        427 |
+| c:\programs\LandlordPlus\src\game.cpp                              | C++      |        119 |         11 |         17 |        147 |
+| c:\programs\LandlordPlus\src\game_states\mainmenu_state.cpp        | C++      |         75 |          1 |          9 |         85 |
+| c:\programs\LandlordPlus\src\game_states\play_state.cpp            | C++      |        129 |          5 |         10 |        144 |
+| c:\programs\LandlordPlus\src\main.cpp                              | C++      |         15 |          0 |          6 |         21 |
+| c:\programs\LandlordPlus\src\map.cpp                               | C++      |         51 |          0 |          7 |         58 |
+| c:\programs\LandlordPlus\src\map_generators\perlin_generator.cpp   | C++      |         23 |          0 |          5 |         28 |
+| c:\programs\LandlordPlus\src\settings.cpp                          | C++      |         38 |          0 |          7 |         45 |
+| c:\programs\LandlordPlus\src\world.cpp                             | C++      |         40 |          0 |          5 |         45 |
+| Total                                                              |          |      1,318 |        277 |        223 |      1,818 |
++--------------------------------------------------------------------+----------+------------+------------+------------+------------+
