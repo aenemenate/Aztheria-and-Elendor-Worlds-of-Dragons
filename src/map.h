@@ -33,6 +33,7 @@ class Map
     ar & width;
     ar & height;
     ar & tiles;
+    ar & gset;
     ent_map.resize(width*height, nullptr);
   }
   vector<Tile> tiles;

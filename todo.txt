@@ -38,6 +38,7 @@
   * every map tile has a character related to its territory which is determined at world gen
   * make a menu
 * tinker with world gen params
+  - 
 - rivers
 - lakes
 - plants
