@@ -29,17 +29,23 @@
   * print border
   - look at tile under cursor
   - show nearby creatures (copy from landlord)
-* split block and tile
 * add a world generation screen
 * allow for multiple saves
 * create a screen for loading a world
-  - add a caret to this screen
-- time system -> show on status panel
+  * add a caret to this screen
+* add title
+* add world map
+  * every map tile has a character related to its territory which is determined at world gen
+  * make a menu
+* tinker with world gen params
+- rivers
+- lakes
 - plants
 - trees
+- time system -> show on status panel
 
 - stats for creatures
-  * health | stamina | mana
+  - health | stamina | mana
   - attack | magic attack
   - magic resistance | blunt ... | stabbing ...             // -> | poison ... | fire ... | ice ... | lightning ...
   - strength | speed | intelligence | perception | dexterity | personality | luck
@@ -96,7 +102,7 @@
          |  tropical beach / barren beach / tropical forest / bamboo forest
          |  mesa / snowy desert / swamps
 
-- land features -> rivers, hot springs, oasises, ravines
+- land features -> hot springs, oasises, ravines
 
 - raid cities, build lair, find lair, befriend followers, talk to dragons, get pets, 
 

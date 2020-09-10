@@ -1,0 +1,20 @@
+{
+    "env": {
+      "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/include", "C:/Program Files/boost_1_73_0"]
+    },
+    "configurations": [
+      {
+        "name": "Windows-boost",
+        "intelliSenseMode": "msvc-x64",
+        "includePath": ["${myDefaultIncludePath}"],
+        "cStandard": "c11",
+        "cppStandard": "c++17",
+        "browse": {
+          "path": ["${workspaceFolder}"],
+          "limitSymbolsToIncludedHeaders": true,
+          "databaseFilename": ""
+        }
+      }
+    ],
+    "version": 4
+  }
