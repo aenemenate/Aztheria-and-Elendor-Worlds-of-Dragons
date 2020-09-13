@@ -6,11 +6,17 @@
 #include "../world.h"
 #include "../map.h"
 
-#include "../menu.h"
+#include "../ui/menu.h"
 
 #include "../game_fio.h"
 
 #include <algorithm>
+
+
+#include "../pathfinder.h"
+
+
+
 
 PlayState PlayState::playState;
 
@@ -37,7 +43,8 @@ void PlayState::Init(Game *game)
   pmenu_buttons.push_back(Button((term_width - status_panel.get_width())/2-3,term_height/2+2, "just quit", StopPlaying));
   menu_caret = 0;
 
-  map_menu = MenuMap(term_width/2 - 12, term_height/2 - 12, game->world->width, game->world->height);
+  map_menu = MenuMap(std::max(0, term_width/2 - game->world->width/2), std::max(0, term_height/2 - (game->world->height/2+1)), game->world->width, game->world->height);
+  map_menu.SetShow(false);
 }
 
 void PlayState::Cleanup()
@@ -106,6 +113,7 @@ void PlayState::HandleEvents(Game *game)
     switch (game->key)
     {
       case TK_ESCAPE:
+      case TK_M:
         map_menu.SetShow(false);
         break;
     }
@@ -128,13 +136,13 @@ void PlayState::Draw(Game *game)
 // set values
   int curwx = game->world->entities[0].pos.wx, curwy = game->world->entities[0].pos.wy;
   Map *map = game->world->GetMap(curwx, curwy);
-  int term_width = terminal_state(TK_WIDTH) - status_panel.get_width(), term_height = terminal_state(TK_HEIGHT);
-  int startx = min(max(0,map->width-term_width),max(0, game->world->entities[0].pos.x - term_width/2));
+  int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
+  int startx = min(max(0,map->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
   int starty = min(max(0,map->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
 // draw status panel
   status_panel.Draw(game);
 // draw map
-  for (int i = startx; i < map->width && i-startx < term_width; i++)
+  for (int i = startx; i < map->width && i-startx < map_term_width; i++)
     for (int j = starty; j < map->height && j-starty < term_height; j++)
     {
       Tile *tile = map->GetTile(i, j);
@@ -145,8 +153,8 @@ void PlayState::Draw(Game *game)
   for (int vp = 0; vp < game->world->entities[0].visiblepoints.size(); vp++)
   {
     Position point = game->world->entities[0].visiblepoints[vp];
-    if (point.x - startx < term_width 
-    &&  point.y - starty < term_height
+    if (point.x - startx < map_term_width
+    &&  point.y - starty < map_term_width
     &&  point.x - startx >= 0
     &&  point.y - starty >= 0)
     {
@@ -158,8 +166,21 @@ void PlayState::Draw(Game *game)
         PrintCh(point.x - startx, point.y - starty, entity->gset);
     }
   }
-// draw entities
+// draw player
   PrintCh(game->world->entities[0].pos.x - startx, game->world->entities[0].pos.y - starty, game->world->entities[0].gset);
+// draw path if necessary
+  if (terminal_state(TK_MOUSE_RIGHT)  && terminal_state(TK_MOUSE_X) < map_term_width) {
+    std::vector<Pathfinder::Point> path;
+    Entity *player = &(game->world->entities[0]);
+    path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
+    terminal_bkcolor("blue");
+    for (auto point : path) {
+      int x = point.x - startx, y = point.y - starty;
+      terminal_color(terminal_pick_color(x, y));
+      terminal_put(x, y, terminal_pick(x, y));
+    }
+    terminal_bkcolor("black");
+  }
 // draw menu if necessary
   if (paused) {
     terminal_clear_area(term_width/2-7,term_height/2-2,15,6);

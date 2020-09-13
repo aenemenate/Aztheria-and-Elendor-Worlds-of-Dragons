@@ -1,6 +1,6 @@
 #include "button.h"
-#include "game.h"
-#include "../include/BearLibTerminal.h"
+#include "../game.h"
+#include "../../include/BearLibTerminal.h"
 
 void Button::Activate(Game *game)
 {

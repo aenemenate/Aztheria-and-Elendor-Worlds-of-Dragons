@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../game.h"
-#include "../button.h"
+#include "../ui/button.h"
 
 #include <string>
 #include <vector>
@@ -17,7 +17,7 @@ public:
   void Draw(Game* game);
 
   static MainMenuState* Instance() {
-	return &mainMenuState;
+	  return &mainMenuState;
   }
 
 protected:

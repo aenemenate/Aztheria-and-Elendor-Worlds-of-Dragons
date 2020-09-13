@@ -6,7 +6,7 @@ class StatusPanel
 {
   int width;
 public:
-  StatusPanel() { width = 0; }
+  StatusPanel() { width = 20; }
   StatusPanel(int _width) : width(_width) {}
 
   void Update(Game*);

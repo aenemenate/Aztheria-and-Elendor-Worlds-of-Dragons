@@ -1,16 +1,16 @@
 #include "menu.h"
 
-#include "game.h"
+#include "../game.h"
 
-#include "world.h"
-#include "map.h"
-#include "entity.h"
+#include "../world.h"
+#include "../map.h"
+#include "../entity.h"
 
-#include "base.h"
+#include "../base.h"
 
-#include "draw_funcs.h"
+#include "../draw_funcs.h"
 
-#include "../include/BearLibTerminal.h"
+#include "../../include/BearLibTerminal.h"
 
 void Menu::Draw(Game* game)
 {

@@ -38,11 +38,13 @@
   * every map tile has a character related to its territory which is determined at world gen
   * make a menu
 * tinker with world gen params
-  - 
+* add pathfinding
+  * test if compiles
+  * when left click on map -> draw a path from the player to that position (if it is a solid position and is explored)
 - rivers
 - lakes
-- plants
 - trees
+- plants
 - time system -> show on status panel
 
 - stats for creatures

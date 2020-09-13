@@ -1,13 +1,13 @@
 #include "panel_status.h"
 
-#include "../include/BearLibTerminal.h"
-#include "draw_funcs.h"
+#include "../../include/BearLibTerminal.h"
+#include "../draw_funcs.h"
 
-#include "game.h"
+#include "../game.h"
 
-#include "world.h"
-#include "map.h"
-#include "entity.h"
+#include "../world.h"
+#include "../map.h"
+#include "../entity.h"
 
 void StatusPanel::Update(Game *game)
 {
