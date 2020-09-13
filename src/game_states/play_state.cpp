@@ -39,8 +39,8 @@ void PlayState::Init(Game *game)
       term_height = terminal_state(TK_HEIGHT);
   Instance()->status_panel = StatusPanel(20);
   pmenu_buttons.resize(0);
-  pmenu_buttons.push_back(Button((term_width - status_panel.get_width())/2-4,term_height/2, "save & quit", SaveGame));
-  pmenu_buttons.push_back(Button((term_width - status_panel.get_width())/2-3,term_height/2+2, "just quit", StopPlaying));
+  pmenu_buttons.push_back(Button(term_width/2-4,term_height/2, "save & quit", SaveGame));
+  pmenu_buttons.push_back(Button(term_width/2-3,term_height/2+2, "just quit", StopPlaying));
   menu_caret = 0;
 
   map_menu = MenuMap(std::max(0, term_width/2 - game->world->width/2), std::max(0, term_height/2 - (game->world->height/2+1)), game->world->width, game->world->height);
