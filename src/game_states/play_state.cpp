@@ -92,12 +92,25 @@ void PlayState::HandleEvents(Game *game)
         break;
     }
     int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
+    int startx = min(max(0,game->world->GetMap(0,0)->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
+    int starty = min(max(0,game->world->GetMap(0,0)->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));  
     if (game->key == (TK_MOUSE_RIGHT|TK_KEY_RELEASED) && terminal_state(TK_MOUSE_X) < map_term_width) {
-      int startx = min(max(0,game->world->GetMap(0,0)->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
-      int starty = min(max(0,game->world->GetMap(0,0)->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
       Entity *player = &(game->world->entities[0]);
       player_path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
       game->SetInputBlockMode(false);
+    }
+    if (game->key == (TK_MOUSE_LEFT|TK_KEY_RELEASED)) {
+      Entity *player = &(game->world->entities[0]);
+      if (terminal_state(TK_MOUSE_X)+startx == player->pos.x && terminal_state(TK_MOUSE_Y)+starty == player->pos.y) {
+        if (player->pos.x == 0)
+          player->Move(-1, 0, game->world);
+        else if (player->pos.y == 0)
+          player->Move(0, -1, game->world);
+        else if (player->pos.x == game->world->GetMap(0,0)->width - 1)
+          player->Move(1, 0, game->world);
+        else if (player->pos.y == game->world->GetMap(0,0)->height - 1)
+          player->Move(0, 1, game->world);
+      }
     }
   }
   else if (paused)

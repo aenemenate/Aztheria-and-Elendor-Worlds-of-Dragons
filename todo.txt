@@ -44,7 +44,7 @@
 * add input_block_mode to game class
 * when right click is released, add the path to the player and start them moving on it
   * use input_block_mode to move on the path without stopping for input
-- when left click the player at the edge of a map, move maps
+* when left click the player at the edge of a map, move maps
 - rivers
 - lakes
 - trees
