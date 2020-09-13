@@ -22,6 +22,8 @@ PlayState PlayState::playState;
 
 MenuMap map_menu;
 
+std::vector<Pathfinder::Point> player_path;
+
 void StopPlaying(Game *game)
 {
   game->PopState();
@@ -59,7 +61,7 @@ void PlayState::HandleEvents(Game *game)
   int xsign = 0, ysign = 0;
   if (terminal_state(TK_EVENT) == TK_RESIZED)
     this->Init(game);
-  if (!paused && !map_menu.GetShow())
+  if (!paused && !map_menu.GetShow()) {
     switch (game->key)
     {
       case TK_KP_8:
@@ -89,6 +91,15 @@ void PlayState::HandleEvents(Game *game)
         paused = true;
         break;
     }
+    int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
+    if (game->key == (TK_MOUSE_RIGHT|TK_KEY_RELEASED) && terminal_state(TK_MOUSE_X) < map_term_width) {
+      int startx = min(max(0,game->world->GetMap(0,0)->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
+      int starty = min(max(0,game->world->GetMap(0,0)->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
+      Entity *player = &(game->world->entities[0]);
+      player_path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
+      game->SetInputBlockMode(false);
+    }
+  }
   else if (paused)
     switch (game->key)
     {
@@ -109,7 +120,7 @@ void PlayState::HandleEvents(Game *game)
         paused = false;
         break;
     }
-    else if (map_menu.GetShow())
+  else if (map_menu.GetShow())
     switch (game->key)
     {
       case TK_ESCAPE:
@@ -126,8 +137,17 @@ void PlayState::Update(Game *game)
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Update(game);
   else
-    for (int e = game->world->entities.size() - 1; e >= 0; --e)
-      game->world->entities[e].Update(game, e == 0 ? true : false);
+  {
+    if (player_path.size() > 0) {
+      game->world->entities[0].Move(player_path.back().x - game->world->entities[0].pos.x, player_path.back().y - game->world->entities[0].pos.y, game->world);
+      player_path.pop_back();
+      if (player_path.size() == 0)
+        game->SetInputBlockMode(true);
+    }
+    game->world->entities[0].Update(game, true);
+    for (int e = game->world->entities.size() - 1; e >= 1; --e)
+      game->world->entities[e].Update(game, false);
+  }
   map_menu.Update(game);
 }
 
@@ -169,7 +189,7 @@ void PlayState::Draw(Game *game)
 // draw player
   PrintCh(game->world->entities[0].pos.x - startx, game->world->entities[0].pos.y - starty, game->world->entities[0].gset);
 // draw path if necessary
-  if (terminal_state(TK_MOUSE_RIGHT)  && terminal_state(TK_MOUSE_X) < map_term_width) {
+  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width) {
     std::vector<Pathfinder::Point> path;
     Entity *player = &(game->world->entities[0]);
     path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);

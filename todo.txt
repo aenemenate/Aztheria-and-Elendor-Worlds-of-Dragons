@@ -41,9 +41,10 @@
 * add pathfinding
   * test if compiles
   * when left click on map -> draw a path from the player to that position (if it is a solid position and is explored)
-- add input_block_mode to game class
-- when right click is released, add the path to the player and start them moving on it
-  - use input_block_mode to move on the path without stopping for input
+* add input_block_mode to game class
+* when right click is released, add the path to the player and start them moving on it
+  * use input_block_mode to move on the path without stopping for input
+- when left click the player at the edge of a map, move maps
 - rivers
 - lakes
 - trees

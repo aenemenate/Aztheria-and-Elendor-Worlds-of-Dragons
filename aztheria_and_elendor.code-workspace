@@ -63,7 +63,8 @@
 			"xtree": "cpp",
 			"xutility": "cpp",
 			"fstream": "cpp",
-			"random": "cpp"
+			"random": "cpp",
+			"filesystem": "cpp"
 		},
 		"VSCodeCounter.useGitignore": true,
 		"VSCodeCounter.useFilesExclude": true

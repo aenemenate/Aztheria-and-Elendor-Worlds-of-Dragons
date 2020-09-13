@@ -14,7 +14,7 @@ void Game::Init()
 {
   key = 0;
   running = true;
-
+  input_block_mode = true;
   terminal_open();
   terminal_set("window.size=60x40");
   terminal_refresh();
@@ -66,7 +66,10 @@ void Game::PopState()
 
 void Game::HandleEvents() 
 {
-  key = terminal_read();
+  if (input_block_mode || terminal_has_input())
+    key = terminal_read();
+  else
+    key = 0;
 // let the state handle events
   states.back()->HandleEvents(this);
   if (key==TK_CLOSE)

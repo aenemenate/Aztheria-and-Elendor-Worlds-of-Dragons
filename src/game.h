@@ -29,7 +29,9 @@ public:
   bool Running() { return running; }
   void Quit() { running = false; }
 
+  void SetInputBlockMode(bool value) { input_block_mode = value;}
+
 private:
   vector<GameState*> states;
-  bool running;
+  bool running, input_block_mode;
 };
