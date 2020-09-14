@@ -61,7 +61,7 @@ void Grid::generatePossibleDirections()
 		m_directions = { std::make_tuple(1, 0), std::make_tuple(-1, 0), std::make_tuple(0, 1), std::make_tuple(0, -1) };
 	}
 	else if (m_movement == EIGHT_DIRECTIONS) {
-		m_directions = { std::make_tuple(1, 0), std::make_tuple(-1, 0), std::make_tuple(0, 1), std::make_tuple(0, -1), std::make_tuple(1, 1), std::make_tuple(1, -1), std::make_tuple(-1, -1) };
+		m_directions = { std::make_tuple(1, 0), std::make_tuple(-1, 0), std::make_tuple(0, 1), std::make_tuple(0, -1), std::make_tuple(1, 1), std::make_tuple(1, -1), std::make_tuple(-1, -1), std::make_tuple(-1, 1) };
 	}
 }
 
