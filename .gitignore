@@ -32,15 +32,11 @@
 #*.lib
 
 # Executables
-*.exe
 *.out
 *.app
 
 # Data files
 *.bin
-
-# Text files
-*.txt
 
 # Folders
 .VSCodeCounter
