@@ -202,10 +202,13 @@ void PlayState::Draw(Game *game)
 // draw player
   PrintCh(game->world->entities[0].pos.x - startx, game->world->entities[0].pos.y - starty, game->world->entities[0].gset);
 // draw path if necessary
-  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width) {
+  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width 
+  && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0 
+  && terminal_state(TK_MOUSE_Y) < term_height) {
     std::vector<Pathfinder::Point> path;
     Entity *player = &(game->world->entities[0]);
-    path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
+    path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, 
+                               terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
     terminal_bkcolor("blue");
     for (auto point : path) {
       int x = point.x - startx, y = point.y - starty;

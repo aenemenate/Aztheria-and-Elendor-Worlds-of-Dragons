@@ -8,7 +8,6 @@ class AStar
 {
 public:
 	AStar(Grid *grid);
-	~AStar();
 
 	/* Implemented Heuristics */
 	inline int DiagonalHeuristic(Node start, Node goal) const;

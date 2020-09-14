@@ -86,8 +86,3 @@ vector<Node> Grid::getNeighbors(Node node) const
 	}
 	return results;
 }
-
-/* Memory handling should be done outside of this class. */
-Grid::~Grid()
-{
-}

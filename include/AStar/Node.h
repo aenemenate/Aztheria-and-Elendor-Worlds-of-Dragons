@@ -3,36 +3,27 @@
 #include <vector>
 class Node
 {
-
-
+	std::vector<int> dimensions;
+	int X, Y;
+	int m_cost;
+	double m_priority; // this is purely for the priority queue to keep 
 // TODO: Make this to accomadete N-dimensions by using templates
 public:
 	Node(int x, int y, int cost);
 	Node(int x, int y);
 	Node();
-	~Node();
 
 	//get rid of these later.
 	int getX() const;
 	int getY() const;
 	int getCost() const;
-
 	double getPriority() const;
-	void setPriority(double priority);
 
+	void setPriority(double priority);
 	void setCost(int cost);
+
 	bool operator==(Node const &rhs) const;
 	bool operator!=(Node const &rhs) const;
-
-	//in case if i ever want to conver it to work with multi dimensions.
-	std::vector<int> getDimensions() const;
-
-private:
-	std::vector<int> dimensions;
-	int X, Y;
-	int m_cost;
-	double m_priority; // this is purely for the priority queue to keep 
-
 };
 
 

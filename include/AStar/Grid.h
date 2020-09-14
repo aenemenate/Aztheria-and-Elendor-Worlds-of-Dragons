@@ -32,7 +32,6 @@ public:
 	bool isPassable(Node node) const; //check if the node is an obstacle or not.
 	vector<Node> getNeighbors(Node node) const; //WARNIG MEM CREATED IN HEAP MAKE SURE YOU DELETE IT PROPERLY
 	void generatePossibleDirections();
-	~Grid();
 
 protected:
 	/* Only to be called by the derived class. */

@@ -134,8 +134,3 @@ void AStar::reconstructPath(unordered_map<Node, Node> closed, Node start, Node g
 		m_path.push_back(current);
 	}
 }
-
-
-AStar::~AStar()
-{
-}
