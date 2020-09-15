@@ -13,5 +13,7 @@ namespace WorldGen
   void DetermineHumidityMap(World*);
   void DetermineBiomes(World*);
 
+  void PlaceEntities(World*, int player_wpos);
+
   void GenerateWorld(Game*, int size, int slot);
 }

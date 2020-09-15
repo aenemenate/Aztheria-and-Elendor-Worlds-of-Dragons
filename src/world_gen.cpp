@@ -36,7 +36,7 @@ void WorldGen::GeneratePerlinMap(Map *map, int wx, int wy, float freq, int depth
         if (height < .7)
           map->SetHeightMap(i, j, height2);
         else
-          map->SetHeightMap(i, h, height);
+          map->SetHeightMap(i, j, height);
       }
       else if (height < .7) {
         map->SetTile(i, j, {{".", "165,42,42", "black"},true,false,false});
@@ -84,12 +84,9 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot)
   // SeedPlants(game->world);
   // for (int i = 0; i < plant_generations; ++i)
   // game->world->GrowPlants();
-  // 
   srand(time(0));
-  int position = walkable_positions[0+rand()%walkable_positions.size()];
-// add some entities
-  game->world->AddEntity(Entity({"@", "yellow", "black" }, "player", { 10, 10, static_cast<uint16_t>(position / game->world->width), static_cast<uint16_t>(position % game->world->width) }, 28));
-  game->world->AddEntity(Entity({"g", "green", "black" }, "goblin", { 20, 10, 0, 0 }, 5));
+  int player_pos = walkable_positions[0+rand()%walkable_positions.size()];
+  PlaceEntities(game->world, player_pos);
 }
 
 void WorldGen::DetermineMapTerrainType(Map* map)
@@ -212,4 +209,13 @@ void WorldGen::DetermineBiomes(World* world)
           break;
       }
     }
+}
+
+void WorldGen::PlaceEntities(World* world, int player_wpos)
+{
+  uint16_t world_x = static_cast<uint16_t>(player_wpos / world->width), 
+           world_y = static_cast<uint16_t>(player_wpos % world->width);
+// add some entities
+  world->AddEntity(Entity({"@", "yellow", "black" }, "player", { 10, 10, world_x, world_y }, 28));
+  world->AddEntity(Entity({"g", "green", "black" }, "goblin", { 20, 10, world_x, world_y }, 5));
 }
