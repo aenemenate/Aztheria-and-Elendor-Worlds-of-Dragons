@@ -27,13 +27,16 @@ void WorldGen::GeneratePerlinMap(Map *map, int wx, int wy, float freq, int depth
         map->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
         map->SetHeightMap(i, j, height);
       }
-      else if (height <.75 && height3 < .4) {
+      else if (height <.77 && height3 < .4) {
         map->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
         map->SetHeightMap(i, j, height3);
       }
-      else if (height >= .7 || height2 > .65) {
+      else if (height >= .7 || (height2 > .65 && height > .5)) {
         map->SetTile(i, j, {{"#", "gray", "black"},false,true,false});
-        map->SetHeightMap(i, j, height2);
+        if (height < .7)
+          map->SetHeightMap(i, j, height2);
+        else
+          map->SetHeightMap(i, h, height);
       }
       else if (height < .7) {
         map->SetTile(i, j, {{".", "165,42,42", "black"},true,false,false});
