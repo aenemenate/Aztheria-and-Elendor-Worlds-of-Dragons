@@ -5,22 +5,19 @@
 #include "../../engine/entity.h"
 #include "../../engine/world.h"
 #include "../../engine/map.h"
-
-#include "../../engine/ui/menu.h"
-
 #include "../../engine/game_fio.h"
+#include "../../engine/pathfinder.h"
+
+#include "../menus/map_menu.h"
 
 #include <algorithm>
-
-
-#include "../../engine/pathfinder.h"
 
 
 
 
 PlayState PlayState::playState;
 
-MenuMap map_menu;
+MapMenu map_menu;
 
 std::vector<Pathfinder::Point> player_path;
 
@@ -45,7 +42,7 @@ void PlayState::Init(Game *game)
   pmenu_buttons.push_back(Button(term_width/2-3,term_height/2+2, "just quit", StopPlaying));
   menu_caret = 0;
 
-  map_menu = MenuMap(std::max(0, term_width/2 - game->world->width/2), std::max(0, term_height/2 - (game->world->height/2+1)), game->world->width, game->world->height);
+  map_menu = MapMenu(std::max(0, term_width/2 - game->world->width/2), std::max(0, term_height/2 - (game->world->height/2+1)), game->world->width, game->world->height);
   map_menu.SetShow(false);
 }
 

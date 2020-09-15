@@ -28,15 +28,3 @@ public:
   void SetShow(bool value) { show = value; }
   bool GetShow() { return show; }
 };
-
-#include <vector>
-
-class MenuMap : public Menu
-{
-public:
-  MenuMap() {}
-  MenuMap(int xpos, int ypos, int width, int height) : Menu{xpos, ypos, width, height, "map", false} {}
-
-  void CustomDraw(Game*);
-  void CustomUpdate(Game*);
-};

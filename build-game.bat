@@ -1,6 +1,6 @@
 @echo off
 set libs=/link /SUBSYSTEM:WINDOWS /LIBPATH:"C:\Program Files\boost_1_73_0\stage\lib" .\libs\BearLibTerminal.lib .\libs\Engine.lib
-set buildpath=.\src\*.cpp .\src\game_states\*.cpp
+set buildpath=.\src\*.cpp .\src\game_states\*.cpp .\src\menus\*.cpp
 
 @echo .
 @echo Starting compile

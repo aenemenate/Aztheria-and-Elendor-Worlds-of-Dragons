@@ -10,7 +10,7 @@
 #include "../../engine/map.h"
 #include "../../engine/entity.h"
 
-#include "../world_gen.h"
+#include "../../engine/world_gen.h"
 #include "../../engine/game_fio.h"
 
 #include <filesystem>

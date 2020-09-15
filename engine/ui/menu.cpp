@@ -2,10 +2,6 @@
 
 #include "../game.h"
 
-#include "../world.h"
-#include "../map.h"
-#include "../entity.h"
-
 #include "../base.h"
 
 #include "../draw_funcs.h"
@@ -67,21 +63,4 @@ bool Menu::ishovered()
   if ((terminal_state(TK_MOUSE_Y) == this->ypos) && (mouse_x >= this->xpos) && (mouse_x < this->xpos + width))
     ret_val = true;
   return ret_val;
-}
-
-void MenuMap::CustomDraw(Game* game)
-{
-// draw world map
-  for (int i = 0; i < width; i++)
-    for (int j = 0; j < height; j++)
-    {
-      Map *map = game->world->GetMap(i, j);
-        Graphic gset = GetMapGraphic(map->biome_type, map->terrain_type);
-        PrintCh(xpos + i, ypos + 1 + j, gset);
-    }
-    PrintCh(xpos + game->world->entities[0].pos.wx, ypos + 1 + game->world->entities[0].pos.wy, game->world->entities[0].gset);
-}
-
-void MenuMap::CustomUpdate(Game* game)
-{
 }
