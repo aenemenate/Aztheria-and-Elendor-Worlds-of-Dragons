@@ -104,6 +104,6 @@ void MainMenuState::Draw(Game *game)
       term_height = terminal_state(TK_HEIGHT);
   for (int b=0;b<buttons.size();b++)
     buttons[b].Render(game);
-  PrintCh(term_width/2-6, term_height/2 - 1 + menu_caret*2, {">", "white", "black"});
+  PrintCh(term_width/2-7, term_height/2 - 1 + menu_caret*2, {">", "white", "black"});
   terminal_print(term_width/2 - 26, term_height/2 - 11, title.c_str());
 }

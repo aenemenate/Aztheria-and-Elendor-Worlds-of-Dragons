@@ -31,11 +31,11 @@ void WorldGen::GeneratePerlinMap(Map *map, int wx, int wy, float freq, int depth
         map->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
         map->SetHeightMap(i, j, height3);
       }
-      else if (height >= .75 || height2 > .65) {
+      else if (height >= .7 || height2 > .65) {
         map->SetTile(i, j, {{"#", "gray", "black"},false,true,false});
         map->SetHeightMap(i, j, height2);
       }
-      else if (height < .75) {
+      else if (height < .7) {
         map->SetTile(i, j, {{".", "165,42,42", "black"},true,false,false});
         map->SetHeightMap(i, j, height);
       }
@@ -122,7 +122,7 @@ void WorldGen::DetermineMapTemperature(Map* map, int wy, int world_size)
       average_height += map->GetHeightMap(i, j);
   average_height /= map->height * map->width;
   double max_temperature = 50;
-  map->temperature = (max_temperature)*closeness_to_equator - std::max(0, (int)(20*(average_height - .4)));
+  map->temperature = (max_temperature)*closeness_to_equator - std::max(0, (int)(20.0*(average_height-.2)));
 }
 
 void WorldGen::DetermineHumidityMap(World* world)
@@ -179,7 +179,7 @@ void WorldGen::DetermineBiomes(World* world)
             else
               map->biome_type = BiomeType::Desert;
           }
-          else if (map->temperature > 18) {
+          else if (map->temperature > 16) {
             if (map->humidity > .2)
               map->biome_type = BiomeType::BorealForest;
             else if (map->humidity > .05)
