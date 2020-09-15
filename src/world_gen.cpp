@@ -1,11 +1,11 @@
 #include "world_gen.h"
 
-#include "./map_generators/perlin_generator.h"
+#include "../engine/map_generators/perlin_generator.h"
 
-#include "game.h"
-#include "world.h"
-#include "map.h"
-#include "entity.h"
+#include "../engine/game.h"
+#include "../engine/world.h"
+#include "../engine/map.h"
+#include "../engine/entity.h"
 
 #include <chrono>
 #include <random>
@@ -215,7 +215,16 @@ void WorldGen::PlaceEntities(World* world, int player_wpos)
 {
   uint16_t world_x = static_cast<uint16_t>(player_wpos / world->width), 
            world_y = static_cast<uint16_t>(player_wpos % world->width);
-// add some entities
-  world->AddEntity(Entity({"@", "yellow", "black" }, "player", { 10, 10, world_x, world_y }, 28));
-  world->AddEntity(Entity({"g", "green", "black" }, "goblin", { 20, 10, world_x, world_y }, 5));
+  vector<int> walkable_positions;
+  for (int i = 0; i < world->GetMap(0,0)->width; i++)
+    for (int j = 0; j < world->GetMap(0,0)->height; j++) {
+      if (world->GetMap(world_x, world_y)->GetTile(i,j)->walkable)
+        walkable_positions.push_back(i * world->GetMap(0,0)->width + j);
+    }
+  srand(time(0));
+  int player_pos = walkable_positions[0+rand()%walkable_positions.size()];
+  uint16_t x_pos = static_cast<uint16_t>(player_pos / world->GetMap(0,0)->width), 
+           y_pos = static_cast<uint16_t>(player_pos % world->GetMap(0,0)->width);
+// add player
+  world->AddEntity(Entity({"@", "yellow", "black" }, "player", { x_pos, y_pos, world_x, world_y }, 28));
 }
