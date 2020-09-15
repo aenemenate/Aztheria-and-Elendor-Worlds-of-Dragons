@@ -10,5 +10,3 @@ lib /out:".\libs\Engine.lib" *.obj
 @echo .
 echo Deleting object files
 del *.obj
-del bin\*.exp
-del bin\*.lib
