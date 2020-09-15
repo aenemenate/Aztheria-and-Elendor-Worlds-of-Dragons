@@ -2,10 +2,16 @@
 
 class Game;
 class Map;
+class World;
 
-class WorldGen
+namespace WorldGen
 {
-  public:
-    static void GeneratePerlinMap(Map*,int,int,float,int,int);
-    static void GenerateWorld(Game*, int size, int slot);
-};
+  void GeneratePerlinMap(Map*,int wx,int wy,float freq,int depth,int seed);
+  void DetermineMapTerrainType(Map*);
+  void DetermineMapTemperature(Map*,int wy,int world_size);
+
+  void DetermineHumidityMap(World*);
+  void DetermineBiomes(World*);
+
+  void GenerateWorld(Game*, int size, int slot);
+}

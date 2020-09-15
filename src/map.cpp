@@ -1,11 +1,58 @@
 #include "map.h"
 
+// gets the graphic for an area (map) using its biome type and terrain type
+Graphic GetMapGraphic(BiomeType biome_type, TerrainType terrain_type)
+{
+  switch (biome_type)
+  {
+    case BiomeType::Desert:
+      return {"≈", "237,201,175", "black"};
+    case BiomeType::Mesa:
+      return {"=", "149,85,90", "black"};
+    case BiomeType::Taiga:
+      return {"↑", "darker green", "black"};
+    case BiomeType::Tundra:
+      return {"▒", "white", "blue"};
+    case BiomeType::BorealForest:
+      return {"♠", "dark green", "black"};
+    case BiomeType::GrassyPlain:
+      return {"\"", "green", "black"};
+    case BiomeType::SnowyPlain:
+      return {"\"", "white", "black"};
+    case BiomeType::MagicalForest:
+      return {"♠", "dark pink", "black"};
+    case BiomeType::HauntedForest:
+      return {"♠", "purple", "black"};
+    case BiomeType::TropicalBeach:
+      return {"≈", "237,201,175", "black"};
+    case BiomeType::TropicalForest:
+      return {"⌠", "green", "black"};
+    case BiomeType::BambooForest:
+      return {"║", "214,180,80", "black"};
+    case BiomeType::Swamp:
+      return {"√", "65,104,37", "black"};
+    case BiomeType::SnowyMountain:
+        return {"▲", "white", "black"};
+    case BiomeType::Barren:
+      if (terrain_type == TerrainType::Mountain)
+        return {"▲", "gray", "black"};
+      if (terrain_type == TerrainType::Hill)
+        return {"▲", "dark gray", "black"};
+      if (terrain_type == TerrainType::Plain)
+        return {".", "165,42,42", "black"};
+      if (terrain_type == TerrainType::Ocean)
+        return {"≈", "blue", "black"};
+  }
+  return {" ", "black", "black"};
+}
+
 Map::Map() 
 { 
   width = 0; 
   height = 0;
-  tiles.resize(width*height);
-  ent_map.resize(width*height, nullptr);
+  tiles.clear();
+  height_map.clear();
+  ent_map.clear();
 }
 
 Map::Map(uint16_t width, uint16_t height)
@@ -13,6 +60,7 @@ Map::Map(uint16_t width, uint16_t height)
   this->width = width;
   this->height = height;
   tiles.resize(width*height);
+  height_map.resize(width*height, 0);
   ent_map.resize(width*height, nullptr);
 }
 
@@ -36,25 +84,4 @@ void Map::SetTile(int x, int y, Tile tile)
 {
   if (PointWithinBounds(x, y))
     tiles[x*width+y] = tile;
-}
-
-void Map::DetermineGraphic()
-{
-  int dirt_num=0, water_num=0, mountain_num=0;
-  for (int i = 0; i < width; i++)
-    for (int j = 0; j < height; j++)
-    {
-      if (tiles[i*width+j].gset.ch == '.')
-        dirt_num++;
-      else if (tiles[i*width+j].gset.ch == '~')
-        water_num++;
-      else if (tiles[i*width+j].gset.ch == '#')
-        mountain_num++;
-    }
-    if (dirt_num >= water_num && dirt_num >= mountain_num)
-      gset = Graphic{'.', "165,42,42", "black"};
-    else if (water_num >= dirt_num && water_num >= mountain_num)
-      gset = Graphic{'~', "blue", "black"};
-    else if (mountain_num >= water_num && mountain_num >= dirt_num)
-      gset = Graphic{'^', "gray", "black"};
 }

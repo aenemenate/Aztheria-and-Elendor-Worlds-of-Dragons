@@ -3,11 +3,15 @@
 
 #include "../include/BearLibTerminal.h"
 
+#include <sstream>
+
 void PrintCh(int x, int y, Graphic gr)
 {
   terminal_color(color_from_name(gr.fgcolor.c_str()));
   terminal_bkcolor(color_from_name(gr.bgcolor.c_str()));
-  terminal_put(x, y, gr.ch);
+  std::stringstream sstr;
+  sstr << gr.ch;
+  terminal_print(x, y, sstr.str().c_str());
 }
 
 void DrawBorder(int  left, int right, int top, int bottom, string fgcolor, string bgcolor)

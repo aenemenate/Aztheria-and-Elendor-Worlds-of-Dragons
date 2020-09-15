@@ -42,5 +42,6 @@ public:
   Map *GetMap(int,int);
   
   void AddEntity(Entity entity);
+  
   void SetEnts();
 };

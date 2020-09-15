@@ -103,5 +103,5 @@ void LoadWorldState::Draw(Game *game)
       term_height = terminal_state(TK_HEIGHT);
   for (int b=0;b<buttons.size();b++)
     buttons[b].Render(game);
-  PrintCh(term_width/2-12, term_height/2 - 15 + menu_caret*2, {'>', "white", "black"});
+  PrintCh(term_width/2-12, term_height/2 - 15 + menu_caret*2, {">", "white", "black"});
 }

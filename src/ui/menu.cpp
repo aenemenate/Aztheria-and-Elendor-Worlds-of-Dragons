@@ -19,14 +19,14 @@ void Menu::Draw(Game* game)
   DrawBorder(xpos-1, xpos+width, ypos, ypos+height+1, "white", "black");
   for (int i = 0; i < width; i++) {
     if (title.length() > i)
-      PrintCh(xpos + i, ypos, {static_cast<uint8_t>(title[i]),"white", "black"});
+      PrintCh(xpos + i, ypos, {title.substr(i,1),"white", "black"});
     else
       terminal_print(xpos + i, ypos, "═");
   }
-  PrintCh(xpos + width - 1, ypos, {'x',"red", "black"});
+  PrintCh(xpos + width - 1, ypos, {"x","red", "black"});
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++)
-        PrintCh(xpos + i, ypos + 1 + j, {' ',"white", "black"});
+        PrintCh(xpos + i, ypos + 1 + j, {" ","white", "black"});
   CustomDraw(game);
 }
 
@@ -75,7 +75,8 @@ void MenuMap::CustomDraw(Game* game)
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++)
     {
-        Graphic gset = game->world->GetMap(i, j)->gset;
+      Map *map = game->world->GetMap(i, j);
+        Graphic gset = GetMapGraphic(map->biome_type, map->terrain_type);
         PrintCh(xpos + i, ypos + 1 + j, gset);
     }
     PrintCh(xpos + game->world->entities[0].pos.wx, ypos + 1 + game->world->entities[0].pos.wy, game->world->entities[0].gset);

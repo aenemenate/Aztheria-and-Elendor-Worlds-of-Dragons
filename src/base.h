@@ -17,8 +17,7 @@ struct Graphic
     ar & fgcolor;
     ar & bgcolor;
   }
-  uint8_t ch;
-  string fgcolor, bgcolor;
+  string ch, fgcolor, bgcolor;
 };
 
 struct Position
