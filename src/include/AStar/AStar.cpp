@@ -60,6 +60,8 @@ int AStar::DiagonalHeuristic(Node start, Node goal) const
  */
 vector<Node> AStar::search(Node start, Node goal)
 {
+	if (goal.getX() < 0 || goal.getY() < 0 || goal.getX() >= m_grid->getWidth() || goal.getY() >= m_grid->getHeight())
+	  return m_path;
 	if (!m_grid->isPassable(goal))
 	  return m_path;
 	//Priority Queue to reduce number of comparisons in the open list.

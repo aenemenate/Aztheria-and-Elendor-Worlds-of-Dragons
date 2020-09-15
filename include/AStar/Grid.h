@@ -33,6 +33,9 @@ public:
 	vector<Node> getNeighbors(Node node) const; //WARNIG MEM CREATED IN HEAP MAKE SURE YOU DELETE IT PROPERLY
 	void generatePossibleDirections();
 
+    int getWidth() { return m_numOfCols; }
+	int getHeight() { return m_numOfRows; }
+
 protected:
 	/* Only to be called by the derived class. */
 	Grid(int numOfColums, int numOfRows, movementType movType);
