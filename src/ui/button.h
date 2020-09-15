@@ -20,6 +20,8 @@ public:
 
   void SetText(string value) { text = value; }
   string GetText() { return text; }
+
+  int GetX() { return x; }
 private:
   int x, y;
   string text;

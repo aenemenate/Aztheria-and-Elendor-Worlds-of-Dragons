@@ -135,8 +135,8 @@ void WorldGen::DetermineHumidityMap(World* world)
     areas_since_mountain = 5;
     for (int i = 0; i < world->width; ++i) {
       Map* map = world->GetMap(i, j);
-      float height = perlinGenerator.Perlin2d(i, j, .4, 8);
-      map->humidity = .6 * height;
+      float height = perlinGenerator.Perlin2d(i, j, .6, 8);
+      map->humidity = .55 * height;
       if (areas_since_ocean < 3)
         map->humidity += .1;
       if (areas_since_mountain < 4)
@@ -172,7 +172,7 @@ void WorldGen::DetermineBiomes(World* world)
         case TerrainType::Hill:
         case TerrainType::Plain:
           if (map->temperature > 32) {
-            if (map->humidity > .4)
+            if (map->humidity > .37)
               map->biome_type = BiomeType::TropicalForest;
             else if (map->humidity > .05)
               map->biome_type = BiomeType::GrassyPlain;
@@ -180,7 +180,7 @@ void WorldGen::DetermineBiomes(World* world)
               map->biome_type = BiomeType::Desert;
           }
           else if (map->temperature > 16) {
-            if (map->humidity > .2)
+            if (map->humidity > .3)
               map->biome_type = BiomeType::BorealForest;
             else if (map->humidity > .05)
               map->biome_type = BiomeType::GrassyPlain;
@@ -188,14 +188,14 @@ void WorldGen::DetermineBiomes(World* world)
               map->biome_type = BiomeType::Desert;
           }
           else if (map->temperature > 7){
-            if (map->humidity > .2)
+            if (map->humidity > .3)
               map->biome_type = BiomeType::Taiga;
             else if (map->humidity > .05)
               map->biome_type = BiomeType::SnowyPlain;
             else
               map->biome_type = BiomeType::Tundra;
           }
-          else if (map->temperature > 0) {
+          else if (map->temperature > -3) {
             if (map->humidity > .2)
               map->biome_type = BiomeType::Taiga;
             else if (map->humidity > .05)

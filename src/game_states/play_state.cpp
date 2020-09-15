@@ -223,7 +223,7 @@ void PlayState::Draw(Game *game)
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Render(game);
     DrawBorder(term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4, "white", "black");
-    PrintCh(term_width/2-6, term_height/2 + menu_caret*2, {">", "white", "black"});
+    PrintCh(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
   }
   map_menu.Draw(game);
 }
