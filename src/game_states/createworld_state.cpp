@@ -3,15 +3,15 @@
 #include "state_funcs.h"
 
 #include "../../include/BearLibTerminal.h"
-#include "../../engine/draw_funcs.h"
-#include "../../engine/base.h"
+#include "../draw_funcs.h"
+#include "../base.h"
 
-#include "../../engine/world.h"
-#include "../../engine/map.h"
-#include "../../engine/entity.h"
+#include "../world.h"
+#include "../map.h"
+#include "../entity.h"
 
-#include "../../engine/world_gen.h"
-#include "../../engine/game_fio.h"
+#include "../world_gen.h"
+#include "../game_fio.h"
 
 #include <filesystem>
 #include <algorithm>

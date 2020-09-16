@@ -1,11 +1,11 @@
 #include "map_menu.h"
-#include "../../engine/game.h"
-#include "../../engine/base.h"
-#include "../../engine/draw_funcs.h"
+#include "../game.h"
+#include "../base.h"
+#include "../draw_funcs.h"
 #include "../../include/BearLibTerminal.h"
-#include "../../engine/world.h"
-#include "../../engine/map.h"
-#include "../../engine/entity.h"
+#include "../world.h"
+#include "../map.h"
+#include "../entity.h"
 
 
 void MapMenu::CustomDraw(Game* game)

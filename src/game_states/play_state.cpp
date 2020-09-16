@@ -1,12 +1,12 @@
 #include "play_state.h"
 
 #include "../../include/BearLibTerminal.h"
-#include "../../engine/draw_funcs.h"
-#include "../../engine/entity.h"
-#include "../../engine/world.h"
-#include "../../engine/map.h"
-#include "../../engine/game_fio.h"
-#include "../../engine/pathfinder.h"
+#include "../draw_funcs.h"
+#include "../entity.h"
+#include "../world.h"
+#include "../map.h"
+#include "../game_fio.h"
+#include "../pathfinder.h"
 
 #include "../menus/map_menu.h"
 
