@@ -4,4 +4,4 @@ This repository is designed to be built under Windows with the x64 cl.exe compil
 
 To build, open your x64 Developer Command Prompt and navigate to the project tree.
 
-Type 'build-game' to build the game, 'build-engine' to build the engine, 'run' to run the exe, and 'debug' to debug the exe.
+Type 'build' to build the game, and 'run', or 'debug' respectively.
