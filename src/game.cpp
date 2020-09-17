@@ -2,7 +2,7 @@
 #include "../include/BearLibTerminal.h"
 #include "world.h"
 #include "entity.h"
-#include "map.h"
+#include "map/area.h"
 
 void Game::CleanupResources()
 {

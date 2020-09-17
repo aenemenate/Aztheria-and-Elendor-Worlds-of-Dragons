@@ -5,7 +5,7 @@
 #include <vector>
 using namespace std;
 
-class Map;
+class Area;
 class Entity;
 class Game;
 
@@ -24,10 +24,10 @@ class World
     ar & height;
     ar & seed;
     ar & slot;
-    ar & maps;
+    ar & areas;
     ar & entities;
   }
-  vector<Map> maps;
+  vector<Area> areas;
 public:
   vector<Entity> entities;
   uint8_t width, height;
@@ -39,7 +39,7 @@ public:
   
   bool PointWithinBounds(int,int);
   
-  Map *GetMap(int,int);
+  Area *GetArea(int,int);
   
   void AddEntity(Entity entity);
   

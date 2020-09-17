@@ -6,7 +6,7 @@
 #include "../game.h"
 
 #include "../world.h"
-#include "../map.h"
+#include "../map/area.h"
 #include "../entity.h"
 
 void StatusPanel::Update(Game *game)

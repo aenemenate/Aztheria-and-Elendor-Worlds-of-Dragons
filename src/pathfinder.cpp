@@ -1,7 +1,7 @@
 #include "pathfinder.h"
 
 #include "world.h"
-#include "map.h"
+#include "map/area.h"
 #include "entity.h"
 
 #include "./AStar/AStar.h"
@@ -11,15 +11,15 @@ using namespace Pathfinder;
 int gwx, gwy;
 Grid *grid;
 
-void InitializeGrid(Map *map)
+void InitializeGrid(Area *area)
 {
-  int rows = map->width;
-  int cols = map->height;
+  int rows = area->width;
+  int cols = area->height;
   Grid::movementType movement = Grid::movementType::EIGHT_DIRECTIONS;
   vector<Node> obstacles;
-  for (int i = 0; i < map->width; i++)
-    for (int j = 0; j < map->height; j++) {
-      if (!map->GetTile(i, j)->walkable)
+  for (int i = 0; i < area->width; i++)
+    for (int j = 0; j < area->height; j++) {
+      if (!area->GetTile(i, j)->walkable)
 	      obstacles.push_back(Node(i, j));
     }
   if (grid != nullptr)
@@ -30,7 +30,7 @@ void InitializeGrid(Map *map)
 std::vector<Point> Pathfinder::GetPath(World *world, int wx, int wy, int startx, int starty, int endx, int endy)
 {
   if (grid == nullptr || wx != gwx || wy != gwy) {
-    InitializeGrid(world->GetMap(wx, wy));
+    InitializeGrid(world->GetArea(wx, wy));
     gwx = wx;
     gwy = wy;
   }

@@ -1,7 +1,7 @@
 #include "entity.h"
 #include "game.h"
 #include "world.h"
-#include "map.h"
+#include "map/area.h"
 
 Entity::Entity(Graphic gset, std::string name, Position pos, int viewradius)
 {
@@ -16,7 +16,7 @@ void Entity::Update(Game *game, bool isPlayer)
 // update fov
   World* world = game->world;
   visiblepoints.clear();
-  Map* map_ptr = world->GetMap(this->pos.wx, this->pos.wy);
+  Area* map_ptr = world->GetArea(this->pos.wx, this->pos.wy);
   fov_circle(game->settings.get_fov_settings(), map_ptr, &visiblepoints, this->pos.x, this->pos.y, viewradius);
   if (isPlayer) {
     for (int vp = 0; vp < visiblepoints.size(); vp++) {
@@ -35,7 +35,7 @@ void Entity::Move(int xsign, int ysign, World *world)
   int newx = this->pos.x + xsign, 
       newy = this->pos.y + ysign;
   int new_wx = this->pos.wx, new_wy = this->pos.wy;
-  Map *curmap = world->GetMap(this->pos.wx,this->pos.wy);
+  Area *curmap = world->GetArea(this->pos.wx,this->pos.wy);
 // if new position is not within map
   if (!curmap->PointWithinBounds(newx, newy)) {
 // check in each direction to move there if necessary
@@ -66,7 +66,7 @@ void Entity::Move(int xsign, int ysign, World *world)
   }
 // if we decided to move maps, check if the desired position is actually walkable
   if (new_wx != this->pos.wx || new_wy != this->pos.wy) {
-    Map *newmap = world->GetMap(new_wx, new_wy);
+    Area *newmap = world->GetArea(new_wx, new_wy);
     if (!newmap->GetTile(newx,newy)->walkable 
     ||  newmap->ent_map[newx*newmap->width + newy] != nullptr) {
       newx = this->pos.x;
@@ -75,8 +75,8 @@ void Entity::Move(int xsign, int ysign, World *world)
       new_wy = this->pos.wy;
     }
   }
-  world->GetMap(this->pos.wx, this->pos.wy)->ent_map[this->pos.x*curmap->width + this->pos.y] = nullptr;
-  world->GetMap(new_wx, new_wy)->ent_map[newx*curmap->width + newy] = this;
+  world->GetArea(this->pos.wx, this->pos.wy)->ent_map[this->pos.x*curmap->width + this->pos.y] = nullptr;
+  world->GetArea(new_wx, new_wy)->ent_map[newx*curmap->width + newy] = this;
 // set the new positions
   this->pos.x = newx;
   this->pos.y = newy;

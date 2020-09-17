@@ -4,7 +4,7 @@
 
 #include "game.h"
 #include "world.h"
-#include "map.h"
+#include "map/area.h"
 #include "entity.h"
 
 #include <chrono>
@@ -12,11 +12,11 @@
 #include <stdlib.h>
 #include <algorithm>
 
-void WorldGen::GeneratePerlinMap(Map *map, int wx, int wy, float freq, int depth, int seed)
+void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int depth, int seed)
 {
   PerlinGenerator perlinGenerator = PerlinGenerator(seed);
 
-  int map_w = map->width, map_h = map->height;
+  int map_w = area->width, map_h = area->height;
   for (int i = 0; i < map_w; i++)
     for (int j = 0; j < map_h; j++) {
     // TODO(Tristan): add sand to the map generator
@@ -24,23 +24,23 @@ void WorldGen::GeneratePerlinMap(Map *map, int wx, int wy, float freq, int depth
       float height2 = perlinGenerator.Perlin2d(wx * map_w + i, wy * map_h + j, freq*6, depth/2);
       float height3 = perlinGenerator.Perlin2d(wx * map_w + i, wy * map_h + j, freq/3, depth);
       if (height < .45) {
-        map->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
-        map->SetHeightMap(i, j, height);
+        area->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
+        area->SetHeightMap(i, j, height);
       }
       else if (height <.77 && height3 < .4) {
-        map->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
-        map->SetHeightMap(i, j, height3);
+        area->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
+        area->SetHeightMap(i, j, height3);
       }
       else if (height >= .7 || (height2 > .65 && height > .5)) {
-        map->SetTile(i, j, {{"#", "gray", "black"},false,true,false});
+        area->SetTile(i, j, {{"#", "gray", "black"},false,true,false});
         if (height < .7)
-          map->SetHeightMap(i, j, height2);
+          area->SetHeightMap(i, j, height2);
         else
-          map->SetHeightMap(i, j, height);
+          area->SetHeightMap(i, j, height);
       }
       else if (height < .7) {
-        map->SetTile(i, j, {{".", "165,42,42", "black"},true,false,false});
-        map->SetHeightMap(i, j, height);
+        area->SetTile(i, j, {{".", "165,42,42", "black"},true,false,false});
+        area->SetHeightMap(i, j, height);
       }
     }
 }
@@ -62,13 +62,13 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot)
   for (int i = 0; i < game->world->width; i++)
     for (int j = 0; j < game->world->height; j++) {
     // generate height map
-      GeneratePerlinMap(game->world->GetMap(i, j), i, j, 0.002, 16, game->world->seed);
+      GeneratePerlinMap(game->world->GetArea(i, j), i, j, 0.002, 16, game->world->seed);
     // determine area terrain type
-      DetermineMapTerrainType(game->world->GetMap(i, j));
+      DetermineAreaTerrainType(game->world->GetArea(i, j));
     // determine temperature
-      DetermineMapTemperature(game->world->GetMap(i, j), j, game->world->height);
+      DetermineAreaTemperature(game->world->GetArea(i, j), j, game->world->height);
     // determine areas where we want to place the player
-      TerrainType tt = game->world->GetMap(i, j)->terrain_type;
+      TerrainType tt = game->world->GetArea(i, j)->terrain_type;
       switch (tt) {
         case TerrainType::Plain: 
         case TerrainType::Hill:
@@ -89,40 +89,40 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot)
   PlaceEntities(game->world, player_pos);
 }
 
-void WorldGen::DetermineMapTerrainType(Map* map)
+void WorldGen::DetermineAreaTerrainType(Area* area)
 {
   int dirt_num=0, water_num=0, mountain_num=0, beach_num=0;
-  for (int i = 0; i < map->width; i++)
-    for (int j = 0; j < map->height; j++) {
-      if (map->GetTile(i,j)->gset.ch == ".")
+  for (int i = 0; i < area->width; i++)
+    for (int j = 0; j < area->height; j++) {
+      if (area->GetTile(i,j)->gset.ch == ".")
         dirt_num++;
-      else if (map->GetTile(i,j)->gset.ch == "~")
+      else if (area->GetTile(i,j)->gset.ch == "~")
         water_num++;
-      else if (map->GetTile(i,j)->gset.ch == "#")
+      else if (area->GetTile(i,j)->gset.ch == "#")
         mountain_num++;
     }
     if (dirt_num >= water_num && dirt_num >= mountain_num) {
       if (mountain_num > 10)
-        map->terrain_type = TerrainType::Hill;
+        area->terrain_type = TerrainType::Hill;
       else 
-        map->terrain_type = TerrainType::Plain;
+        area->terrain_type = TerrainType::Plain;
     }
     else if (water_num >= dirt_num && water_num >= mountain_num)
-      map->terrain_type = TerrainType::Ocean;
+      area->terrain_type = TerrainType::Ocean;
     else if (mountain_num >= water_num && mountain_num >= dirt_num)
-      map->terrain_type = TerrainType::Mountain;
+      area->terrain_type = TerrainType::Mountain;
 }
 
-void WorldGen::DetermineMapTemperature(Map* map, int wy, int world_size) 
+void WorldGen::DetermineAreaTemperature(Area* area, int wy, int world_size) 
 {
   double closeness_to_equator = (double)((world_size/2) - abs(world_size/2 - wy)) / (double)(world_size/2);
   double average_height = 0;
-  for (int i = 0; i < map->width; ++i)
-    for (int j = 0; j < map->height; ++j)
-      average_height += map->GetHeightMap(i, j);
-  average_height /= map->height * map->width;
+  for (int i = 0; i < area->width; ++i)
+    for (int j = 0; j < area->height; ++j)
+      average_height += area->GetHeightMap(i, j);
+  average_height /= area->height * area->width;
   double max_temperature = 50;
-  map->temperature = (max_temperature)*closeness_to_equator - std::max(0, (int)(20.0*(average_height-.2)));
+  area->temperature = (max_temperature)*closeness_to_equator - std::max(0, (int)(20.0*(average_height-.2)));
 }
 
 void WorldGen::DetermineHumidityMap(World* world)
@@ -134,19 +134,19 @@ void WorldGen::DetermineHumidityMap(World* world)
     areas_since_ocean = 5;
     areas_since_mountain = 5;
     for (int i = 0; i < world->width; ++i) {
-      Map* map = world->GetMap(i, j);
+      Area* area = world->GetArea(i, j);
       float height = perlinGenerator.Perlin2d(i, j, .6, 8);
-      map->humidity = .55 * height;
+      area->humidity = .55 * height;
       if (areas_since_ocean < 3)
-        map->humidity += .1;
+        area->humidity += .1;
       if (areas_since_mountain < 4)
-        map->humidity -= .2;
-      map->humidity = std::max(0.0f, map->humidity);
-      if (map->terrain_type == TerrainType::Ocean)
+        area->humidity -= .2;
+      area->humidity = std::max(0.0f, area->humidity);
+      if (area->terrain_type == TerrainType::Ocean)
         areas_since_ocean = 0;
       else
         ++areas_since_ocean;
-      if (map->terrain_type == TerrainType::Mountain)
+      if (area->terrain_type == TerrainType::Mountain)
         areas_since_mountain = 0;
       else 
         ++areas_since_mountain;
@@ -158,53 +158,53 @@ void WorldGen::DetermineBiomes(World* world)
 {
   for (int j = 0; j < world->height; ++j)
     for (int i = 0; i < world->width; ++i) {
-      Map *map = world->GetMap(i, j);
-      switch (map->terrain_type) {
+      Area *area = world->GetArea(i, j);
+      switch (area->terrain_type) {
         case TerrainType::Mountain:
-          if (map->temperature > 18)
-            map->biome_type = BiomeType::Barren;
+          if (area->temperature > 18)
+            area->biome_type = BiomeType::Barren;
           else
-            map->biome_type = BiomeType::SnowyMountain;
+            area->biome_type = BiomeType::SnowyMountain;
           break;
         case TerrainType::Ocean:
-          map->biome_type = BiomeType::Barren;
+          area->biome_type = BiomeType::Barren;
           break;
         case TerrainType::Hill:
         case TerrainType::Plain:
-          if (map->temperature > 32) {
-            if (map->humidity > .37)
-              map->biome_type = BiomeType::TropicalForest;
-            else if (map->humidity > .05)
-              map->biome_type = BiomeType::GrassyPlain;
+          if (area->temperature > 32) {
+            if (area->humidity > .37)
+              area->biome_type = BiomeType::TropicalForest;
+            else if (area->humidity > .05)
+              area->biome_type = BiomeType::GrassyPlain;
             else
-              map->biome_type = BiomeType::Desert;
+              area->biome_type = BiomeType::Desert;
           }
-          else if (map->temperature > 16) {
-            if (map->humidity > .3)
-              map->biome_type = BiomeType::BorealForest;
-            else if (map->humidity > .05)
-              map->biome_type = BiomeType::GrassyPlain;
+          else if (area->temperature > 16) {
+            if (area->humidity > .3)
+              area->biome_type = BiomeType::BorealForest;
+            else if (area->humidity > .05)
+              area->biome_type = BiomeType::GrassyPlain;
             else
-              map->biome_type = BiomeType::Desert;
+              area->biome_type = BiomeType::Desert;
           }
-          else if (map->temperature > 7){
-            if (map->humidity > .3)
-              map->biome_type = BiomeType::Taiga;
-            else if (map->humidity > .05)
-              map->biome_type = BiomeType::SnowyPlain;
+          else if (area->temperature > 7){
+            if (area->humidity > .3)
+              area->biome_type = BiomeType::Taiga;
+            else if (area->humidity > .05)
+              area->biome_type = BiomeType::SnowyPlain;
             else
-              map->biome_type = BiomeType::Tundra;
+              area->biome_type = BiomeType::Tundra;
           }
-          else if (map->temperature > -3) {
-            if (map->humidity > .2)
-              map->biome_type = BiomeType::Taiga;
-            else if (map->humidity > .05)
-              map->biome_type = BiomeType::Tundra;
+          else if (area->temperature > -3) {
+            if (area->humidity > .2)
+              area->biome_type = BiomeType::Taiga;
+            else if (area->humidity > .05)
+              area->biome_type = BiomeType::Tundra;
             else
-              map->biome_type = BiomeType::Barren;
+              area->biome_type = BiomeType::Barren;
           }
           else {
-            map->biome_type = BiomeType::Tundra;
+            area->biome_type = BiomeType::Tundra;
           }
           break;
       }
@@ -216,15 +216,15 @@ void WorldGen::PlaceEntities(World* world, int player_wpos)
   uint16_t world_x = static_cast<uint16_t>(player_wpos / world->width), 
            world_y = static_cast<uint16_t>(player_wpos % world->width);
   vector<int> walkable_positions;
-  for (int i = 0; i < world->GetMap(0,0)->width; i++)
-    for (int j = 0; j < world->GetMap(0,0)->height; j++) {
-      if (world->GetMap(world_x, world_y)->GetTile(i,j)->walkable)
-        walkable_positions.push_back(i * world->GetMap(0,0)->width + j);
+  for (int i = 0; i < world->GetArea(0,0)->width; i++)
+    for (int j = 0; j < world->GetArea(0,0)->height; j++) {
+      if (world->GetArea(world_x, world_y)->GetTile(i,j)->walkable)
+        walkable_positions.push_back(i * world->GetArea(0,0)->width + j);
     }
   srand(time(0));
   int player_pos = walkable_positions[0+rand()%walkable_positions.size()];
-  uint16_t x_pos = static_cast<uint16_t>(player_pos / world->GetMap(0,0)->width), 
-           y_pos = static_cast<uint16_t>(player_pos % world->GetMap(0,0)->width);
+  uint16_t x_pos = static_cast<uint16_t>(player_pos / world->GetArea(0,0)->width), 
+           y_pos = static_cast<uint16_t>(player_pos % world->GetArea(0,0)->width);
 // add player
   world->AddEntity(Entity({"@", "yellow", "black" }, "player", { x_pos, y_pos, world_x, world_y }, 28));
 }

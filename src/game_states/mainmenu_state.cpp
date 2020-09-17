@@ -6,7 +6,7 @@
 #include "../base.h"
 
 #include "../world.h"
-#include "../map.h"
+#include "../map/area.h"
 #include "../entity.h"
 
 #include "../world_gen.h"

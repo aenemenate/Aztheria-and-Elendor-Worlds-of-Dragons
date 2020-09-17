@@ -4,16 +4,13 @@
 #include "../draw_funcs.h"
 #include "../entity.h"
 #include "../world.h"
-#include "../map.h"
+#include "../map/area.h"
 #include "../game_fio.h"
 #include "../pathfinder.h"
 
 #include "../menus/map_menu.h"
 
 #include <algorithm>
-
-
-
 
 PlayState PlayState::playState;
 
@@ -89,8 +86,8 @@ void PlayState::HandleEvents(Game *game)
         break;
     }
     int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
-    int startx = min(max(0,game->world->GetMap(0,0)->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
-    int starty = min(max(0,game->world->GetMap(0,0)->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));  
+    int startx = min(max(0,game->world->GetArea(0,0)->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
+    int starty = min(max(0,game->world->GetArea(0,0)->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));  
     if (game->key == (TK_MOUSE_RIGHT|TK_KEY_RELEASED) && terminal_state(TK_MOUSE_X) < map_term_width) {
       Entity *player = &(game->world->entities[0]);
       player_path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
@@ -103,9 +100,9 @@ void PlayState::HandleEvents(Game *game)
           player->Move(-1, 0, game->world);
         else if (player->pos.y == 0)
           player->Move(0, -1, game->world);
-        else if (player->pos.x == game->world->GetMap(0,0)->width - 1)
+        else if (player->pos.x == game->world->GetArea(0,0)->width - 1)
           player->Move(1, 0, game->world);
-        else if (player->pos.y == game->world->GetMap(0,0)->height - 1)
+        else if (player->pos.y == game->world->GetArea(0,0)->height - 1)
           player->Move(0, 1, game->world);
       }
     }
@@ -165,17 +162,17 @@ void PlayState::Draw(Game *game)
 {
 // set values
   int curwx = game->world->entities[0].pos.wx, curwy = game->world->entities[0].pos.wy;
-  Map *map = game->world->GetMap(curwx, curwy);
+  Area *area = game->world->GetArea(curwx, curwy);
   int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
-  int startx = min(max(0,map->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
-  int starty = min(max(0,map->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
+  int startx = min(max(0,area->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
+  int starty = min(max(0,area->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
 // draw status panel
   status_panel.Draw(game);
 // draw map
-  for (int i = startx; i < map->width && i-startx < map_term_width; i++)
-    for (int j = starty; j < map->height && j-starty < term_height; j++)
+  for (int i = startx; i < area->width && i-startx < map_term_width; i++)
+    for (int j = starty; j < area->height && j-starty < term_height; j++)
     {
-      Tile *tile = map->GetTile(i, j);
+      Tile *tile = area->GetTile(i, j);
       if (tile->explored)
         PrintCh(i - startx, j - starty, {tile->gset.ch,"darker gray", "black"});
     }
@@ -188,8 +185,8 @@ void PlayState::Draw(Game *game)
     &&  point.x - startx >= 0
     &&  point.y - starty >= 0)
     {
-      Tile *tile = map->GetTile(point.x, point.y);
-      Entity *entity = map->ent_map[point.x * map->width + point.y];
+      Tile *tile = area->GetTile(point.x, point.y);
+      Entity *entity = area->ent_map[point.x * area->width + point.y];
       if (entity == nullptr)
         PrintCh(point.x - startx, point.y - starty, tile->gset);
       else

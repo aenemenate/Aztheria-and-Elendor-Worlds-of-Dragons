@@ -2,7 +2,7 @@
 #include "../include/BearLibTerminal.h"
 
 #include "world.h"
-#include "map.h"
+#include "map/area.h"
 #include "entity.h"
 
 #include <boost/archive/binary_iarchive.hpp>

@@ -1,6 +1,6 @@
 @echo off
 set libs=/link /SUBSYSTEM:WINDOWS /LIBPATH:"C:\Program Files\boost_1_73_0\stage\lib" .\libs\BearLibTerminal.lib
-set buildpath=.\src\*.cpp .\src\*.c .\src\game_states\*.cpp .\src\menus\*.cpp .\src\map_generators\*.cpp .\src\ui\*.cpp .\src\AStar\*.cpp
+set buildpath=.\src\*.cpp .\src\*.c .\src\game_states\*.cpp .\src\map\*.cpp .\src\menus\*.cpp .\src\map_generators\*.cpp .\src\ui\*.cpp .\src\AStar\*.cpp
 
 @echo .
 @echo Compiling game

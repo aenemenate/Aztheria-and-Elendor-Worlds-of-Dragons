@@ -1,14 +1,14 @@
 #pragma once
 
 class Game;
-class Map;
+class Area;
 class World;
 
 namespace WorldGen
 {
-  void GeneratePerlinMap(Map*,int wx,int wy,float freq,int depth,int seed);
-  void DetermineMapTerrainType(Map*);
-  void DetermineMapTemperature(Map*,int wy,int world_size);
+  void GeneratePerlinMap(Area*,int wx,int wy,float freq,int depth,int seed);
+  void DetermineAreaTerrainType(Area*);
+  void DetermineAreaTemperature(Area*,int wy,int world_size);
 
   void DetermineHumidityMap(World*);
   void DetermineBiomes(World*);

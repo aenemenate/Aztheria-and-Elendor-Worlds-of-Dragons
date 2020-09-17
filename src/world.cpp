@@ -1,5 +1,5 @@
 #include "world.h"
-#include "map.h"
+#include "map/area.h"
 #include "entity.h"
 #include "game.h"
 
@@ -8,7 +8,7 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
 {
   this->width = width;
   this->height = height;
-  maps.resize(width*height, Map(map_w,map_h));
+  areas.resize(width*height, Area(map_w,map_h));
   seed = 0;
   this->slot = slot;
 }
@@ -21,20 +21,20 @@ bool World::PointWithinBounds(int x, int y)
   return ret_val;
 }
 
-Map *World::GetMap(int x, int y)
+Area *World::GetArea(int x, int y)
 {
-    Map *map = nullptr;
+    Area *area = nullptr;
     if (PointWithinBounds(x, y))
-      map = &(maps[x*width+y]);
-    return map;
+      area = &(areas[x*width+y]);
+    return area;
 }
 
 void World::AddEntity(Entity entity)
 {
   entities.push_back(entity);
   int map_idx = entity.pos.wx * width + entity.pos.wy,
-      ent_idx = entity.pos.x * maps[0].width + entity.pos.y;
-  maps[map_idx].ent_map[ent_idx] = &(entities[entities.size()-1]);
+      ent_idx = entity.pos.x * areas[0].width + entity.pos.y;
+  areas[map_idx].ent_map[ent_idx] = &(entities[entities.size()-1]);
 }
 
 void World::SetEnts()
@@ -43,7 +43,7 @@ void World::SetEnts()
   {
     Entity *ent = &(entities[e]);
     int map_idx = ent->pos.wx * width + ent->pos.wy,
-        ent_idx = ent->pos.x * maps[0].width + ent->pos.y;
-    maps[map_idx].ent_map[ent_idx] = ent;
+        ent_idx = ent->pos.x * areas[0].width + ent->pos.y;
+    areas[map_idx].ent_map[ent_idx] = ent;
   }
 }
