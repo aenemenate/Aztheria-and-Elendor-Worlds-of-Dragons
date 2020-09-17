@@ -4,7 +4,6 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
-#include <vector>
 using namespace std;
 
 class Entity;
@@ -42,6 +41,7 @@ protected:
 public:
   vector<Entity*> ent_map;
   uint16_t width, height;
+  std::string name;
 
   Map();
   Map(uint16_t,uint16_t);
@@ -50,4 +50,6 @@ public:
 
   Tile *GetTile(int,int);
   void SetTile(int,int,Tile);
+
+  virtual string GetName() = 0;
 };

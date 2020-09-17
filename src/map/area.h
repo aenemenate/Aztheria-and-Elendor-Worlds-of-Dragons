@@ -58,4 +58,6 @@ public:
   
   float GetHeightMap(int x,int y) { return height_map[x * width + y]; }
   void SetHeightMap(int x,int y,float v) { height_map[x * width + y] = v; }
+
+  string GetName();
 };

@@ -1,5 +1,48 @@
 #include "area.h"
 
+string GetAreaName(BiomeType biome_type, TerrainType terrain_type)
+{
+  switch (biome_type) {
+    case Desert:
+      return "desert";
+    case Mesa:
+      return "mesa";
+    case Taiga:
+      return "taiga";
+    case Tundra:
+      return "tundra";
+    case BorealForest:
+      return "boreal forest";
+    case GrassyPlain:
+      return "grassy plain";
+    case SnowyPlain:
+      return "snowy plain";
+    case MagicalForest:
+      return "magical forest";
+    case HauntedForest:
+      return "haunted forest";
+    case TropicalBeach:
+      return "tropical beach";
+    case TropicalForest:
+      return "tropical forest";
+    case BambooForest:
+      return "bamboo forest";
+    case Swamp:
+      return "swamp";
+    case SnowyMountain:
+      return "snowy mountain";
+    case Barren:
+      if (terrain_type == TerrainType::Mountain)
+        return "mountain";
+      if (terrain_type == TerrainType::Hill)
+        return "hill";
+      if (terrain_type == TerrainType::Plain)
+        return "plain";
+      if (terrain_type == TerrainType::Ocean)
+        return "ocean";
+  }
+  return "";
+}
 
 // gets the graphic for an area (map) using its biome type and terrain type
 Graphic GetAreaGraphic(BiomeType biome_type, TerrainType terrain_type)
@@ -45,4 +88,9 @@ Graphic GetAreaGraphic(BiomeType biome_type, TerrainType terrain_type)
         return {"≈", "blue", "black"};
   }
   return {" ", "black", "black"};
+}
+
+string Area::GetName()
+{
+  return name + GetAreaName(this->biome_type, this->terrain_type);
 }
