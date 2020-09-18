@@ -4,14 +4,12 @@
 
 #include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
-#include "../base.h"
 
 #include "../world.h"
 #include "../map/area.h"
 #include "../entity.h"
 
 #include "../world_gen.h"
-#include "../game_fio.h"
 
 #include <filesystem>
 #include <algorithm>

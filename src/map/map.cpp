@@ -6,7 +6,6 @@ Map::Map()
   height = 0;
   this->name = "";
   tiles.clear();
-  height_map.clear();
   ent_map.clear();
 }
 
@@ -16,7 +15,6 @@ Map::Map(uint16_t width, uint16_t height)
   this->height = height;
   this->name = "";
   tiles.resize(width*height);
-  height_map.resize(width*height, 0);
   ent_map.resize(width*height, nullptr);
 }
 

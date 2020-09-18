@@ -32,12 +32,11 @@ class Map
     ar & width;
     ar & height;
     ar & tiles;
-    ar & height_map;
+    ar & name;
     ent_map.resize(width*height, nullptr);
   }
 protected:
   vector<Tile> tiles;
-  vector<float> height_map;
 public:
   vector<Entity*> ent_map;
   uint16_t width, height;

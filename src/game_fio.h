@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game.h"
+class Game;
 
 class GameFIO
 {

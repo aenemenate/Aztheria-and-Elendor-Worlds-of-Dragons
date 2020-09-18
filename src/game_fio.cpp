@@ -1,6 +1,7 @@
 #include "game_fio.h"
 #include "../include/BearLibTerminal.h"
 
+#include "game.h"
 #include "world.h"
 #include "map/area.h"
 #include "entity.h"

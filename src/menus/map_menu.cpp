@@ -1,6 +1,5 @@
 #include "map_menu.h"
 #include "../game.h"
-#include "../base.h"
 #include "../draw_funcs.h"
 #include "../../include/BearLibTerminal.h"
 #include "../world.h"
