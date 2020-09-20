@@ -97,44 +97,59 @@ Graphic GetAreaGraphic(Area *area)
 
 Tile *Area::GetTile(int x, int y, int z)
 {
-  if (z == 0)
-    return &(tiles[x * width + y]);
-  else
-    return dungeon_floors[z-1].GetTile(x, y);
+  if (PointWithinBounds(x, y))
+  {
+    if (z == 0)
+      return &(tiles[x * width + y]);
+    else
+      return dungeon_floors[z-1].GetTile(x, y);
+  }
+  return nullptr;
 }
 
 void Area::SetTile(int x, int y, int z, Tile tile)
 {
-  if (z == 0)
-    tiles[x * width + y] = tile;
-  else
-    dungeon_floors[z-1].SetTile(x, y, tile);
+  if (PointWithinBounds(x, y))
+  {
+    if (z == 0)
+      tiles[x * width + y] = tile;
+    else
+      dungeon_floors[z-1].SetTile(x, y, tile);
+  }
 }
 
 Entity *Area::GetEntity(int x, int y, int z)
 {
-  if (z == 0)
-    return ent_map[x * width + y];
-  else
-    return dungeon_floors[z-1].GetEntity(x, y);
+  if (PointWithinBounds(x, y))
+  {
+    if (z == 0)
+      return ent_map[x * width + y];
+    else if (z > 0 && z <= dungeon_floors.size())
+      return dungeon_floors[z-1].GetEntity(x, y);
+  }
+  return nullptr;
 }
 
 void Area::SetEntity(int x, int y, int z, Entity *entity)
 {
-  if (z == 0)
-    ent_map[x*width+y] = entity;
-  else
-    dungeon_floors[z-1].SetEntity(x, y, entity);
+  if (PointWithinBounds(x, y))
+  {
+    if (z == 0)
+      ent_map[x*width+y] = entity;
+    else
+      dungeon_floors[z-1].SetEntity(x, y, entity);
+  }
 }
 
 float Area::GetHeightMap(int x, int y)
 {
-  return height_map[x * width + y];
+  return PointWithinBounds(x, y) ? height_map[x * width + y] : 0.0f;
 }
 
 void Area::SetHeightMap(int x, int y, float v)
 { 
-  height_map[x * width + y] = v;
+  if (PointWithinBounds(x, y))
+    height_map[x * width + y] = v;
 }
 
 string Area::GetName()

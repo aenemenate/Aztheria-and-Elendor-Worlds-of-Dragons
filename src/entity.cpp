@@ -26,60 +26,74 @@ void Entity::Update(Game *game, bool isPlayer)
   }
 }
 
-void Entity::Move(int xsign, int ysign, World *world)
+void Entity::Move(int xsign, int ysign, int zsign, World *world)
 {
 // clamp sign between -1 and 1
   xsign = (xsign <= -1) ? -1 : ((xsign >= 1) ? 1 : 0);
   ysign = (ysign <= -1) ? -1 : ((ysign >= 1) ? 1 : 0);
 // set variables
-  int newx = this->pos.x + xsign, 
-      newy = this->pos.y + ysign;
+  int new_x = this->pos.x + xsign, 
+      new_y = this->pos.y + ysign,
+      new_z = this->pos.z + zsign;
   int new_wx = this->pos.wx, new_wy = this->pos.wy;
   Area *curmap = world->GetArea(this->pos.wx,this->pos.wy);
-// if new position is not within map
-  if (!curmap->PointWithinBounds(newx, newy)) {
-// check in each direction to move there if necessary
-    newx = this->pos.x;
-    newy = this->pos.y;
-    if (newx + xsign < 0 && xsign == -1 && this->pos.wx - 1 >= 0) {
-      newx = newx + xsign + curmap->width;
+// if new position is not within map bounds
+  if (!curmap->PointWithinBounds(new_x, new_y) && new_z == this->pos.z) {
+// check in each direction and set the new_wx, new_wy and new_x and new_y
+    new_x = this->pos.x;
+    new_y = this->pos.y;
+    if (new_x + xsign < 0 && xsign == -1 && this->pos.wx - 1 >= 0) {
+      new_x = new_x + xsign + curmap->width;
       new_wx -= 1;
     }
-    else if (newx + xsign >= curmap->width && xsign == 1 && this->pos.wx + 1 < world->width) {
-      newx = newx + xsign - curmap->width;
+    else if (new_x + xsign >= curmap->width && xsign == 1 && this->pos.wx + 1 < world->width) {
+      new_x = new_x + xsign - curmap->width;
       new_wx += 1;
     }
-    if (newy + ysign < 0 && ysign == -1 && this->pos.wy - 1 >= 0) {
-      newy = newy + ysign + curmap->height;
+    if (new_y + ysign < 0 && ysign == -1 && this->pos.wy - 1 >= 0) {
+      new_y = new_y + ysign + curmap->height;
       new_wy -= 1;
     }
-    else if (newy + ysign >= curmap->height && ysign == 1 && this->pos.wy + 1 < world->height) {
-      newy = newy + ysign - curmap->height;
+    else if (new_y + ysign >= curmap->height && ysign == 1 && this->pos.wy + 1 < world->height) {
+      new_y = new_y + ysign - curmap->height;
       new_wy += 1;
     }
   }
-// else if it is on the current map, check if the new position is walkable
-  else if (!curmap->GetTile(newx,newy,0)->walkable 
-       ||  curmap->GetEntity(newx,newy,0) != nullptr) {
-    newx = this->pos.x;
-    newy = this->pos.y;
+// else if this z is not the same as before
+  else if (new_z != this->pos.z && curmap->PointWithinBounds(new_x, new_y)) {
+    if (!(new_z > 0 && new_z <= curmap->GetDungeonFloors()->size())) {
+      new_z = this->pos.z;
+    }
   }
+// else if it is on the current map, check if the new position is walkable
+  else if (curmap->PointWithinBounds(new_x, new_y)
+       &&  new_z >= 0 && new_z <= curmap->GetDungeonFloors()->size()
+       && !curmap->GetTile(new_x,new_y,new_z)->walkable 
+       ||  curmap->GetEntity(new_x,new_y,new_z) != nullptr) {
+    new_x = this->pos.x;
+    new_y = this->pos.y;
+    new_z = this->pos.z;
+  }
+
+
 // if we decided to move maps, check if the desired position is actually walkable
-  if (new_wx != this->pos.wx || new_wy != this->pos.wy) {
+  if (new_wx != this->pos.wx || new_wy != this->pos.wy || new_z != this->pos.z) {
     Area *newmap = world->GetArea(new_wx, new_wy);
-    if (!newmap->GetTile(newx,newy,0)->walkable 
-    ||  newmap->GetEntity(newx,newy,0) != nullptr) {
-      newx = this->pos.x;
-      newy = this->pos.y;
+    if (!newmap->GetTile(new_x,new_y,new_z)->walkable 
+    ||  newmap->GetEntity(new_x,new_y,new_z) != nullptr) {
+      new_x = this->pos.x;
+      new_y = this->pos.y;
+      new_z = this->pos.z;
       new_wx = this->pos.wx;
       new_wy = this->pos.wy;
     }
   }
-  world->GetArea(this->pos.wx, this->pos.wy)->SetEntity(this->pos.x,this->pos.y,0,nullptr);
-  world->GetArea(new_wx, new_wy)->SetEntity(newx,newy,0,this);
+  world->GetArea(this->pos.wx, this->pos.wy)->SetEntity(this->pos.x,this->pos.y,this->pos.z,nullptr);
+  world->GetArea(new_wx, new_wy)->SetEntity(new_x,new_y,new_z,this);
 // set the new positions
-  this->pos.x = newx;
-  this->pos.y = newy;
+  this->pos.x = new_x;
+  this->pos.y = new_y;
+  this->pos.z = new_z;
   this->pos.wx = new_wx;
   this->pos.wy = new_wy;
 }

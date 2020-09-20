@@ -29,5 +29,5 @@ public:
   Entity(Graphic,std::string,Position,int);
   
   void Update(Game*, bool);
-  void Move(int, int, World*);
+  void Move(int, int, int, World*);
 };

@@ -12,7 +12,7 @@ TARGET  = ../bin/A-and-E-Worlds-of-Dragons.exe
 all: $(TARGET)
 
 $(TARGET):$(Objs)
- link /out:$@ /SUBSYSTEM:WINDOWS /LIBPATH:"C:\Program Files\boost_1_73_0\stage\lib" ..\libs\BearLibTerminal.lib $**
+ link /out:$@ /SUBSYSTEM:WINDOWS /DEBUG:FULL /LIBPATH:"C:\Program Files\boost_1_73_0\stage\lib" ..\libs\BearLibTerminal.lib $**
 
 # src
 

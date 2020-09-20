@@ -60,24 +60,24 @@ void PlayState::HandleEvents(Game *game)
     {
       case TK_KP_8:
       case TK_UP:
-        game->world->entities[0].Move(0,-1, game->world); break;
+        game->world->entities[0].Move(0,-1,0,game->world); break;
       case TK_KP_9:
-        game->world->entities[0].Move(1,-1, game->world); break;
+        game->world->entities[0].Move(1,-1,0,game->world); break;
       case TK_KP_6:
       case TK_RIGHT:
-        game->world->entities[0].Move(1,0, game->world); break;
+        game->world->entities[0].Move(1,0,0,game->world); break;
       case TK_KP_3:
-        game->world->entities[0].Move(1,1, game->world); break;
+        game->world->entities[0].Move(1,1,0,game->world); break;
       case TK_KP_2:
       case TK_DOWN:
-        game->world->entities[0].Move(0,1, game->world); break;
+        game->world->entities[0].Move(0,1,0,game->world); break;
       case TK_KP_1:
-        game->world->entities[0].Move(-1,1, game->world); break;
+        game->world->entities[0].Move(-1,1,0,game->world); break;
       case TK_KP_4:
       case TK_LEFT:
-        game->world->entities[0].Move(-1,0, game->world); break;
+        game->world->entities[0].Move(-1,0,0,game->world); break;
       case TK_KP_7:
-        game->world->entities[0].Move(-1,-1, game->world); break;
+        game->world->entities[0].Move(-1,-1,0,game->world); break;
       case TK_M:
         map_menu.SetShow(true);
         break;
@@ -97,13 +97,13 @@ void PlayState::HandleEvents(Game *game)
       Entity *player = &(game->world->entities[0]);
       if (terminal_state(TK_MOUSE_X)+startx == player->pos.x && terminal_state(TK_MOUSE_Y)+starty == player->pos.y) {
         if (player->pos.x == 0)
-          player->Move(-1, 0, game->world);
+          player->Move(-1,0,0,game->world);
         else if (player->pos.y == 0)
-          player->Move(0, -1, game->world);
+          player->Move(0,-1,0,game->world);
         else if (player->pos.x == game->world->GetArea(0,0)->width - 1)
-          player->Move(1, 0, game->world);
+          player->Move(1,0,0,game->world);
         else if (player->pos.y == game->world->GetArea(0,0)->height - 1)
-          player->Move(0, 1, game->world);
+          player->Move(0,1,0,game->world);
       }
     }
   }
@@ -146,7 +146,7 @@ void PlayState::Update(Game *game)
   else
   {
     if (player_path.size() > 0) {
-      game->world->entities[0].Move(player_path.back().x - game->world->entities[0].pos.x, player_path.back().y - game->world->entities[0].pos.y, game->world);
+      game->world->entities[0].Move(player_path.back().x - game->world->entities[0].pos.x, player_path.back().y - game->world->entities[0].pos.y, 0, game->world);
       player_path.pop_back();
       if (player_path.size() == 0)
         game->SetInputBlockMode(true);
@@ -200,7 +200,7 @@ void PlayState::Draw(Game *game)
   && terminal_state(TK_MOUSE_Y) < term_height) {
     std::vector<Point> path;
     Entity *player = &(game->world->entities[0]);
-    path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.z, player->pos.wy, player->pos.x, player->pos.y, 
+    path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.z, player->pos.x, player->pos.y, 
                                terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
     terminal_bkcolor("blue");
     for (auto point : path) {

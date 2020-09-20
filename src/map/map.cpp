@@ -25,11 +25,12 @@ bool Map::PointWithinBounds(int x, int y)
 
 Entity *Map::GetEntity(int x, int y)
 {
-  return ent_map[x * width + y];
+  return PointWithinBounds(x, y) ? ent_map[x*width+y] : nullptr;
 }
 
 void Map::SetEntity(int x, int y, Entity *entity)
 {
+  if (PointWithinBounds(x, y))
     ent_map[x*width+y] = entity;
 }
 
