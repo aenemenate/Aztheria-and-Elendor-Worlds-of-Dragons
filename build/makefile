@@ -76,7 +76,7 @@ state_funcs.obj:$(SRC_DIR)/game_states/state_funcs.cpp $(SRC_DIR)/game_states/st
 
 # src/map
 
-area.obj:$(SRC_DIR)/map/area.cpp $(SRC_DIR)/map/area.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/map/map.h $(SRC_DIR)/base.h
+area.obj:$(SRC_DIR)/map/area.cpp $(SRC_DIR)/map/area.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/map/map.h $(SRC_DIR)/entity.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map/area.cpp
 
 map.obj:$(SRC_DIR)/map/map.cpp $(SRC_DIR)/map/map.h $(SRC_DIR)/base.h

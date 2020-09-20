@@ -33,7 +33,7 @@ void World::AddEntity(Entity entity)
 {
   entities.push_back(entity);
   int map_idx = entity.pos.wx * width + entity.pos.wy;
-  areas[map_idx].SetEntity(entity.pos.x, entity.pos.y, &(entities[entities.size()-1]));
+  areas[map_idx].SetEntity(entity.pos.x, entity.pos.y, entity.pos.z, &(entities[entities.size()-1]));
 }
 
 void World::SetEnts()
@@ -42,6 +42,6 @@ void World::SetEnts()
   {
     Entity *ent = &(entities[e]);
     int map_idx = ent->pos.wx * width + ent->pos.wy;
-    areas[map_idx].SetEntity(ent->pos.x, ent->pos.y, ent);
+    areas[map_idx].SetEntity(ent->pos.x, ent->pos.y, ent->pos.z, ent);
   }
 }

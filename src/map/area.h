@@ -61,7 +61,9 @@ public:
   bool HasDungeon() { return dungeon_floors.size() > 0;}
 
   Tile *GetTile(int,int,int);
-
+  void SetTile(int,int,int,Tile);
+  Entity *GetEntity(int,int,int);
+  void SetEntity(int,int,int,Entity*);
   float GetHeightMap(int,int);
   void SetHeightMap(int,int,float);
 

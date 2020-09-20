@@ -24,22 +24,22 @@ void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int dep
       float height2 = perlinGenerator.Perlin2d(wx * map_w + i, wy * map_h + j, freq*6, depth/2);
       float height3 = perlinGenerator.Perlin2d(wx * map_w + i, wy * map_h + j, freq/3, depth);
       if (height < .45) {
-        area->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
+        area->SetTile(i, j, 0, {{"~", "blue", "black"},false,false,false});
         area->SetHeightMap(i, j, height);
       }
       else if (height <.77 && height3 < .4) {
-        area->SetTile(i, j, {{"~", "blue", "black"},false,false,false});
+        area->SetTile(i, j, 0, {{"~", "blue", "black"},false,false,false});
         area->SetHeightMap(i, j, height3);
       }
       else if (height >= .7 || (height2 > .65 && height > .5)) {
-        area->SetTile(i, j, {{"#", "gray", "black"},false,true,false});
+        area->SetTile(i, j, 0, {{"#", "gray", "black"},false,true,false});
         if (height < .7)
           area->SetHeightMap(i, j, height2);
         else
           area->SetHeightMap(i, j, height);
       }
       else if (height < .7) {
-        area->SetTile(i, j, {{".", "165,42,42", "black"},true,false,false});
+        area->SetTile(i, j, 0, {{".", "165,42,42", "black"},true,false,false});
         area->SetHeightMap(i, j, height);
       }
     }

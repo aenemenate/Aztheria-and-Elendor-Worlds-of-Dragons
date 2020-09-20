@@ -185,7 +185,7 @@ void PlayState::Draw(Game *game)
     &&  point.y - starty >= 0)
     {
       Tile *tile = area->GetTile(point.x, point.y, point.z);
-      Entity *entity = area->GetEntity(point.x, point.y);
+      Entity *entity = area->GetEntity(point.x, point.y, point.z);
       if (entity == nullptr)
         PrintCh(point.x - startx, point.y - starty, tile->gset);
       else
