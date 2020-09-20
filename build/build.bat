@@ -1,6 +1,8 @@
 
 @echo off
-cd /D "%~dp0"
+
+pushd "%~dp0"
+
 echo .
 IF "%1" == "" GOTO Make
 IF "%1" == "all" GOTO MakeAll
@@ -19,3 +21,5 @@ GOTO End
 echo Deleting unnecessary files
 del ..\bin\*.exp
 del ..\bin\*.lib
+
+popd
