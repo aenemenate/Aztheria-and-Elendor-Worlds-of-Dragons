@@ -3,6 +3,8 @@
  * named COPYING in the distribution for more details.
  */
 
+// NOTE: This code contains changes by Tristan Williams for us in Aztheria and Elendor: Worlds of Dragons
+
 /**
  * \mainpage Field of View Library
  * 
