@@ -31,6 +31,7 @@ void Entity::Move(int xsign, int ysign, int zsign, World *world)
 // clamp sign between -1 and 1
   xsign = (xsign <= -1) ? -1 : ((xsign >= 1) ? 1 : 0);
   ysign = (ysign <= -1) ? -1 : ((ysign >= 1) ? 1 : 0);
+  zsign = (zsign <= -1) ? -1 : ((zsign >= 1) ? 1 : 0);
 // set variables
   int new_x = this->pos.x + xsign, 
       new_y = this->pos.y + ysign,
