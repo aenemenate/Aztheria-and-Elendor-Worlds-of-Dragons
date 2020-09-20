@@ -1,5 +1,7 @@
 # Aztheria & Elendor: Worlds of Dragons
 
+This game is being developed for my little sister, who I hope will actually play it. :-P
+Included in the repository is both the source code and the bin, as no actual release is ready to take place.
 
 ## Building the project
 
