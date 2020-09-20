@@ -39,6 +39,7 @@ class Area : public Map
   {
     ar & boost::serialization::base_object<Map>(*this);
     ar & height_map;
+    ar & dungeon_floors;
     ar & temperature;
     ar & humidity;
     ar & terrain_type;
