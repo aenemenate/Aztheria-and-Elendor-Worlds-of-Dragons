@@ -19,7 +19,7 @@ $(TARGET):$(Objs)
 draw_funcs.obj:$(SRC_DIR)/draw_funcs.cpp $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/draw_funcs.cpp
 
-entity.obj:$(SRC_DIR)/entity.cpp $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/base.h
+entity.obj:$(SRC_DIR)/entity.cpp $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/base.h $(SRC_DIR)/fov.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/entity.cpp
 
 fov.obj:$(SRC_DIR)/fov.c $(SRC_DIR)/fov.h

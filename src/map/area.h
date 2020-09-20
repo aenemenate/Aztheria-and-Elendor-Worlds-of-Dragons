@@ -60,8 +60,10 @@ public:
   
   bool HasDungeon() { return dungeon_floors.size() > 0;}
 
-  float GetHeightMap(int x,int y) { return height_map[x * width + y]; }
-  void SetHeightMap(int x,int y,float v) { height_map[x * width + y] = v; }
+  Tile *GetTile(int,int,int);
+
+  float GetHeightMap(int,int);
+  void SetHeightMap(int,int,float);
 
   vector<Dungeon> *GetDungeonFloors() { return &dungeon_floors; }
 

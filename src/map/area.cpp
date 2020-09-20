@@ -94,6 +94,24 @@ Graphic GetAreaGraphic(Area *area)
   return {" ", "black", "black"};
 }
 
+float Area::GetHeightMap(int x, int y)
+{
+  return height_map[x * width + y];
+}
+
+void Area::SetHeightMap(int x, int y, float v)
+{ 
+  height_map[x * width + y] = v;
+}
+
+Tile *Area::GetTile(int x, int y, int z)
+{
+  if (z == 0)
+    return &(tiles[x * width + y]);
+  else
+    return dungeon_floors[z-1].GetTile(x, y);
+}
+
 string Area::GetName()
 {
   return name + GetAreaName(this->biome_type, this->terrain_type);

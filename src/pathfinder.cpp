@@ -11,7 +11,7 @@ using namespace Pathfinder;
 int gwx, gwy;
 Grid *grid;
 
-void InitializeGrid(Area *area)
+void InitializeGrid(Area *area, int z)
 {
   int rows = area->width;
   int cols = area->height;
@@ -19,7 +19,7 @@ void InitializeGrid(Area *area)
   vector<Node> obstacles;
   for (int i = 0; i < area->width; i++)
     for (int j = 0; j < area->height; j++) {
-      if (!area->GetTile(i, j)->walkable)
+      if (!area->GetTile(i, j, z)->walkable)
 	      obstacles.push_back(Node(i, j));
     }
   if (grid != nullptr)
@@ -27,10 +27,10 @@ void InitializeGrid(Area *area)
   grid = new Grid(cols, rows, movement, obstacles);
 }
 
-std::vector<Point> Pathfinder::GetPath(World *world, int wx, int wy, int startx, int starty, int endx, int endy)
+std::vector<Point> Pathfinder::GetPath(World *world, int wx, int wy, int z, int startx, int starty, int endx, int endy)
 {
   if (grid == nullptr || wx != gwx || wy != gwy) {
-    InitializeGrid(world->GetArea(wx, wy));
+    InitializeGrid(world->GetArea(wx, wy), z);
     gwx = wx;
     gwy = wy;
   }

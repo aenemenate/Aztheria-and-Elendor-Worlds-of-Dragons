@@ -17,11 +17,11 @@ void Entity::Update(Game *game, bool isPlayer)
   World* world = game->world;
   visiblepoints.clear();
   Area* map_ptr = world->GetArea(this->pos.wx, this->pos.wy);
-  fov_circle(game->settings.get_fov_settings(), map_ptr, &visiblepoints, this->pos.x, this->pos.y, viewradius);
+  fov_circle(game->settings.get_fov_settings(), map_ptr, &visiblepoints, this->pos.x, this->pos.y, this->pos.z, viewradius);
   if (isPlayer) {
     for (int vp = 0; vp < visiblepoints.size(); vp++) {
       Position *point = &(visiblepoints[vp]);
-      map_ptr->GetTile(point->x, point->y)->explored = true;
+      map_ptr->GetTile(point->x, point->y, point->z)->explored = true;
     }
   }
 }
@@ -59,7 +59,7 @@ void Entity::Move(int xsign, int ysign, World *world)
     }
   }
 // else if it is on the current map, check if the new position is walkable
-  else if (!curmap->GetTile(newx, newy)->walkable 
+  else if (!curmap->GetTile(newx,newy,0)->walkable 
        ||  curmap->ent_map[newx*curmap->width + newy] != nullptr) {
     newx = this->pos.x;
     newy = this->pos.y;
@@ -67,7 +67,7 @@ void Entity::Move(int xsign, int ysign, World *world)
 // if we decided to move maps, check if the desired position is actually walkable
   if (new_wx != this->pos.wx || new_wy != this->pos.wy) {
     Area *newmap = world->GetArea(new_wx, new_wy);
-    if (!newmap->GetTile(newx,newy)->walkable 
+    if (!newmap->GetTile(newx,newy,0)->walkable 
     ||  newmap->ent_map[newx*newmap->width + newy] != nullptr) {
       newx = this->pos.x;
       newy = this->pos.y;

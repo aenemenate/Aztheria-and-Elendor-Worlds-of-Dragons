@@ -28,10 +28,11 @@ struct Position
   {
     ar & x;
     ar & y;
+    ar & z;
     ar & wx;
     ar & wy;
   }
-  uint16_t x, y, wx, wy;
+  uint16_t x, y, z, wx, wy;
 };
 
 struct Point

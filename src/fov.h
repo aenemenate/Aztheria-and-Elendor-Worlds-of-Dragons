@@ -75,10 +75,10 @@ typedef /*@null@*/ unsigned *height_array_t;
 
 typedef struct {
     /** Opacity test callback. */
-    /*@null@*/ bool (*opaque)(void *map, int x, int y);
+    /*@null@*/ bool (*opaque)(void *map, int x, int y, int z);
 
     /** Lighting callback to set lighting on a map tile. */
-    /*@null@*/ void (*apply)(void *map, int x, int y, int dx, int dy, void *src);
+    /*@null@*/ void (*apply)(void *map, int x, int y, int z, int dx, int dy, void *src);
 
     /** Shape setting. */
     fov_shape_type shape;
@@ -184,7 +184,7 @@ void fov_settings_set_opaque_apply(fov_settings_type *settings, fov_opaque_apply
  * \param settings Pointer to data structure containing settings.
  * \param f The function called to test whether a map tile is opaque.
  */
-void fov_settings_set_opacity_test_function(fov_settings_type *settings, bool (*f)(void *map, int x, int y));
+void fov_settings_set_opacity_test_function(fov_settings_type *settings, bool (*f)(void *map, int x, int y, int z));
 
 /**
  * Set the function used to apply lighting to a map tile.
@@ -192,7 +192,7 @@ void fov_settings_set_opacity_test_function(fov_settings_type *settings, bool (*
  * \param settings Pointer to data structure containing settings.
  * \param f The function called to apply lighting to a map tile.
  */
-void fov_settings_set_apply_lighting_function(fov_settings_type *settings, void (*f)(void *map, int x, int y, int dx, int dy, void *src));
+void fov_settings_set_apply_lighting_function(fov_settings_type *settings, void (*f)(void *map, int x, int y, int z, int dx, int dy, void *src));
 
 /**
  * Free any memory that may have been cached in the settings
@@ -213,7 +213,7 @@ void fov_settings_free(fov_settings_type *settings);
  * \param radius Euclidean distance from (x,y) after which to stop.
  */
 void fov_circle(fov_settings_type *settings, void *map, void *source,
-                int source_x, int source_y, unsigned radius
+                int source_x, int source_y, int source_z, unsigned radius
 );
 
 /**
@@ -234,7 +234,7 @@ void fov_circle(fov_settings_type *settings, void *map, void *source,
  * \param angle The angle at the base of the beam of light, in degrees.
  */
 void fov_beam(fov_settings_type *settings, void *map, void *source,
-              int source_x, int source_y, unsigned radius,
+              int source_x, int source_y, int source_z, unsigned radius,
               fov_direction_type direction, float angle
 );
 

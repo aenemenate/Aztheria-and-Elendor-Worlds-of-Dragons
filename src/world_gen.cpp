@@ -95,11 +95,11 @@ void WorldGen::DetermineAreaTerrainType(Area* area)
   int dirt_num=0, water_num=0, mountain_num=0, beach_num=0;
   for (int i = 0; i < area->width; i++)
     for (int j = 0; j < area->height; j++) {
-      if (area->GetTile(i,j)->gset.ch == ".")
+      if (area->GetTile(i,j,0)->gset.ch == ".")
         dirt_num++;
-      else if (area->GetTile(i,j)->gset.ch == "~")
+      else if (area->GetTile(i,j,0)->gset.ch == "~")
         water_num++;
-      else if (area->GetTile(i,j)->gset.ch == "#")
+      else if (area->GetTile(i,j,0)->gset.ch == "#")
         mountain_num++;
     }
     if (dirt_num >= water_num && dirt_num >= mountain_num) {
@@ -239,7 +239,7 @@ void WorldGen::PlaceEntities(World* world, int player_wpos)
   vector<int> walkable_positions;
   for (int i = 0; i < world->GetArea(0,0)->width; i++)
     for (int j = 0; j < world->GetArea(0,0)->height; j++) {
-      if (world->GetArea(world_x, world_y)->GetTile(i,j)->walkable)
+      if (world->GetArea(world_x, world_y)->GetTile(i,j,0)->walkable)
         walkable_positions.push_back(i * world->GetArea(0,0)->width + j);
     }
   srand(time(0));
@@ -247,5 +247,5 @@ void WorldGen::PlaceEntities(World* world, int player_wpos)
   uint16_t x_pos = static_cast<uint16_t>(player_pos / world->GetArea(0,0)->width), 
            y_pos = static_cast<uint16_t>(player_pos % world->GetArea(0,0)->width);
 // add player
-  world->AddEntity(Entity({"@", "yellow", "black" }, "player", { x_pos, y_pos, world_x, world_y }, 28));
+  world->AddEntity(Entity({"@", "yellow", "black" }, "player", { x_pos, y_pos, 0, world_x, world_y }, 28));
 }

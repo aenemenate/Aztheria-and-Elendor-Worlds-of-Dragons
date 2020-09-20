@@ -90,7 +90,7 @@ void PlayState::HandleEvents(Game *game)
     int starty = min(max(0,game->world->GetArea(0,0)->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));  
     if (game->key == (TK_MOUSE_RIGHT|TK_KEY_RELEASED) && terminal_state(TK_MOUSE_X) < map_term_width) {
       Entity *player = &(game->world->entities[0]);
-      player_path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
+      player_path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.z, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
       game->SetInputBlockMode(false);
     }
     if (game->key == (TK_MOUSE_LEFT|TK_KEY_RELEASED)) {
@@ -170,9 +170,8 @@ void PlayState::Draw(Game *game)
   status_panel.Draw(game);
 // draw map
   for (int i = startx; i < area->width && i-startx < map_term_width; i++)
-    for (int j = starty; j < area->height && j-starty < term_height; j++)
-    {
-      Tile *tile = area->GetTile(i, j);
+    for (int j = starty; j < area->height && j-starty < term_height; j++) {
+      Tile *tile = area->GetTile(i, j, game->world->entities[0].pos.z);
       if (tile->explored)
         PrintCh(i - startx, j - starty, {tile->gset.ch,"darker gray", "black"});
     }
@@ -185,7 +184,7 @@ void PlayState::Draw(Game *game)
     &&  point.x - startx >= 0
     &&  point.y - starty >= 0)
     {
-      Tile *tile = area->GetTile(point.x, point.y);
+      Tile *tile = area->GetTile(point.x, point.y, point.z);
       Entity *entity = area->ent_map[point.x * area->width + point.y];
       if (entity == nullptr)
         PrintCh(point.x - startx, point.y - starty, tile->gset);
@@ -201,7 +200,7 @@ void PlayState::Draw(Game *game)
   && terminal_state(TK_MOUSE_Y) < term_height) {
     std::vector<Point> path;
     Entity *player = &(game->world->entities[0]);
-    path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, 
+    path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.z, player->pos.wy, player->pos.x, player->pos.y, 
                                terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
     terminal_bkcolor("blue");
     for (auto point : path) {

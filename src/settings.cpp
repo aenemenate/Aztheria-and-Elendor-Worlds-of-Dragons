@@ -5,8 +5,8 @@
 #include <vector>
 
 static void init_fov(fov_settings_type* fov_settings);
-static bool is_opaque(void* area, int x, int y);
-static void set_visible(void* area, int x, int y, int dx, int dy, void* src);
+static bool is_opaque(void* area, int x, int y, int z);
+static void set_visible(void* area, int x, int y, int z, int dx, int dy, void* src);
 
 Settings::Settings() {
   fov_settings = new fov_settings_type;
@@ -26,20 +26,20 @@ static void init_fov(fov_settings_type* fov_settings) {
   fov_settings_set_apply_lighting_function(fov_settings, set_visible);
 }
 
-static bool is_opaque(void* area, int x, int y)
+static bool is_opaque(void* area, int x, int y, int z)
 {
   Area* area_ptr = static_cast <Area*>(area);
   if (area_ptr->PointWithinBounds(x, y))
-    return area_ptr->GetTile(x, y)->opaque;
+    return area_ptr->GetTile(x, y, z)->opaque;
   else
     return false;
 }
 
-static void set_visible(void* area, int x, int y, int dx, int dy, void* src)
+static void set_visible(void* area, int x, int y, int z, int dx, int dy, void* src)
 {
   Area* area_ptr = static_cast<Area*>(area);
   std::vector<Position>* visiblepoints = static_cast<std::vector<Position>*>(src);
   if (!area_ptr->PointWithinBounds(x, y))
     return;
-  visiblepoints->push_back({ static_cast<uint16_t>(x), static_cast<uint16_t>(y) });
+  visiblepoints->push_back({ static_cast<uint16_t>(x), static_cast<uint16_t>(y), static_cast<uint16_t>(z) });
 }
