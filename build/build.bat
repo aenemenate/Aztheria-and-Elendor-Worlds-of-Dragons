@@ -11,7 +11,6 @@ GOTO End
 nmake /A
 GOTO End
 :End
-@echo .
 echo Deleting unnecessary files
 del ..\bin\*.exp
 del ..\bin\*.lib

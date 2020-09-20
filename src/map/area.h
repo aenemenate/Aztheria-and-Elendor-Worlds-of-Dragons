@@ -31,8 +31,6 @@ enum BiomeType {
   Barren
 };
 
-Graphic GetAreaGraphic(BiomeType, TerrainType);
-
 class Area : public Map
 {
   friend class boost::serialization::access;
@@ -48,7 +46,7 @@ class Area : public Map
     ent_map.resize(width*height, nullptr);
   }
   vector<float> height_map;
-  vector<Dungeon> dungeons;
+  vector<Dungeon> dungeon_floors;
 public:
 // temperature measures daytime summer temperature
 // humidity measures chance of rain on any given day
@@ -57,11 +55,17 @@ public:
   TerrainType terrain_type;
   BiomeType biome_type;
 
-  Area() : Map() { height_map.clear(); }
-  Area(uint16_t width,uint16_t height) : Map(width,height) { height_map.resize(width*height, 0); }
+  Area() : Map() { height_map.clear(); dungeon_floors.clear(); }
+  Area(uint16_t width,uint16_t height) : Map(width,height) { height_map.resize(width*height, 0); dungeon_floors.clear(); }
   
+  bool HasDungeon() { return dungeon_floors.size() > 0;}
+
   float GetHeightMap(int x,int y) { return height_map[x * width + y]; }
   void SetHeightMap(int x,int y,float v) { height_map[x * width + y] = v; }
 
+  vector<Dungeon> *GetDungeonFloors() { return &dungeon_floors; }
+
   string GetName();
 };
+
+Graphic GetAreaGraphic(Area*);

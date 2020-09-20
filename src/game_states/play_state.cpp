@@ -16,7 +16,7 @@ PlayState PlayState::playState;
 
 MapMenu map_menu;
 
-std::vector<Pathfinder::Point> player_path;
+std::vector<Point> player_path;
 
 void StopPlaying(Game *game)
 {
@@ -199,7 +199,7 @@ void PlayState::Draw(Game *game)
   if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width 
   && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0 
   && terminal_state(TK_MOUSE_Y) < term_height) {
-    std::vector<Pathfinder::Point> path;
+    std::vector<Point> path;
     Entity *player = &(game->world->entities[0]);
     path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.x, player->pos.y, 
                                terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);

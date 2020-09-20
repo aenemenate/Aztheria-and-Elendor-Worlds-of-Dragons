@@ -45,8 +45,12 @@ string GetAreaName(BiomeType biome_type, TerrainType terrain_type)
 }
 
 // gets the graphic for an area (map) using its biome type and terrain type
-Graphic GetAreaGraphic(BiomeType biome_type, TerrainType terrain_type)
+Graphic GetAreaGraphic(Area *area)
 {
+  BiomeType biome_type = area->biome_type;
+  TerrainType terrain_type = area->terrain_type;
+  if (area->GetDungeonFloors()->size() > 0)
+    return {">", "light gray", "black"};
   switch (biome_type)
   {
     case BiomeType::Desert:

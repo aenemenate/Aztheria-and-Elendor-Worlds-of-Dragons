@@ -33,3 +33,8 @@ struct Position
   }
   uint16_t x, y, wx, wy;
 };
+
+struct Point
+{
+  int x, y;
+};

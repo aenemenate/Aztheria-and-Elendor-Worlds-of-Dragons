@@ -80,6 +80,7 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot)
   DetermineHumidityMap(game->world);
   // determine biomes
   DetermineBiomes(game->world);
+  PlaceDungeons(game->world);
   // seed plants/ trees
   // SeedPlants(game->world);
   // for (int i = 0; i < plant_generations; ++i)
@@ -211,6 +212,26 @@ void WorldGen::DetermineBiomes(World* world)
     }
 }
 
+void WorldGen::PlaceDungeons(World* world)
+{
+  int num_of_dungeons = world->width / 2;
+  vector<Point> potential_dungeons;
+  for (int i = 0; i < world->width; ++i)
+    for (int j = 0; j < world->height; ++j) {
+      Area *area = world->GetArea(i, j);
+      if (area->terrain_type == TerrainType::Hill)
+        potential_dungeons.push_back({i, j});
+    }
+  srand(time(0));
+  for (int i = 0; i < num_of_dungeons && potential_dungeons.size() > 0; ++i) {
+    int vec_ind = rand()%potential_dungeons.size();
+    Point area_pos = potential_dungeons[vec_ind];
+    Area *area = world->GetArea(area_pos.x, area_pos.y);
+    area->GetDungeonFloors()->push_back(Dungeon(area->width, area->height));
+    potential_dungeons.erase(potential_dungeons.begin() + vec_ind);
+  }
+}
+
 void WorldGen::PlaceEntities(World* world, int player_wpos)
 {
   uint16_t world_x = static_cast<uint16_t>(player_wpos / world->width), 
@@ -222,7 +243,7 @@ void WorldGen::PlaceEntities(World* world, int player_wpos)
         walkable_positions.push_back(i * world->GetArea(0,0)->width + j);
     }
   srand(time(0));
-  int player_pos = walkable_positions[0+rand()%walkable_positions.size()];
+  int player_pos = walkable_positions[rand()%walkable_positions.size()];
   uint16_t x_pos = static_cast<uint16_t>(player_pos / world->GetArea(0,0)->width), 
            y_pos = static_cast<uint16_t>(player_pos % world->GetArea(0,0)->width);
 // add player
