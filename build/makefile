@@ -19,31 +19,31 @@ $(TARGET):$(Objs)
 draw_funcs.obj:$(SRC_DIR)/draw_funcs.cpp $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/draw_funcs.cpp
 
-entity.obj:$(SRC_DIR)/entity.cpp $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/base.h $(SRC_DIR)/fov.h
+entity.obj:$(SRC_DIR)/entity.cpp $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/base.h $(SRC_DIR)/fov.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/entity.cpp
 
 fov.obj:$(SRC_DIR)/fov.c $(SRC_DIR)/fov.h
   cl /c /Z7 /MT /O2 /EHsc $(SRC_DIR)/fov.c
   
-game_fio.obj:$(SRC_DIR)/game_fio.cpp $(SRC_DIR)/game_fio.h $(SRC_DIR)/entity.h $(SRC_DIR)/game.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/base.h
+game_fio.obj:$(SRC_DIR)/game_fio.cpp $(SRC_DIR)/game_fio.h $(SRC_DIR)/entity.h $(SRC_DIR)/game.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/game_fio.cpp
 
-game.obj:$(SRC_DIR)/game.cpp $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/settings.h $(SRC_DIR)/base.h
+game.obj:$(SRC_DIR)/game.cpp $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/settings.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/game.cpp
 
 main.obj:$(SRC_DIR)/main.cpp $(SRC_DIR)/game_states/mainmenu_state.h $(SRC_DIR)/game.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/main.cpp
 
-pathfinder.obj:$(SRC_DIR)/pathfinder.cpp $(SRC_DIR)/pathfinder.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/AStar/AStar.h  $(SRC_DIR)/AStar/Grid.h  $(SRC_DIR)/AStar/Node.h $(SRC_DIR)/base.h
+pathfinder.obj:$(SRC_DIR)/pathfinder.cpp $(SRC_DIR)/pathfinder.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/AStar/AStar.h  $(SRC_DIR)/AStar/Grid.h  $(SRC_DIR)/AStar/Node.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/pathfinder.cpp
 
-settings.obj:$(SRC_DIR)/settings.cpp $(SRC_DIR)/settings.h $(SRC_DIR)/map/area.h $(SRC_DIR)/entity.h $(SRC_DIR)/fov.h $(SRC_DIR)/base.h
+settings.obj:$(SRC_DIR)/settings.cpp $(SRC_DIR)/settings.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/entity.h $(SRC_DIR)/fov.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/settings.cpp
 
-world_gen.obj:$(SRC_DIR)/world_gen.cpp $(SRC_DIR)/world_gen.h $(SRC_DIR)/map_generators/perlin_generator.h $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/base.h
+world_gen.obj:$(SRC_DIR)/world_gen.cpp $(SRC_DIR)/world_gen.h $(SRC_DIR)/map_generators/perlin_generator.h $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/world_gen.cpp
 
-world.obj:$(SRC_DIR)/world.cpp $(SRC_DIR)/world.h $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/map/area.h $(SRC_DIR)/base.h
+world.obj:$(SRC_DIR)/world.cpp $(SRC_DIR)/world.h $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/base.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/world.cpp
 
 # src/AStar
@@ -59,16 +59,16 @@ Node.obj:$(SRC_DIR)/AStar/Node.cpp $(SRC_DIR)/AStar/Node.h
 
 # src/game_states
 
-createworld_state.obj:$(SRC_DIR)/game_states/createworld_state.cpp $(SRC_DIR)/game_states/createworld_state.h $(SRC_DIR)/game_states/play_state.h $(SRC_DIR)/game_states/state_funcs.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h $(SRC_DIR)/world_gen.h
+createworld_state.obj:$(SRC_DIR)/game_states/createworld_state.cpp $(SRC_DIR)/game_states/createworld_state.h $(SRC_DIR)/game_states/play_state.h $(SRC_DIR)/game_states/state_funcs.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h $(SRC_DIR)/world_gen.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/game_states/createworld_state.cpp
 
-loadworld_state.obj:$(SRC_DIR)/game_states/loadworld_state.cpp $(SRC_DIR)/game_states/loadworld_state.h $(SRC_DIR)/game_states/play_state.h $(SRC_DIR)/game_states/state_funcs.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h $(SRC_DIR)/game_fio.h
+loadworld_state.obj:$(SRC_DIR)/game_states/loadworld_state.cpp $(SRC_DIR)/game_states/loadworld_state.h $(SRC_DIR)/game_states/play_state.h $(SRC_DIR)/game_states/state_funcs.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h $(SRC_DIR)/game_fio.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/game_states/loadworld_state.cpp
 
 mainmenu_state.obj:$(SRC_DIR)/game_states/mainmenu_state.cpp $(SRC_DIR)/game_states/mainmenu_state.h $(SRC_DIR)/game_states/createworld_state.h $(SRC_DIR)/game_states/loadworld_state.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/game_states/mainmenu_state.cpp
 
-play_state.obj:$(SRC_DIR)/game_states/play_state.cpp $(SRC_DIR)/game_states/play_state.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h $(SRC_DIR)/game_fio.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/pathfinder.h
+play_state.obj:$(SRC_DIR)/game_states/play_state.cpp $(SRC_DIR)/game_states/play_state.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h $(SRC_DIR)/game_fio.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/pathfinder.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/game_states/play_state.cpp
 
 state_funcs.obj:$(SRC_DIR)/game_states/state_funcs.cpp $(SRC_DIR)/game_states/state_funcs.h $(SRC_DIR)/game.h

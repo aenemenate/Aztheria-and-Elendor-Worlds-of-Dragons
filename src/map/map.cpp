@@ -20,18 +20,22 @@ Map::Map(uint16_t width, uint16_t height)
 
 bool Map::PointWithinBounds(int x, int y)
 {
-  bool ret_val = false;
-  if (x >= 0 && y >= 0 && x < width && y < height)
-    ret_val = true;
-  return ret_val;
+  return (x >= 0 && y >= 0 && x < width && y < height);
+}
+
+Entity *Map::GetEntity(int x, int y)
+{
+  return ent_map[x * width + y];
+}
+
+void Map::SetEntity(int x, int y, Entity *entity)
+{
+    ent_map[x*width+y] = entity;
 }
 
 Tile *Map::GetTile(int x, int y)
 {
-  Tile *tile = nullptr;
-  if (PointWithinBounds(x, y))
-    tile = &(tiles[x*width+y]);
-  return tile;
+  return PointWithinBounds(x, y) ? &(tiles[x*width+y]) : nullptr;
 }
 
 void Map::SetTile(int x, int y, Tile tile)

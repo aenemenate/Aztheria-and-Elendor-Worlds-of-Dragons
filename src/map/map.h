@@ -1,7 +1,5 @@
 #pragma once
-
 #include "../base.h"
-
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 using namespace std;
@@ -36,9 +34,9 @@ class Map
     ent_map.resize(width*height, nullptr);
   }
 protected:
+  vector<Entity*> ent_map;
   vector<Tile> tiles;
 public:
-  vector<Entity*> ent_map;
   uint16_t width, height;
   std::string name;
 
@@ -47,8 +45,10 @@ public:
 
   bool PointWithinBounds(int,int);
 
+
+  Entity *GetEntity(int,int);// note: this can return null (indicates no entity at given position)
+  void SetEntity(int,int,Entity*);
   Tile *GetTile(int,int);
   void SetTile(int,int,Tile);
-
   virtual string GetName() = 0;
 };

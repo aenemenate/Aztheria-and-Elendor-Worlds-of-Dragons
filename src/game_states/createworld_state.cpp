@@ -5,10 +5,6 @@
 #include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 
-#include "../world.h"
-#include "../map/area.h"
-#include "../entity.h"
-
 #include "../world_gen.h"
 
 #include <filesystem>

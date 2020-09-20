@@ -60,7 +60,7 @@ void Entity::Move(int xsign, int ysign, World *world)
   }
 // else if it is on the current map, check if the new position is walkable
   else if (!curmap->GetTile(newx,newy,0)->walkable 
-       ||  curmap->ent_map[newx*curmap->width + newy] != nullptr) {
+       ||  curmap->GetEntity(newx,newy) != nullptr) {
     newx = this->pos.x;
     newy = this->pos.y;
   }
@@ -68,15 +68,15 @@ void Entity::Move(int xsign, int ysign, World *world)
   if (new_wx != this->pos.wx || new_wy != this->pos.wy) {
     Area *newmap = world->GetArea(new_wx, new_wy);
     if (!newmap->GetTile(newx,newy,0)->walkable 
-    ||  newmap->ent_map[newx*newmap->width + newy] != nullptr) {
+    ||  newmap->GetEntity(newx,newy) != nullptr) {
       newx = this->pos.x;
       newy = this->pos.y;
       new_wx = this->pos.wx;
       new_wy = this->pos.wy;
     }
   }
-  world->GetArea(this->pos.wx, this->pos.wy)->ent_map[this->pos.x*curmap->width + this->pos.y] = nullptr;
-  world->GetArea(new_wx, new_wy)->ent_map[newx*curmap->width + newy] = this;
+  world->GetArea(this->pos.wx, this->pos.wy)->SetEntity(this->pos.x,this->pos.y,nullptr);
+  world->GetArea(new_wx, new_wy)->SetEntity(newx,newy,this);
 // set the new positions
   this->pos.x = newx;
   this->pos.y = newy;
