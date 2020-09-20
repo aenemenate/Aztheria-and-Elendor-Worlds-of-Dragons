@@ -2,9 +2,8 @@
 
 class Game;
 
-class GameFIO
+namespace GameFIO
 {
-  public:
-    static void LoadWorld(Game*, int slot);
-    static void SaveWorld(Game*);
+    void LoadWorld(Game*, int slot);
+    void SaveWorld(Game*);
 };
