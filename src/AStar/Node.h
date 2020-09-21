@@ -5,7 +5,7 @@ class Node
 {
 	std::vector<int> dimensions;
 	int X, Y;
-	int m_cost;
+	double m_cost;
 	double m_priority; // this is purely for the priority queue to keep 
 // TODO: Make this to accomadete N-dimensions by using templates
 public:
@@ -16,11 +16,11 @@ public:
 	//get rid of these later.
 	int getX() const;
 	int getY() const;
-	int getCost() const;
+	double getCost() const;
 	double getPriority() const;
 
 	void setPriority(double priority);
-	void setCost(int cost);
+	void setCost(double cost);
 
 	bool operator==(Node const &rhs) const;
 	bool operator!=(Node const &rhs) const;

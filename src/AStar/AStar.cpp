@@ -1,16 +1,6 @@
 #include "AStar.h"
 
-/* Private structures used as comparator functions for Nodes */
 struct nodeCostCompare
-{
-	bool operator()(const Node &lhs, const Node &rhs) const
-	{
-		return lhs.getCost() > rhs.getCost();
-	}
-};
-
-
-struct ptrNodeCostCompare
 {
 	bool operator()(const Node lhs, const Node rhs) const
 	{
@@ -18,46 +8,21 @@ struct ptrNodeCostCompare
 	}
 };
 
-/*Grid obj must be allocated in the calling class. */
 AStar::AStar(Grid *grid)
 {
 	m_grid = grid;
-
 }
 
-/* it might be useful when multi-dimensional maps involved, but requires more research
-* inlined
-*/
 double AStar::EuclideanHeuristic(Node start, Node goal) const
 {
 	return sqrt(pow((start.getX() - goal.getX()), 2) + pow((start.getY() - goal.getY()), 2));
 }
 
-
-/* Use it when Manhattan movement is allowed 
- * inlined
-*/
 int AStar::ManhattanHeuristic(Node start, Node goal) const
 {
 	return abs(start.getX() - goal.getX()) + abs(start.getY() - goal.getY());
 }
 
-/* Use it when Diagonal movement is allowed 
- * inlined
-*/
-int AStar::DiagonalHeuristic(Node start, Node goal) const
-{
-	return max(abs(start.getX() - goal.getX()), abs(start.getY() - goal.getY()));
-}
-
-/* Main search function that finds the shortest path from start to goal node
- * Detailed description of how it works explained within the function. 
- * Returns a vector containing nodes constructing the shortest path from start to goal (including start and goal)
- * 
- * TODO: Currently manhattanDistance heuristic is hardcoded, depending on grid's movement type, return a function pointer instead.
- * http://www.codeproject.com/Articles/7150/Member-Function-Pointers-and-the-Fastest-Possible
- *  Also better memory management!, Use unique_ptrs instead.
- */
 vector<Node> AStar::search(Node start, Node goal)
 {
 	if (goal.getX() < 0 || goal.getY() < 0 || goal.getX() >= m_grid->getWidth() || goal.getY() >= m_grid->getHeight())
@@ -65,7 +30,7 @@ vector<Node> AStar::search(Node start, Node goal)
 	if (!m_grid->isPassable(goal))
 	  return m_path;
 	//Priority Queue to reduce number of comparisons in the open list.
-	priority_queue<Node, vector<Node>, ptrNodeCostCompare> open;
+	priority_queue<Node, vector<Node>, nodeCostCompare> open;
 
 	/* instead of holding pointers it keeps coppies of the nodes,
 	that way the updated cost for nodes wont effect the nodes in the closed set
@@ -80,7 +45,7 @@ vector<Node> AStar::search(Node start, Node goal)
 	open.push(start);
 	closed[start] = start;
 
-	int cost = 0; //path cost from start Node to current Node node.
+	double cost = 0; //path cost from start Node to current Node node.
 
 	//	int loop_counter = 0; //used for debugging purposes only
 	/*
@@ -95,6 +60,7 @@ vector<Node> AStar::search(Node start, Node goal)
 		//get the top element then REMOVE it from the queue (since we're about to inspect it)
 		auto current = open.top();
 		open.pop();
+		int curx = current.getX(), cury = current.getY();
 
 		//if the current node is the goal, then stop the search since we already found it.
 		if (current == goal) {
@@ -103,16 +69,16 @@ vector<Node> AStar::search(Node start, Node goal)
 
 		//cout << "Evaluating the new neighbors..." << endl;
 		//getneighbors already allocates nodes in heap.
-		for (auto next : m_grid->getNeighbors(current)) {
-			cost = closed.at(current).getCost() + 1; //instead of one use current->getCost() for weighted nodes.
+		for (Node next : m_grid->getNeighbors(current)) {
+			double cost_diff = (next.getX() - curx == 0 || next.getY() - cury == 0) ? 1 : 1.414;
+			cost = closed.at(current).getCost() + cost_diff; //instead of one use current->getCost() for weighted nodes.
 
 			/*If the next node is not in the closed list or the cost is less than the current cost for that node */
 			if (!closed.count(next) || cost < closed[next].getCost()) {
-				current.setCost(cost); //edit the cost of closed to be the total cost from that node.
+				current.setCost(cost);
 				closed.emplace(next, current); //put the node in the closed set
-				
 				/* adjust the priority of the next node */
-				double priority = static_cast<double>(cost) + EuclideanHeuristic(next, goal);
+				double priority = static_cast<double>(cost) + ((m_grid->GetMovementType() == Grid::movementType::EIGHT_DIRECTIONS) ? EuclideanHeuristic(next, goal) : ManhattanHeuristic(next, goal));
 				next.setPriority(priority);
 				open.push(next);
 			}
@@ -120,7 +86,7 @@ vector<Node> AStar::search(Node start, Node goal)
 	}
 	if (count < 1000)
 	  reconstructPath(closed, start, goal); //construct the shortest path.
-	return std::vector(m_path.begin(), m_path.end() - 1);
+	return m_path.size() > 1 ? std::vector(m_path.begin(), m_path.end() - 1) : m_path;
 }
 
 /* Given start, goal, and closed lists, it reconstructs the path (in reverse) and stores it in m_path

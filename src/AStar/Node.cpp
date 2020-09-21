@@ -49,12 +49,12 @@ void Node::setPriority(double priority)
   m_priority = priority;
 }
 
-int Node::getCost() const
+double Node::getCost() const
 {
 	return m_cost;
 }
 
-void Node::setCost(int cost)
+void Node::setCost(double cost)
 {
 	m_cost = cost;
 }

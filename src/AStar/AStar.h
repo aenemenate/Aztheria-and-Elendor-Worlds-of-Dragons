@@ -10,7 +10,6 @@ public:
 	AStar(Grid *grid);
 
 	/* Implemented Heuristics */
-	inline int DiagonalHeuristic(Node start, Node goal) const;
 	inline int ManhattanHeuristic(Node start, Node goal) const;
 	inline double EuclideanHeuristic(Node start, Node goal) const;
 

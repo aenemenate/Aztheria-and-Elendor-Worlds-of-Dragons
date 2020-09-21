@@ -35,7 +35,8 @@ public:
 
     int getWidth() { return m_numOfCols; }
 	int getHeight() { return m_numOfRows; }
-
+    
+	movementType GetMovementType();
 protected:
 	/* Only to be called by the derived class. */
 	Grid(int numOfColums, int numOfRows, movementType movType);

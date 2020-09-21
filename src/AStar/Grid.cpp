@@ -40,7 +40,7 @@ inline bool Grid::isWithinGrid(Node node) const
 {
 	int x = node.getX();
 	int y = node.getY();
-	return ((x >= 0 && x <= m_numOfRows) && (y >= 0 && y <= m_numOfCols));
+	return ((x >= 0 && x <= m_numOfCols) && (y >= 0 && y <= m_numOfRows));
 }
 
 /* chekcs if the given node is an obstacle or not.
@@ -85,4 +85,9 @@ vector<Node> Grid::getNeighbors(Node node) const
 		}
 	}
 	return results;
+}
+
+Grid::movementType Grid::GetMovementType()
+{
+	return m_movement;
 }
