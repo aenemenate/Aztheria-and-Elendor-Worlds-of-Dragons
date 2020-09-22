@@ -15,6 +15,7 @@ Settings::Settings() {
 
 Settings::~Settings() {
   fov_settings_free(fov_settings);
+  delete fov_settings;
 }
 
 static void init_fov(fov_settings_type* fov_settings) {

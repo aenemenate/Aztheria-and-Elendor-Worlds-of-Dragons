@@ -64,7 +64,19 @@
 			"xutility": "cpp",
 			"fstream": "cpp",
 			"random": "cpp",
-			"filesystem": "cpp"
+			"filesystem": "cpp",
+			"compare": "cpp",
+			"ctime": "cpp",
+			"deque": "cpp",
+			"functional": "cpp",
+			"iomanip": "cpp",
+			"locale": "cpp",
+			"queue": "cpp",
+			"unordered_set": "cpp",
+			"xlocbuf": "cpp",
+			"xlocmes": "cpp",
+			"xlocmon": "cpp",
+			"xloctime": "cpp"
 		},
 		"VSCodeCounter.useGitignore": true,
 		"VSCodeCounter.useFilesExclude": true

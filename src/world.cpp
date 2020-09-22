@@ -38,8 +38,7 @@ void World::AddEntity(Entity entity)
 
 void World::SetEnts()
 {
-  for (int e = 0; e < entities.size(); ++e)
-  {
+  for (int e = 0; e < entities.size(); ++e) {
     Entity *ent = &(entities[e]);
     int map_idx = ent->pos.wx * width + ent->pos.wy;
     areas[map_idx].SetEntity(ent->pos.x, ent->pos.y, ent->pos.z, ent);
