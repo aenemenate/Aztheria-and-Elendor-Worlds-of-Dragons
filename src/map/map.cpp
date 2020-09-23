@@ -29,13 +29,13 @@ bool Map::PointWithinBounds(int x, int y)
 
 Entity *Map::GetEntity(int x, int y)
 {
-  return PointWithinBounds(x, y) ? ent_map[x*width+y] : nullptr;
+  return PointWithinBounds(x, y) ? ent_map[x*height+y] : nullptr;
 }
 
 void Map::SetEntity(int x, int y, Entity *entity)
 {
   if (PointWithinBounds(x, y))
-    ent_map[x*width+y] = entity;
+    ent_map[x*height+y] = entity;
 }
 
 Tile *Map::GetTile(int x, int y)
@@ -46,7 +46,7 @@ Tile *Map::GetTile(int x, int y)
 void Map::SetTile(int x, int y, Tile tile)
 {
   if (PointWithinBounds(x, y))
-    tiles[x*width+y] = tile;
+    tiles[x*height+y] = tile;
 }
 
 Block *Map::GetBlock(int x, int y)
@@ -57,5 +57,5 @@ Block *Map::GetBlock(int x, int y)
 void Map::SetBlock(int x, int y, Block block)
 {
   if (PointWithinBounds(x, y))
-    blocks[x*width+y] = block;
+    blocks[x*height+y] = block;
 }

@@ -19,7 +19,7 @@ void InitializeGrid(Area *area, int z)
   vector<Node> obstacles;
   for (int i = 0; i < cols; i++)
     for (int j = 0; j < rows; j++) {
-      if (!area->GetTile(i, j, z)->walkable)
+      if (!area->GetTile(i, j, z)->walkable || area->GetBlock(i, j, z)->solid)
 	      obstacles.push_back(Node(i, j));
     }
   if (grid != nullptr)

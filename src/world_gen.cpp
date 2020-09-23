@@ -6,16 +6,15 @@
 #include "world.h"
 #include "map/area.h"
 #include "entity.h"
+#include "map_objects/block_builders.h"
 
 #include <chrono>
 #include <random>
 #include <stdlib.h>
 #include <algorithm>
 
-void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int depth, int seed)
-{
+void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int depth, int seed) {
   PerlinGenerator perlinGenerator = PerlinGenerator(seed);
-
   int map_w = area->width, map_h = area->height;
   for (int i = 0; i < map_w; i++)
     for (int j = 0; j < map_h; j++) {
@@ -25,30 +24,29 @@ void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int dep
       float height3 = perlinGenerator.Perlin2d(wx * map_w + i, wy * map_h + j, freq/3, depth);
       if (height < .45) {
         area->SetTile(i, j, 0, TILE_WATER);
-        area->SetBlock(i, j, 0, BLOCK_AIR);
+        area->SetBlock(i, j, 0, BuildAirBlock());
         area->SetHeightMap(i, j, height);
       }
       else if (height <.77 && height3 < .4) {
         area->SetTile(i, j, 0, TILE_WATER);
-        area->SetBlock(i, j, 0, BLOCK_AIR);
+        area->SetBlock(i, j, 0, BuildAirBlock());
         area->SetHeightMap(i, j, height3);
       }
-      else if (height >= .7 || (height2 > .65 && height > .5)) {
+      else if (height >= .7 || (height2 > .65 && height > .55)) {
         area->SetTile(i, j, 0, TILE_DIRT);
-        area->SetBlock(i, j, 0, BLOCK_STONE);
+        area->SetBlock(i, j, 0, BuildStoneBlock());
         if (height < .7) area->SetHeightMap(i, j, height2);
         else area->SetHeightMap(i, j, height);
       }
       else if (height < .7) {
         area->SetTile(i, j, 0, TILE_DIRT);
-        area->SetBlock(i, j, 0, BLOCK_AIR);
+        area->SetBlock(i, j, 0, BuildAirBlock());
         area->SetHeightMap(i, j, height);
       }
     }
 }
 
-void WorldGen::GenerateWorld(Game *game, int size, int slot)
-{
+void WorldGen::GenerateWorld(Game *game, int size, int slot) {
 // pick random seed from clock
   chrono::high_resolution_clock::time_point d = chrono::high_resolution_clock::now();
   unsigned seed2 = d.time_since_epoch().count();
@@ -92,8 +90,7 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot)
   PlaceEntities(game->world, player_pos);
 }
 
-void WorldGen::DetermineAreaTerrainType(Area* area)
-{
+void WorldGen::DetermineAreaTerrainType(Area* area) {
   int dirt_num=0, water_num=0, mountain_num=0, beach_num=0;
   for (int i = 0; i < area->width; i++)
     for (int j = 0; j < area->height; j++) {
@@ -116,8 +113,7 @@ void WorldGen::DetermineAreaTerrainType(Area* area)
       area->terrain_type = TerrainType::Mountain;
 }
 
-void WorldGen::DetermineAreaTemperature(Area* area, int wy, int world_size) 
-{
+void WorldGen::DetermineAreaTemperature(Area* area, int wy, int world_size) {
   double closeness_to_equator = (double)((world_size/2) - abs(world_size/2 - wy)) / (double)(world_size/2);
   double average_height = 0;
   for (int i = 0; i < area->width; ++i)
@@ -128,8 +124,7 @@ void WorldGen::DetermineAreaTemperature(Area* area, int wy, int world_size)
   area->temperature = (max_temperature)*closeness_to_equator - std::max(0, (int)(20.0*(average_height-.2)));
 }
 
-void WorldGen::DetermineHumidityMap(World* world)
-{
+void WorldGen::DetermineHumidityMap(World* world) {
   PerlinGenerator perlinGenerator = PerlinGenerator(world->seed);
   int areas_since_ocean = 4;
   int areas_since_mountain = 4;
@@ -157,8 +152,7 @@ void WorldGen::DetermineHumidityMap(World* world)
   }
 }
 
-void WorldGen::DetermineBiomes(World* world)
-{
+void WorldGen::DetermineBiomes(World* world) {
   for (int j = 0; j < world->height; ++j)
     for (int i = 0; i < world->width; ++i) {
       Area *area = world->GetArea(i, j);
@@ -214,9 +208,34 @@ void WorldGen::DetermineBiomes(World* world)
     }
 }
 
-void WorldGen::PlaceDungeons(World* world)
-{
-  int num_of_dungeons = world->width / 2;
+int getnumadjacentopenpositions(Area* area, Point pos, int z_level) {
+  int num = 0;
+  for (int i = -1; i < 1; i++)
+    for (int j = -1; j < 1; j++) {
+      Point cur_pos = {pos.x + i, pos.y + j};
+      if (!(cur_pos.x == 0 && cur_pos.y == 0) 
+      && area->PointWithinBounds(cur_pos.x, cur_pos.y)
+      && area->GetBlock(cur_pos.x, cur_pos.y, z_level)->solid == false
+      && area->GetTile(cur_pos.x, cur_pos.y, z_level)->walkable == true) {
+        num++;
+      }
+    }
+  return num;
+}
+
+std::vector<Point> getpotentialstairpoints(Area *area, int z_level) {
+  std::vector<Point> p_spots;
+  for (int i = 0; i < area->width; i++)
+    for (int j = 0; j < area->height; j++) {
+      if (area->GetBlock(i, j, z_level)->solid == true && 3 <= getnumadjacentopenpositions(area, {i,j}, z_level)) {
+        p_spots.push_back({i,j});
+      }
+    }
+  return p_spots;
+}
+
+void WorldGen::PlaceDungeons(World* world) {
+  int num_of_dungeons = world->width / 3;
   vector<Point> potential_dungeons;
   for (int i = 0; i < world->width; ++i)
     for (int j = 0; j < world->height; ++j) {
@@ -229,13 +248,18 @@ void WorldGen::PlaceDungeons(World* world)
     int vec_ind = rand()%potential_dungeons.size();
     Point area_pos = potential_dungeons[vec_ind];
     Area *area = world->GetArea(area_pos.x, area_pos.y);
+// put stairs
+    std::vector<Point> stair_points = getpotentialstairpoints(area, 0);
+    if (stair_points.size() == 0)
+    { i--; continue; }
+    Point stair_point = stair_points[rand()%stair_points.size()];
+    area->SetBlock(stair_point.x, stair_point.y, 0, BuildStoneDownStair());
     area->GetDungeonFloors()->push_back(Dungeon(area->width, area->height));
     potential_dungeons.erase(potential_dungeons.begin() + vec_ind);
   }
 }
 
-void WorldGen::PlaceEntities(World* world, int player_wpos)
-{
+void WorldGen::PlaceEntities(World* world, int player_wpos) {
   uint16_t world_x = static_cast<uint16_t>(player_wpos / world->width), 
            world_y = static_cast<uint16_t>(player_wpos % world->width);
   vector<int> walkable_positions;

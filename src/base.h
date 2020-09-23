@@ -7,12 +7,10 @@
 
 using namespace std;
 
-struct Graphic 
-{
+struct Graphic {
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & ch;
     ar & fgcolor;
     ar & bgcolor;
@@ -20,12 +18,10 @@ struct Graphic
   string ch, fgcolor, bgcolor;
 };
 
-struct Position
-{
+struct Position {
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & x;
     ar & y;
     ar & z;
@@ -35,7 +31,9 @@ struct Position
   uint16_t x, y, z, wx, wy;
 };
 
-struct Point
-{
+struct Point {
   int x, y;
 };
+
+enum Direction { north, east, south, west, northeast, northwest, southeast, southwest };
+enum ZDirection { up = -1, down = 1 };
