@@ -23,8 +23,9 @@ void LoadWorld(Game* game)
   std::stringstream sstrslot;
   sstrslot << filepath[13];
   int i = 1;
-  while (filepath[13 + i] != '.') {
+  while (filepath[13+i] != '.') {
     sstrslot << filepath[13+i];
+    i++;
   }
   sstrslot >> slot;
   GameFIO::LoadWorld(game, slot);

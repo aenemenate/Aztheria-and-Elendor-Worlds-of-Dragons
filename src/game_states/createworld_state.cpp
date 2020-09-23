@@ -33,13 +33,14 @@ void CreateWorld(Game* game)
           std::stringstream sstrslot;
           sstrslot << entry.path().string()[13];
           int i = 1;
-          while (entry.path().string()[13 + i] != '.') {
+          while (entry.path().string()[13+i] != '.') {
             sstrslot << entry.path().string()[13+i];
+            i++;
           }
           int temp;
           sstrslot >> temp;
           if (temp >= slot)
-          slot = temp + 1;
+            slot = temp + 1;
         }
   WorldGen::GenerateWorld(game, worldsize, slot);
   game->ChangeState(PlayState::Instance());
