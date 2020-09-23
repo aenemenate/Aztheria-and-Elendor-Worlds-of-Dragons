@@ -20,8 +20,9 @@ void Entity::Update(Game *game, bool isPlayer)
   fov_circle(game->settings.get_fov_settings(), map_ptr, &visiblepoints, this->pos.x, this->pos.y, this->pos.z, viewradius);
   if (isPlayer) {
     for (int vp = 0; vp < visiblepoints.size(); vp++) {
-      Position *point = &(visiblepoints[vp]);
-      map_ptr->GetTile(point->x, point->y, point->z)->explored = true;
+      Position *pos = &(visiblepoints[vp]);
+      map_ptr->GetTile(pos->x, pos->y, pos->z)->explored = true;
+      map_ptr->GetBlock(pos->x, pos->y, pos->z)->explored = true;
     }
   }
 }
@@ -70,7 +71,8 @@ void Entity::Move(int xsign, int ysign, int zsign, World *world)
   else if (curmap->PointWithinBounds(new_x, new_y)
        &&  new_z >= 0 && new_z <= curmap->GetDungeonFloors()->size()
        && !curmap->GetTile(new_x,new_y,new_z)->walkable 
-       ||  curmap->GetEntity(new_x,new_y,new_z) != nullptr) {
+       ||  curmap->GetEntity(new_x,new_y,new_z) != nullptr
+       || curmap->GetBlock(new_x,new_y,new_z)->solid) {
     new_x = this->pos.x;
     new_y = this->pos.y;
     new_z = this->pos.z;
@@ -81,7 +83,8 @@ void Entity::Move(int xsign, int ysign, int zsign, World *world)
   if (new_wx != this->pos.wx || new_wy != this->pos.wy || new_z != this->pos.z) {
     Area *newmap = world->GetArea(new_wx, new_wy);
     if (!newmap->GetTile(new_x,new_y,new_z)->walkable 
-    ||  newmap->GetEntity(new_x,new_y,new_z) != nullptr) {
+    ||  newmap->GetEntity(new_x,new_y,new_z) != nullptr
+    ||  newmap->GetBlock(new_x,new_y,new_z)->solid) {
       new_x = this->pos.x;
       new_y = this->pos.y;
       new_z = this->pos.z;

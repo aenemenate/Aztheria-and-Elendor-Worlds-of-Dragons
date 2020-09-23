@@ -18,7 +18,6 @@ void Game::Init()
   terminal_open();
   terminal_set("window.size=60x40");
   terminal_refresh();
-  
 // set values
   world = nullptr;
 }

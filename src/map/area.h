@@ -63,6 +63,8 @@ public:
 
   Tile *GetTile(int,int,int);
   void SetTile(int,int,int,Tile);
+  Block *GetBlock(int,int,int);
+  void SetBlock(int,int,int,Block);
   Entity *GetEntity(int,int,int);
   void SetEntity(int,int,int,Entity*);
   float GetHeightMap(int,int);

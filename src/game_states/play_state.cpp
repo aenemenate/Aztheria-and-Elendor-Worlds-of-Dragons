@@ -172,22 +172,28 @@ void PlayState::Draw(Game *game)
   for (int i = startx; i < area->width && i-startx < map_term_width; i++)
     for (int j = starty; j < area->height && j-starty < term_height; j++) {
       Tile *tile = area->GetTile(i, j, game->world->entities[0].pos.z);
-      if (tile->explored)
-        PrintCh(i - startx, j - starty, {tile->gset.ch,"darker gray", "black"});
+      Block *block = area->GetBlock(i, j, game->world->entities[0].pos.z);
+      if (tile->explored) {
+        PrintCh(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
+        if (block->gr.ch != " ")
+          PrintCh(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
+      }
     }
 // draw visible points
-  for (int vp = 0; vp < game->world->entities[0].visiblepoints.size(); vp++)
-  {
+  for (int vp = 0; vp < game->world->entities[0].visiblepoints.size(); vp++) {
     Position point = game->world->entities[0].visiblepoints[vp];
     if (point.x - startx < map_term_width
     &&  point.y - starty < map_term_width
     &&  point.x - startx >= 0
-    &&  point.y - starty >= 0)
-    {
+    &&  point.y - starty >= 0) {
       Tile *tile = area->GetTile(point.x, point.y, point.z);
+      Block *block = area->GetBlock(point.x, point.y, point.z);
       Entity *entity = area->GetEntity(point.x, point.y, point.z);
-      if (entity == nullptr)
-        PrintCh(point.x - startx, point.y - starty, tile->gset);
+      if (entity == nullptr) {
+        PrintCh(point.x - startx, point.y - starty, tile->gr);
+        if (block->gr.ch != " ")
+          PrintCh(point.x - startx, point.y - starty, {block->gr.ch,block->gr.fgcolor,tile->gr.bgcolor});
+      }
       else
         PrintCh(point.x - startx, point.y - starty, entity->gset);
     }

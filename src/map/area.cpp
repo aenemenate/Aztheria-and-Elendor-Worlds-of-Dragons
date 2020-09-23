@@ -52,8 +52,7 @@ Graphic GetAreaGraphic(Area *area)
   TerrainType terrain_type = area->terrain_type;
   if (area->GetDungeonFloors()->size() > 0)
     return {">", "light gray", "black"};
-  switch (biome_type)
-  {
+  switch (biome_type) {
     case BiomeType::Desert:
       return {"≈", "237,201,175", "black"};
     case BiomeType::Mesa:
@@ -97,8 +96,7 @@ Graphic GetAreaGraphic(Area *area)
 
 Tile *Area::GetTile(int x, int y, int z)
 {
-  if (PointWithinBounds(x, y))
-  {
+  if (PointWithinBounds(x, y)) {
     if (z == 0)
       return &(tiles[x * width + y]);
     else
@@ -109,8 +107,7 @@ Tile *Area::GetTile(int x, int y, int z)
 
 void Area::SetTile(int x, int y, int z, Tile tile)
 {
-  if (PointWithinBounds(x, y))
-  {
+  if (PointWithinBounds(x, y)) {
     if (z == 0)
       tiles[x * width + y] = tile;
     else
@@ -118,10 +115,30 @@ void Area::SetTile(int x, int y, int z, Tile tile)
   }
 }
 
+Block *Area::GetBlock(int x, int y, int z)
+{
+  if (PointWithinBounds(x, y)) {
+    if (z == 0)
+      return &(blocks[x * width + y]);
+    else
+      return dungeon_floors[z-1].GetBlock(x, y);
+  }
+  return nullptr;
+}
+
+void Area::SetBlock(int x, int y, int z, Block block)
+{
+  if (PointWithinBounds(x, y)) {
+    if (z == 0)
+      blocks[x * width + y] = block;
+    else
+      dungeon_floors[z-1].SetBlock(x, y, block);
+  }
+}
+
 Entity *Area::GetEntity(int x, int y, int z)
 {
-  if (PointWithinBounds(x, y))
-  {
+  if (PointWithinBounds(x, y)) {
     if (z == 0)
       return ent_map[x * width + y];
     else if (z > 0 && z <= dungeon_floors.size())
@@ -132,8 +149,7 @@ Entity *Area::GetEntity(int x, int y, int z)
 
 void Area::SetEntity(int x, int y, int z, Entity *entity)
 {
-  if (PointWithinBounds(x, y))
-  {
+  if (PointWithinBounds(x, y)) {
     if (z == 0)
       ent_map[x*width+y] = entity;
     else

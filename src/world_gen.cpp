@@ -24,22 +24,24 @@ void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int dep
       float height2 = perlinGenerator.Perlin2d(wx * map_w + i, wy * map_h + j, freq*6, depth/2);
       float height3 = perlinGenerator.Perlin2d(wx * map_w + i, wy * map_h + j, freq/3, depth);
       if (height < .45) {
-        area->SetTile(i, j, 0, {{"~", "blue", "black"},false,false,false});
+        area->SetTile(i, j, 0, TILE_WATER);
+        area->SetBlock(i, j, 0, BLOCK_AIR);
         area->SetHeightMap(i, j, height);
       }
       else if (height <.77 && height3 < .4) {
-        area->SetTile(i, j, 0, {{"~", "blue", "black"},false,false,false});
+        area->SetTile(i, j, 0, TILE_WATER);
+        area->SetBlock(i, j, 0, BLOCK_AIR);
         area->SetHeightMap(i, j, height3);
       }
       else if (height >= .7 || (height2 > .65 && height > .5)) {
-        area->SetTile(i, j, 0, {{"#", "gray", "black"},false,true,false});
-        if (height < .7)
-          area->SetHeightMap(i, j, height2);
-        else
-          area->SetHeightMap(i, j, height);
+        area->SetTile(i, j, 0, TILE_DIRT);
+        area->SetBlock(i, j, 0, BLOCK_STONE);
+        if (height < .7) area->SetHeightMap(i, j, height2);
+        else area->SetHeightMap(i, j, height);
       }
       else if (height < .7) {
-        area->SetTile(i, j, 0, {{".", "165,42,42", "black"},true,false,false});
+        area->SetTile(i, j, 0, TILE_DIRT);
+        area->SetBlock(i, j, 0, BLOCK_AIR);
         area->SetHeightMap(i, j, height);
       }
     }
@@ -95,12 +97,12 @@ void WorldGen::DetermineAreaTerrainType(Area* area)
   int dirt_num=0, water_num=0, mountain_num=0, beach_num=0;
   for (int i = 0; i < area->width; i++)
     for (int j = 0; j < area->height; j++) {
-      if (area->GetTile(i,j,0)->gset.ch == ".")
-        dirt_num++;
-      else if (area->GetTile(i,j,0)->gset.ch == "~")
-        water_num++;
-      else if (area->GetTile(i,j,0)->gset.ch == "#")
+      if (area->GetBlock(i,j,0)->gr.ch == "#")
         mountain_num++;
+      else if (area->GetTile(i,j,0)->gr.ch == ".")
+        dirt_num++;
+      else if (area->GetTile(i,j,0)->gr.ch == "~")
+        water_num++;
     }
     if (dirt_num >= water_num && dirt_num >= mountain_num) {
       if (mountain_num > 10)

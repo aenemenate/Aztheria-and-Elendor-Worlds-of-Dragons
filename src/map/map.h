@@ -1,25 +1,12 @@
 #pragma once
 #include "../base.h"
+#include "../map_objects/block.h"
+#include "../map_objects/tile.h"
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 using namespace std;
 
 class Entity;
-
-struct Tile
-{
-  friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
-    ar & gset;
-    ar & walkable;
-    ar & opaque;
-    ar & explored;
-  }
-  Graphic gset;
-  bool walkable, opaque, explored;
-};
 
 class Map
 {
@@ -30,12 +17,14 @@ class Map
     ar & width;
     ar & height;
     ar & tiles;
+    ar & blocks;
     ar & name;
     ent_map.resize(width*height, nullptr);
   }
 protected:
   vector<Entity*> ent_map;
   vector<Tile> tiles;
+  vector<Block> blocks;
 public:
   uint16_t width, height;
   std::string name;
@@ -50,5 +39,7 @@ public:
   void SetEntity(int,int,Entity*);
   Tile *GetTile(int,int);
   void SetTile(int,int,Tile);
+  Block *GetBlock(int,int);
+  void SetBlock(int,int,Block);
   virtual string GetName() = 0;
 };

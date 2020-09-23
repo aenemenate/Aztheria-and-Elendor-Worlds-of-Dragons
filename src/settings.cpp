@@ -31,7 +31,7 @@ static bool is_opaque(void* area, int x, int y, int z)
 {
   Area* area_ptr = static_cast <Area*>(area);
   if (area_ptr->PointWithinBounds(x, y))
-    return area_ptr->GetTile(x, y, z)->opaque;
+    return area_ptr->GetBlock(x, y, z)->opaque;
   else
     return false;
 }
