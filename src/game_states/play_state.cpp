@@ -12,52 +12,50 @@
 
 #include <algorithm>
 
-PlayState PlayState::playState;
-
 MapMenu map_menu;
-
+StatusPanel status_panel;
+// TODO: Make a pause menu (like map menu)
+vector<Button> pmenu_buttons;
+int menu_caret = 0;
+bool paused = false;
 std::vector<Point> player_path;
 
-void StopPlaying(Game *game)
-{
+PlayState PlayState::playState;
+
+void StopPlaying(Game *game) {
   game->PopState();
 }
 
-void SaveGame(Game *game)
-{
+void SaveGame(Game *game) {
   GameFIO::SaveWorld(game);
   StopPlaying(game);
 }
 
-void PlayState::Init(Game *game)
-{
+void PlayState::Init(Game *game) {
   int term_width  = terminal_state(TK_WIDTH), 
       term_height = terminal_state(TK_HEIGHT);
-  Instance()->status_panel = StatusPanel(20);
+  status_panel = StatusPanel(20);
   pmenu_buttons.resize(0);
   pmenu_buttons.push_back(Button(term_width/2-4,term_height/2, "save & quit", SaveGame));
   pmenu_buttons.push_back(Button(term_width/2-3,term_height/2+2, "just quit", StopPlaying));
   menu_caret = 0;
-
   map_menu = MapMenu(std::max(0, term_width/2 - game->world->width/2), std::max(0, term_height/2 - (game->world->height/2+1)), game->world->width, game->world->height);
   map_menu.SetShow(false);
 }
 
-void PlayState::Cleanup()
-{
+void PlayState::Cleanup() {
   menu_caret = 0;
   paused = false;
   pmenu_buttons.clear();
 }
 
-void PlayState::HandleEvents(Game *game)
-{
+void PlayState::HandleEvents(Game *game) {
   int xsign = 0, ysign = 0;
   if (terminal_state(TK_EVENT) == TK_RESIZED)
     this->Init(game);
+  // if none of menus are showing
   if (!paused && !map_menu.GetShow()) {
-    switch (game->key)
-    {
+    switch (game->key) {
       case TK_KP_8:
       case TK_UP:
         game->world->entities[0].Move(0,-1,0,game->world); break;
@@ -78,6 +76,10 @@ void PlayState::HandleEvents(Game *game)
         game->world->entities[0].Move(-1,0,0,game->world); break;
       case TK_KP_7:
         game->world->entities[0].Move(-1,-1,0,game->world); break;
+      case TK_KP_ENTER: {
+        Entity *plyr = &(game->world->entities[0]);
+        game->world->GetArea(plyr->pos.wx, plyr->pos.wy)->GetBlock(plyr->pos.x, plyr->pos.y, plyr->pos.z)->Activate(plyr, game->world);
+        } break;
       case TK_M:
         map_menu.SetShow(true);
         break;
@@ -104,12 +106,13 @@ void PlayState::HandleEvents(Game *game)
           player->Move(1,0,0,game->world);
         else if (player->pos.y == game->world->GetArea(0,0)->height - 1)
           player->Move(0,1,0,game->world);
+        else if (game->world->GetArea(player->pos.wx, player->pos.wy)->GetBlock(player->pos.x, player->pos.y, player->pos.z)->enterable)
+          game->world->GetArea(player->pos.wx, player->pos.wy)->GetBlock(player->pos.x, player->pos.y, player->pos.z)->Activate(player, game->world);
       }
     }
   }
   else if (paused)
-    switch (game->key)
-    {
+    switch (game->key) {
       case TK_KP_8:
       case TK_UP:
         menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret; 
@@ -128,8 +131,7 @@ void PlayState::HandleEvents(Game *game)
         break;
     }
   else if (map_menu.GetShow())
-    switch (game->key)
-    {
+    switch (game->key) {
       case TK_ESCAPE:
       case TK_M:
         map_menu.SetShow(false);
@@ -199,7 +201,9 @@ void PlayState::Draw(Game *game)
     }
   }
 // draw player
-  PrintCh(game->world->entities[0].pos.x - startx, game->world->entities[0].pos.y - starty, game->world->entities[0].gset);
+  Point plyr_sc_pos = { game->world->entities[0].pos.x - startx, game->world->entities[0].pos.y - starty };
+  int plyr_z = game->world->entities[0].pos.z;
+  PrintCh(plyr_sc_pos.x, plyr_sc_pos.y, game->world->entities[0].gset);
 // draw path if necessary
   if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width 
   && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0 
@@ -214,6 +218,14 @@ void PlayState::Draw(Game *game)
       terminal_color(terminal_pick_color(x, y));
       terminal_put(x, y, terminal_pick(x, y));
     }
+    terminal_bkcolor("black");
+  }
+// draw ui overlays related to clickable tiles
+  if (terminal_state(TK_MOUSE_X) == plyr_sc_pos.x && terminal_state(TK_MOUSE_Y) == plyr_sc_pos.y
+  && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
+    terminal_bkcolor("blue");
+      terminal_color(terminal_pick_color(plyr_sc_pos.x, plyr_sc_pos.y));
+      terminal_put(plyr_sc_pos.x, plyr_sc_pos.y, terminal_pick(plyr_sc_pos.x, plyr_sc_pos.y));
     terminal_bkcolor("black");
   }
 // draw menu if necessary

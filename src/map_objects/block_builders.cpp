@@ -6,6 +6,7 @@ Block BuildAirBlock() {
   block.explored = false;
   block.opaque = false;
   block.solid = false;
+  block.enterable = false;
   block.name = "air";
   return block;
 }
@@ -16,6 +17,7 @@ Block BuildStoneBlock() {
   block.explored = false;
   block.opaque = true;
   block.solid = true;
+  block.enterable = false;
   block.name = "stone";
   return block;
 }
@@ -26,6 +28,7 @@ Block BuildStoneDownStair() {
   block.explored = false;
   block.opaque = true;
   block.solid = false;
+  block.enterable = true;
   block.name = "stone down stairs";
   block.blockcomponents.push_back(new Stair(ZDirection::down));
   return block;
@@ -37,6 +40,7 @@ Block BuildStoneUpStair() {
   block.explored = false;
   block.opaque = true;
   block.solid = false;
+  block.enterable = true;
   block.name = "stone up stairs";
   block.blockcomponents.push_back(new Stair(ZDirection::up));
   return block;

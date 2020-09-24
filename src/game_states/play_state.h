@@ -19,13 +19,7 @@ class PlayState : public GameState
   }
 
  protected:
-  PlayState() { paused = false; menu_caret = 0; }
+  PlayState() { }
  private:
   static PlayState playState;
-
-  StatusPanel status_panel;
-
-  vector<Button> pmenu_buttons;
-  int menu_caret;
-  bool paused;
 };

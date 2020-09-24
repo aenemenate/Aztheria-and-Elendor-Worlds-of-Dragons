@@ -3,7 +3,7 @@ Objs = draw_funcs.obj entity.obj fov.obj game_fio.obj game.obj pathfinder.obj \
 	     createworld_state.obj loadworld_state.obj mainmenu_state.obj \
 	     play_state.obj state_funcs.obj area.obj map.obj perlin_generator.obj \
 	     map_menu.obj button.obj menu.obj panel_status.obj \
-	     main.obj block_components.obj block_builders.obj
+	     main.obj block_components.obj block_builders.obj block.obj
 
 SRC_DIR = ../src
 
@@ -94,6 +94,9 @@ block_components.obj:$(SRC_DIR)/map_objects/block_components.cpp $(SRC_DIR)/map_
 
 block_builders.obj:$(SRC_DIR)/map_objects/block_builders.cpp $(SRC_DIR)/map_objects/block_builders.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block_components.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map_objects/block_builders.cpp
+
+block.obj:$(SRC_DIR)/map_objects/block.cpp $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block_components.h
+  cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map_objects/block.cpp
 
 # src/menus
 

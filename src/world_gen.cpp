@@ -234,6 +234,18 @@ std::vector<Point> getpotentialstairpoints(Area *area, int z_level) {
   return p_spots;
 }
 
+void WorldGen::GenerateDungeonFloor(Area* area, Point downstair_pos) {
+  area->GetDungeonFloors()->push_back(Dungeon(area->width, area->height));
+  Dungeon *dungeon = &(area->GetDungeonFloors()->back());
+  int z_level = area->GetDungeonFloors()->size();
+  for (int i = 0; i < area->width; i++)
+    for (int j = 0; j < area->height; j++) {
+      area->SetBlock(i, j, z_level, BuildAirBlock());
+      area->SetTile(i,j, z_level, TILE_DIRT);
+    }
+  area->SetBlock(downstair_pos.x, downstair_pos.y, z_level, BuildStoneUpStair());
+}
+
 void WorldGen::PlaceDungeons(World* world) {
   int num_of_dungeons = world->width / 3;
   vector<Point> potential_dungeons;
@@ -254,7 +266,7 @@ void WorldGen::PlaceDungeons(World* world) {
     { i--; continue; }
     Point stair_point = stair_points[rand()%stair_points.size()];
     area->SetBlock(stair_point.x, stair_point.y, 0, BuildStoneDownStair());
-    area->GetDungeonFloors()->push_back(Dungeon(area->width, area->height));
+    GenerateDungeonFloor(area, stair_point);
     potential_dungeons.erase(potential_dungeons.begin() + vec_ind);
   }
 }

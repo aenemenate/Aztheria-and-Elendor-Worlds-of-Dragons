@@ -63,7 +63,7 @@ void Entity::Move(int xsign, int ysign, int zsign, World *world)
   }
 // else if this z is not the same as before
   else if (new_z != this->pos.z && curmap->PointWithinBounds(new_x, new_y)) {
-    if (!(new_z > 0 && new_z <= curmap->GetDungeonFloors()->size())) {
+    if (!(new_z >= 0 && new_z <= curmap->GetDungeonFloors()->size())) {
       new_z = this->pos.z;
     }
   }
