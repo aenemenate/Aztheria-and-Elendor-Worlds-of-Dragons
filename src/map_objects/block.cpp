@@ -1,6 +1,11 @@
 #include "block.h"
 
-void Block::Activate(Entity *ent, World *world) {
-    for (BlockComponent *bc : blockcomponents)
-      bc->Update(ent, world);
+void Block::Activate(void *src, World *world) {
+  for (BlockComponent *bc : blockcomponents)
+    bc->Activate(src, world);
+}
+
+void Block::Update(void *src, World *world) {
+  for (BlockComponent *bc : blockcomponents)
+    bc->Update(src, world);
 }

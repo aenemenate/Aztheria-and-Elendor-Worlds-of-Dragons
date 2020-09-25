@@ -8,6 +8,7 @@ void Game::CleanupResources()
 {
   if (this->world != nullptr)
     delete this->world;
+  this->world = nullptr;
 }
 
 void Game::Init()

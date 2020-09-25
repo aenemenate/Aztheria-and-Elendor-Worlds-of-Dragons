@@ -18,7 +18,6 @@ void GameFIO::LoadWorld(Game *game, int slot)
   terminal_print(0, 0, "Loading . . .");
   terminal_refresh();
   game->CleanupResources();
-  game->world = new World();
   try
   {
     stringstream filepath;

@@ -5,7 +5,7 @@
 #include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 
-#include "../world_gen.h"
+#include "../world_gen/world_gen.h"
 
 #include <filesystem>
 #include <algorithm>

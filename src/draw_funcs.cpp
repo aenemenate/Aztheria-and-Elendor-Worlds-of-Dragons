@@ -7,11 +7,9 @@
 
 void PrintCh(int x, int y, Graphic gr)
 {
-  terminal_color(color_from_name(gr.fgcolor.c_str()));
-  terminal_bkcolor(color_from_name(gr.bgcolor.c_str()));
-  std::stringstream sstr;
-  sstr << gr.ch;
-  terminal_print(x, y, sstr.str().c_str());
+  terminal_color(gr.fgcolor.c_str());
+  terminal_bkcolor(gr.bgcolor.c_str());
+  terminal_print(x, y, gr.ch.c_str());
 }
 
 void DrawBorder(int  left, int right, int top, int bottom, string fgcolor, string bgcolor)

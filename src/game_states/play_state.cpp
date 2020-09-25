@@ -24,6 +24,7 @@ PlayState PlayState::playState;
 
 void StopPlaying(Game *game) {
   game->PopState();
+  game->CleanupResources();
 }
 
 void SaveGame(Game *game) {
@@ -163,9 +164,13 @@ void PlayState::Update(Game *game)
 void PlayState::Draw(Game *game)
 {
 // set values
-  int curwx = game->world->entities[0].pos.wx, curwy = game->world->entities[0].pos.wy;
+  int curwx = game->world->entities[0].pos.wx, 
+      curwy = game->world->entities[0].pos.wy;
   Area *area = game->world->GetArea(curwx, curwy);
-  int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
+  Entity *plyr = &(game->world->entities[0]);
+  int term_width = terminal_state(TK_WIDTH), 
+      map_term_width = status_panel.start_x(term_width), 
+      term_height = terminal_state(TK_HEIGHT);
   int startx = min(max(0,area->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
   int starty = min(max(0,area->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
 // draw status panel
@@ -173,8 +178,8 @@ void PlayState::Draw(Game *game)
 // draw map
   for (int i = startx; i < area->width && i-startx < map_term_width; i++)
     for (int j = starty; j < area->height && j-starty < term_height; j++) {
-      Tile *tile = area->GetTile(i, j, game->world->entities[0].pos.z);
-      Block *block = area->GetBlock(i, j, game->world->entities[0].pos.z);
+      Tile *tile = area->GetTile(i, j, plyr->pos.z);
+      Block *block = area->GetBlock(i, j, plyr->pos.z);
       if (tile->explored) {
         PrintCh(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
         if (block->gr.ch != " ")
@@ -182,8 +187,8 @@ void PlayState::Draw(Game *game)
       }
     }
 // draw visible points
-  for (int vp = 0; vp < game->world->entities[0].visiblepoints.size(); vp++) {
-    Position point = game->world->entities[0].visiblepoints[vp];
+  for (int vp = 0; vp < plyr->visiblepoints.size(); vp++) {
+    Position point = plyr->visiblepoints[vp];
     if (point.x - startx < map_term_width
     &&  point.y - starty < map_term_width
     &&  point.x - startx >= 0
@@ -201,16 +206,15 @@ void PlayState::Draw(Game *game)
     }
   }
 // draw player
-  Point plyr_sc_pos = { game->world->entities[0].pos.x - startx, game->world->entities[0].pos.y - starty };
-  int plyr_z = game->world->entities[0].pos.z;
-  PrintCh(plyr_sc_pos.x, plyr_sc_pos.y, game->world->entities[0].gset);
+  Point plyr_sc_pos = { plyr->pos.x - startx, plyr->pos.y - starty };
+  int plyr_z = plyr->pos.z;
+  PrintCh(plyr_sc_pos.x, plyr_sc_pos.y, plyr->gset);
 // draw path if necessary
   if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width 
   && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0 
   && terminal_state(TK_MOUSE_Y) < term_height) {
     std::vector<Point> path;
-    Entity *player = &(game->world->entities[0]);
-    path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.z, player->pos.x, player->pos.y, 
+    path = Pathfinder::GetPath(game->world, plyr->pos.wx, plyr->pos.wy, plyr->pos.z, plyr->pos.x, plyr->pos.y, 
                                terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
     terminal_bkcolor("blue");
     for (auto point : path) {
