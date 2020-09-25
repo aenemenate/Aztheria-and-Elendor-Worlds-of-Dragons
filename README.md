@@ -15,8 +15,11 @@ Note: To build on linux you will have to change the main func from WinMain to ma
 
 # Added features
 
-* world map
+* world map w/ height map
+* can choose size of world
+* biomes
 * extended block functionality (plants, stairs)
 * fov
 * pathfinding
-* save/load
+* save/load, multiple files
+* gui (buttons, menus)
