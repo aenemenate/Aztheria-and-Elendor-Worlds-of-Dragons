@@ -55,7 +55,7 @@ vector<Node> AStar::search(Node start, Node goal)
 	* then we traversed every accessable node and there is no accessable path from star to end 
 	*/
     int count = 0;
-	while (!open.empty() && count < 1000) {
+	while (!open.empty() && count < m_grid->getWidth() * m_grid->getHeight()) {
 		++count;
 		//get the top element then REMOVE it from the queue (since we're about to inspect it)
 		auto current = open.top();
@@ -84,7 +84,7 @@ vector<Node> AStar::search(Node start, Node goal)
 			}
 		}
 	}
-	if (count < 1000)
+	if (count < m_grid->getWidth() * m_grid->getHeight())
 	  reconstructPath(closed, start, goal); //construct the shortest path.
 	return m_path.size() > 1 ? std::vector(m_path.begin(), m_path.end() - 1) : m_path;
 }
