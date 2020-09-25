@@ -175,9 +175,10 @@ void PlayState::Draw(Game *game)
       Tile *tile = area->GetTile(i, j, plyr->pos.z);
       Block *block = area->GetBlock(i, j, plyr->pos.z);
       if (tile->explored) {
-        PrintCh(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
         if (block->gr.ch != " ")
           PrintCh(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
+        else
+          PrintCh(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
       }
     }
 // draw visible points
@@ -191,9 +192,10 @@ void PlayState::Draw(Game *game)
       Block *block = area->GetBlock(point.x, point.y, point.z);
       Entity *entity = area->GetEntity(point.x, point.y, point.z);
       if (entity == nullptr) {
-        PrintCh(point.x - startx, point.y - starty, tile->gr);
         if (block->gr.ch != " ")
           PrintCh(point.x - startx, point.y - starty, {block->gr.ch,block->gr.fgcolor,tile->gr.bgcolor});
+        else
+          PrintCh(point.x - startx, point.y - starty, tile->gr);
       }
       else
         PrintCh(point.x - startx, point.y - starty, entity->gset);
