@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <boost/serialization/access.hpp>
+#include <boost/serialization/string.hpp>
 #include <boost/serialization/vector.hpp>
 
 class World;

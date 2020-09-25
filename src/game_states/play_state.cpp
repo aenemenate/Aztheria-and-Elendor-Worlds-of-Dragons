@@ -168,7 +168,7 @@ void PlayState::Draw(Game *game)
   int startx = min(max(0,area->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
   int starty = min(max(0,area->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
 // draw status panel
-  status_panel.Draw(game);
+  status_panel.Draw(game, startx, starty);
 // draw map
   for (int i = startx; i < area->width && i-startx < map_term_width; i++)
     for (int j = starty; j < area->height && j-starty < term_height; j++) {

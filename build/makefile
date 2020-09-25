@@ -66,7 +66,7 @@ loadworld_state.obj:$(SRC_DIR)/game_states/loadworld_state.cpp $(SRC_DIR)/game_s
 mainmenu_state.obj:$(SRC_DIR)/game_states/mainmenu_state.cpp $(SRC_DIR)/game_states/mainmenu_state.h $(SRC_DIR)/game_states/createworld_state.h $(SRC_DIR)/game_states/loadworld_state.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/game_states/mainmenu_state.cpp
 
-play_state.obj:$(SRC_DIR)/game_states/play_state.cpp $(SRC_DIR)/game_states/play_state.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h $(SRC_DIR)/game_fio.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/pathfinder.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h
+play_state.obj:$(SRC_DIR)/game_states/play_state.cpp $(SRC_DIR)/game_states/play_state.h $(SRC_DIR)/draw_funcs.h $(SRC_DIR)/base.h $(SRC_DIR)/game.h $(SRC_DIR)/gamestate.h $(SRC_DIR)/game_fio.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/pathfinder.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h $(SRC_DIR)/ui/menu.h $(SRC_DIR)/ui/button.h $(SRC_DIR)/ui/panel_status.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/game_states/play_state.cpp
 
 state_funcs.obj:$(SRC_DIR)/game_states/state_funcs.cpp $(SRC_DIR)/game_states/state_funcs.h $(SRC_DIR)/game.h

@@ -47,8 +47,6 @@ Block BuildStoneUpStair() {
 }
 
 Block BuildGrassBlock() {
-          //block = Block(false, true, ',', COL_GRASS_FG, COL_GRASS_BG);
-          //block.AddComponent(new PlantComponent(3, 4, 40, { ',', '\'', '"' }));
   Block block;
   block.gr = {",", "96,128,56", ""};
   block.explored = false;
@@ -61,10 +59,8 @@ Block BuildGrassBlock() {
 }
 
 Block BuildHlGrassBlock() {
-          //block = Block(false, true, '.', COL_HGRASS_FG, COL_HGRASS_BG);
-          //block.AddComponent(new PlantComponent(3, 4, 50, { '.', ',', '\'' }));
   Block block;
-  block.gr = {",", "176,146,122", ""};
+  block.gr = {",", "156,146,122", ""};
   block.explored = false;
   block.opaque = false;
   block.solid = false;
@@ -81,7 +77,7 @@ Block BuildTree() {
   block.opaque = true;
   block.solid = true;
   block.enterable = false;
-  block.name = "highland grass";
+  block.name = "tree";
   block.blockcomponents.push_back(new Plant(6,8,50,2,{'.',',',':',';','o','O'}));
   return block;
 }
