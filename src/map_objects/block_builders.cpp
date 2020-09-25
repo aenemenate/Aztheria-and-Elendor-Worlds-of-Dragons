@@ -78,6 +78,6 @@ Block BuildTree() {
   block.solid = true;
   block.enterable = false;
   block.name = "tree";
-  block.blockcomponents.push_back(new Plant(6,8,50,2,{'.',',',':',';','o','O'}));
+  block.blockcomponents.push_back(new Plant(6,4,50,2,{'.',',',':',';','o','O'}));
   return block;
 }

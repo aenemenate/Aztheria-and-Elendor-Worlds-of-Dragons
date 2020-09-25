@@ -35,7 +35,8 @@ void UpdatePlants(World* world) {
             if (seed.y >= tileheight) seed.y -= tileheight;
             if (seed.y < 0) seed.y += tileheight;
             if (area2->GetTile(seed.x, seed.y, 0)->name == "dirt" 
-            &&  area2->GetBlock(seed.x, seed.y, 0)->name == "air"
+            &&  (area2->GetBlock(seed.x, seed.y, 0)->name == "air"
+            ||  area2->GetBlock(seed.x, seed.y, 0)->HasComponent(PLANT_ID))
             &&  MapHelper::SpaceIsClear(area2, {seed.x, seed.y}, 0, pc->GetRequiredSpace())) {
               pc->ResetGrowth();
               block->gr.ch = pc->GetCurrentStage();
@@ -44,7 +45,8 @@ void UpdatePlants(World* world) {
             continue;
           }
           if (area->GetTile(seed.x, seed.y, 0)->name == "dirt" 
-          &&  area->GetBlock(seed.x, seed.y, 0)->name == "air"
+          &&  (area->GetBlock(seed.x, seed.y, 0)->name == "air"
+          ||  area->GetBlock(seed.x, seed.y, 0)->HasComponent(PLANT_ID))
           &&  MapHelper::SpaceIsClear(area, {seed.x, seed.y}, 0, pc->GetRequiredSpace())) {
             pc->ResetGrowth();
             block->gr.ch = pc->GetCurrentStage();
