@@ -8,11 +8,10 @@
 
 #include "../../include/BearLibTerminal.h"
 
-void Menu::Draw(Game* game)
-{
+void Menu::Draw(Game* game) {
   if (!show)
     return;
-  DrawBorder(xpos-1, xpos+width, ypos, ypos+height+1, "white", "black");
+  DrawBorder({xpos-1, xpos+width, ypos, ypos+height+1}, "white", "black");
   for (int i = 0; i < width; i++) {
     if (title.length() > i)
       PrintCh(xpos + i, ypos, {title.substr(i,1),"white", "black"});
@@ -26,8 +25,7 @@ void Menu::Draw(Game* game)
   CustomDraw(game);
 }
 
-void Menu::Update(Game* game)
-{
+void Menu::Update(Game* game) {
   if (!show)
     return;
   if (!dragging && isclicked(game)) {
@@ -47,8 +45,7 @@ void Menu::Update(Game* game)
   CustomUpdate(game);
 }
 
-bool Menu::isclicked(Game *game)
-{
+bool Menu::isclicked(Game *game) {
   bool ret_val = false;
   if (game->key == TK_MOUSE_LEFT)
     if (ishovered())
@@ -56,8 +53,7 @@ bool Menu::isclicked(Game *game)
   return ret_val;
 }
 
-bool Menu::ishovered()
-{
+bool Menu::ishovered() {
   bool ret_val = false;
   int mouse_x = terminal_state(TK_MOUSE_X);
   if ((terminal_state(TK_MOUSE_Y) == this->ypos) && (mouse_x >= this->xpos) && (mouse_x < this->xpos + width))

@@ -4,8 +4,7 @@
 #include <string>
 #include <boost/serialization/access.hpp>
 
-struct Tile
-{
+struct Tile {
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version) {

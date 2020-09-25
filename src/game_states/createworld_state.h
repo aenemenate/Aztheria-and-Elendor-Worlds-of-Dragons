@@ -5,6 +5,10 @@
 
 class CreateWorldState : public GameState
 {
+  static CreateWorldState create_world_state;
+  vector<Button> buttons;
+protected:
+  CreateWorldState() { }
 public:
   void Init(Game *game);
   void Cleanup();
@@ -16,10 +20,4 @@ public:
   static CreateWorldState* Instance() {
 	return &create_world_state;
   }
-
-protected:
-  CreateWorldState() { }
-private:
-  static CreateWorldState create_world_state;
-  vector<Button> buttons;
 };

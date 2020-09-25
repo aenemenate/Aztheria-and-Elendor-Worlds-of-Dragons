@@ -2,6 +2,7 @@
 
 #include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
+#include "../base.h"
 #include "../entity.h"
 #include "../world.h"
 #include "../map/area.h"
@@ -22,15 +23,9 @@ std::vector<Point> player_path;
 
 PlayState PlayState::playState;
 
-void StopPlaying(Game *game) {
-  game->PopState();
-  game->CleanupResources();
-}
+void StopPlaying(Game *game) { game->PopState(); game->CleanupResources(); }
 
-void SaveGame(Game *game) {
-  GameFIO::SaveWorld(game);
-  StopPlaying(game);
-}
+void SaveGame(Game *game) { GameFIO::SaveWorld(game); StopPlaying(game); }
 
 void PlayState::Init(Game *game) {
   int term_width  = terminal_state(TK_WIDTH), 
@@ -146,8 +141,7 @@ void PlayState::Update(Game *game)
   if (paused)
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Update(game);
-  else
-  {
+  else {
     if (player_path.size() > 0) {
       game->world->entities[0].Move(player_path.back().x - game->world->entities[0].pos.x, player_path.back().y - game->world->entities[0].pos.y, 0, game->world);
       player_path.pop_back();
@@ -237,7 +231,7 @@ void PlayState::Draw(Game *game)
     terminal_clear_area(term_width/2-7,term_height/2-2,15,6);
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Render(game);
-    DrawBorder(term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4, "white", "black");
+    DrawBorder({term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4}, "white", "black");
     PrintCh(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
   }
   map_menu.Draw(game);

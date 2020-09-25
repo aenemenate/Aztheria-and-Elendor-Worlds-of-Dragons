@@ -1,18 +1,17 @@
 #pragma once
 
 #include "base.h"
+
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/string.hpp>
 
-class World;
 class Game;
+class World;
 
-class Entity
-{
+class Entity {
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & gset;
     ar & name;
     ar & pos;

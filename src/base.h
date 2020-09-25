@@ -35,5 +35,9 @@ struct Point {
   int x, y;
 };
 
+struct Rectangle {
+  int left, right, top, bottom;
+};
+
 enum Direction { north, east, south, west, northeast, northwest, southeast, southwest };
 enum ZDirection { up = -1, down = 1 };

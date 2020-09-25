@@ -15,18 +15,11 @@ namespace fs = std::filesystem;
 
 int worldsize;
 
-void IncrementWorldSize(Game* game)
-{
-  worldsize = std::min(worldsize + 4, 40);
-}
+void IncrementWorldSize(Game* game) { worldsize = std::min(worldsize + 4, 40); }
 
-void DecrementWorldSize(Game* game)
-{
-  worldsize = std::max(worldsize - 4, 0);
-}
+void DecrementWorldSize(Game* game) { worldsize = std::max(worldsize - 4, 0); }
 
-void CreateWorld(Game* game)
-{
+void CreateWorld(Game* game) {
   int slot = 1;
   for(const auto& entry : fs::directory_iterator("./saves"))
         if (entry.path().extension() == ".bin") {
@@ -50,8 +43,7 @@ void CreateWorld(Game* game)
 
 CreateWorldState CreateWorldState::create_world_state;
 
-void CreateWorldState::Init(Game *game)
-{
+void CreateWorldState::Init(Game *game) {
   buttons.clear();
   int term_width  = terminal_state(TK_WIDTH), 
       term_height = terminal_state(TK_HEIGHT);
@@ -63,17 +55,14 @@ void CreateWorldState::Init(Game *game)
   worldsize = 12;
 }
 
-void CreateWorldState::Cleanup()
-{
+void CreateWorldState::Cleanup() {
   buttons.clear();
 }
 
-void CreateWorldState::HandleEvents(Game *game)
-{
+void CreateWorldState::HandleEvents(Game *game) {
   if (terminal_state(TK_EVENT) == TK_RESIZED)
     this->Init(game);
-  switch (game->key)
-  {
+  switch (game->key) {
     case TK_KP_6:
     case TK_RIGHT:
       IncrementWorldSize(game);
@@ -92,14 +81,12 @@ void CreateWorldState::HandleEvents(Game *game)
   }
 }
 
-void CreateWorldState::Update(Game *game)
-{
+void CreateWorldState::Update(Game *game) {
   for (int b=0;b<buttons.size();b++)
     buttons[b].Update(game);
 }
 
-void CreateWorldState::Draw(Game *game)
-{
+void CreateWorldState::Draw(Game *game) {
   int term_width  = terminal_state(TK_WIDTH), 
       term_height = terminal_state(TK_HEIGHT);
   for (int b=0;b<buttons.size();b++)

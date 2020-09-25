@@ -2,8 +2,7 @@
 
 class Game;
 
-class StatusPanel
-{
+class StatusPanel {
   int width;
 public:
   StatusPanel() { width = 20; }

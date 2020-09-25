@@ -7,8 +7,9 @@ using namespace std;
 
 class World;
 
-class Game
-{
+class Game {
+  vector<GameState*> states;
+  bool running, input_block_mode;
 public:
   int key;
   Settings settings;
@@ -30,8 +31,4 @@ public:
   void Quit() { running = false; }
 
   void SetInputBlockMode(bool value) { input_block_mode = value;}
-
-private:
-  vector<GameState*> states;
-  bool running, input_block_mode;
 };

@@ -1,10 +1,12 @@
 #pragma once
 
 #include <string>
+
 using namespace std;
 
 class Graphic;
+class Point;
+class Rectangle;
 
+void DrawBorder(Rectangle, string, string);
 void PrintCh(int,int,Graphic);
-
-void DrawBorder(int, int, int, int, string, string);

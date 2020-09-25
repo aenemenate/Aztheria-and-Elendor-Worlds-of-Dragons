@@ -2,8 +2,7 @@
 
 class Game;
 
-class GameState
-{
+class GameState {
 public:
   virtual void Init(Game *game) = 0;
   virtual void Cleanup() = 0;

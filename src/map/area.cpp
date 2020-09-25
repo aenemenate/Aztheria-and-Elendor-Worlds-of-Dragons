@@ -1,8 +1,7 @@
 #include "area.h"
 #include "../entity.h"
 
-string GetAreaName(BiomeType biome_type, TerrainType terrain_type)
-{
+string GetAreaName(BiomeType biome_type, TerrainType terrain_type) {
   switch (biome_type) {
     case Desert:
       return "desert";
@@ -46,8 +45,7 @@ string GetAreaName(BiomeType biome_type, TerrainType terrain_type)
 }
 
 // gets the graphic for an area (map) using its biome type and terrain type
-Graphic GetAreaGraphic(Area *area)
-{
+Graphic GetAreaGraphic(Area *area) {
   BiomeType biome_type = area->biome_type;
   TerrainType terrain_type = area->terrain_type;
   if (area->GetDungeonFloors()->size() > 0)
@@ -94,8 +92,7 @@ Graphic GetAreaGraphic(Area *area)
   return {" ", "black", "black"};
 }
 
-Tile *Area::GetTile(int x, int y, int z)
-{
+Tile *Area::GetTile(int x, int y, int z) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       return &(tiles[x * height + y]);
@@ -105,8 +102,7 @@ Tile *Area::GetTile(int x, int y, int z)
   return nullptr;
 }
 
-void Area::SetTile(int x, int y, int z, Tile tile)
-{
+void Area::SetTile(int x, int y, int z, Tile tile) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       tiles[x * height + y] = tile;
@@ -115,8 +111,7 @@ void Area::SetTile(int x, int y, int z, Tile tile)
   }
 }
 
-Block *Area::GetBlock(int x, int y, int z)
-{
+Block *Area::GetBlock(int x, int y, int z) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       return &(blocks[x * height + y]);
@@ -126,8 +121,7 @@ Block *Area::GetBlock(int x, int y, int z)
   return nullptr;
 }
 
-void Area::SetBlock(int x, int y, int z, Block block)
-{
+void Area::SetBlock(int x, int y, int z, Block block) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       blocks[x * height + y] = block;
@@ -136,8 +130,7 @@ void Area::SetBlock(int x, int y, int z, Block block)
   }
 }
 
-Entity *Area::GetEntity(int x, int y, int z)
-{
+Entity *Area::GetEntity(int x, int y, int z) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       return ent_map[x * height + y];
@@ -147,8 +140,7 @@ Entity *Area::GetEntity(int x, int y, int z)
   return nullptr;
 }
 
-void Area::SetEntity(int x, int y, int z, Entity *entity)
-{
+void Area::SetEntity(int x, int y, int z, Entity *entity) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       ent_map[x*height+y] = entity;
@@ -157,18 +149,7 @@ void Area::SetEntity(int x, int y, int z, Entity *entity)
   }
 }
 
-float Area::GetHeightMap(int x, int y)
-{
-  return PointWithinBounds(x, y) ? height_map[x * height + y] : 0.0f;
-}
+float Area::GetHeightMap(int x, int y) { return PointWithinBounds(x, y) ? height_map[x * height + y] : 0.0f; } 
+void Area::SetHeightMap(int x, int y, float v) { if (PointWithinBounds(x, y)) height_map[x * height + y] = v; }
 
-void Area::SetHeightMap(int x, int y, float v)
-{ 
-  if (PointWithinBounds(x, y))
-    height_map[x * height + y] = v;
-}
-
-string Area::GetName()
-{
-  return name + GetAreaName(this->biome_type, this->terrain_type);
-}
+string Area::GetName() { return name + GetAreaName(this->biome_type, this->terrain_type); }

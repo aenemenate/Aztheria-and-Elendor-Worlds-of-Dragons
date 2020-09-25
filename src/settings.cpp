@@ -27,8 +27,7 @@ static void init_fov(fov_settings_type* fov_settings) {
   fov_settings_set_apply_lighting_function(fov_settings, set_visible);
 }
 
-static bool is_opaque(void* area, int x, int y, int z)
-{
+static bool is_opaque(void* area, int x, int y, int z) {
   Area* area_ptr = static_cast <Area*>(area);
   if (area_ptr->PointWithinBounds(x, y))
     return area_ptr->GetBlock(x, y, z)->opaque;
@@ -36,8 +35,7 @@ static bool is_opaque(void* area, int x, int y, int z)
     return false;
 }
 
-static void set_visible(void* area, int x, int y, int z, int dx, int dy, void* src)
-{
+static void set_visible(void* area, int x, int y, int z, int dx, int dy, void* src) {
   Area* area_ptr = static_cast<Area*>(area);
   std::vector<Position>* visiblepoints = static_cast<std::vector<Position>*>(src);
   if (!area_ptr->PointWithinBounds(x, y))

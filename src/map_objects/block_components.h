@@ -41,11 +41,9 @@ public:
 };
 
 class Plant : public BlockComponent {
-private:
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive& ar, const unsigned int version)
-  {
+  void serialize(Archive& ar, const unsigned int version) {
     // serialize base class information
     ar& boost::serialization::base_object<BlockComponent>(*this);
     ar& stage;

@@ -2,8 +2,7 @@
 
 class Game;
 
-namespace GameFIO
-{
+namespace GameFIO {
     void LoadWorld(Game*, int slot);
     void SaveWorld(Game*);
 };

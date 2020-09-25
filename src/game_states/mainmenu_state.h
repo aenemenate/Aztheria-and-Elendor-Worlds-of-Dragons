@@ -6,8 +6,13 @@
 #include <string>
 #include <vector>
 
-class MainMenuState : public GameState
-{
+class MainMenuState : public GameState {
+  static MainMenuState mainMenuState;
+  vector<Button> buttons;
+  int menu_caret;
+  std::string title;
+protected:
+  MainMenuState() { }
 public:
   void Init(Game *game);
   void Cleanup();
@@ -19,12 +24,4 @@ public:
   static MainMenuState* Instance() {
 	  return &mainMenuState;
   }
-
-protected:
-  MainMenuState() { }
-private:
-  static MainMenuState mainMenuState;
-  vector<Button> buttons;
-  int menu_caret;
-  std::string title;
 };

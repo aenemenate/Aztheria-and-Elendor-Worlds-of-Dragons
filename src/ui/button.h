@@ -5,8 +5,11 @@ using namespace std;
 
 class Game;
 
-class Button
-{
+class Button {
+  int x, y;
+  string text;
+  void (*callback_f)(Game*);
+  bool ishovered();
 public:
   Button() : x(0), y(0), text(""), callback_f(nullptr) {}
   Button(int x, int y, string text, void(*callback_f)(Game*))
@@ -22,9 +25,4 @@ public:
   string GetText() { return text; }
 
   int GetX() { return x; }
-private:
-  int x, y;
-  string text;
-  void (*callback_f)(Game*);
-  bool ishovered();
 };

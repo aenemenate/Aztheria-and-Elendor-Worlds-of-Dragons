@@ -6,6 +6,9 @@
 
 class PlayState : public GameState
 {
+  static PlayState playState;
+ protected:
+  PlayState() { }
  public:
   void Init(Game *game);
   void Cleanup();
@@ -17,9 +20,4 @@ class PlayState : public GameState
   static PlayState* Instance() {
 	  return &playState;
   }
-
- protected:
-  PlayState() { }
- private:
-  static PlayState playState;
 };

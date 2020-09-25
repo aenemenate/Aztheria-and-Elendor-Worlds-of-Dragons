@@ -31,12 +31,10 @@ enum BiomeType {
   Barren
 };
 
-class Area : public Map
-{
+class Area : public Map {
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & boost::serialization::base_object<Map>(*this);
     ar & height_map;
     ar & dungeon_floors;

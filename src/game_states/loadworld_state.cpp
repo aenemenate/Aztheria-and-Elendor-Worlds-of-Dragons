@@ -17,8 +17,7 @@ namespace fs = std::filesystem;
 std::string filepath;
 
 
-void LoadWorld(Game* game)
-{
+void LoadWorld(Game* game) {
   int slot;
   std::stringstream sstrslot;
   sstrslot << filepath[13];
@@ -35,8 +34,7 @@ void LoadWorld(Game* game)
 
 LoadWorldState LoadWorldState::load_world_state;
 
-void LoadWorldState::Init(Game *game)
-{
+void LoadWorldState::Init(Game *game) {
   buttons.clear();
   int term_width  = terminal_state(TK_WIDTH), 
       term_height = terminal_state(TK_HEIGHT);
@@ -51,17 +49,14 @@ void LoadWorldState::Init(Game *game)
   menu_caret = 0;
 }
 
-void LoadWorldState::Cleanup()
-{
+void LoadWorldState::Cleanup() {
   buttons.clear();
 }
 
-void LoadWorldState::HandleEvents(Game *game)
-{
+void LoadWorldState::HandleEvents(Game *game) {
   if (terminal_state(TK_EVENT) == TK_RESIZED)
     this->Init(game);
-  switch (game->key)
-  {
+  switch (game->key) {
     case TK_KP_8:
     case TK_UP:
       menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret; 
@@ -83,18 +78,15 @@ void LoadWorldState::HandleEvents(Game *game)
   }
 }
 
-void LoadWorldState::Update(Game *game)
-{
-  for (int b=0;b<buttons.size();b++)
-  {
+void LoadWorldState::Update(Game *game) {
+  for (int b=0;b<buttons.size();b++) {
     if (buttons[b].isclicked(game))
       filepath = buttons[b].GetText();
     buttons[b].Update(game);
   }
 }
 
-void LoadWorldState::Draw(Game *game)
-{
+void LoadWorldState::Draw(Game *game) {
   int term_width  = terminal_state(TK_WIDTH), 
       term_height = terminal_state(TK_HEIGHT);
   for (int b=0;b<buttons.size();b++)

@@ -4,12 +4,10 @@
 
 #include <boost/serialization/base_object.hpp>
 
-class Dungeon : public Map
-{
+class Dungeon : public Map {
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & boost::serialization::base_object<Map>(*this);
     ent_map.resize(width*height, nullptr);
   }

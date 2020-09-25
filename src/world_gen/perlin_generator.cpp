@@ -1,9 +1,6 @@
 #include "perlin_generator.h"
 
-PerlinGenerator::PerlinGenerator(int seed)
-{
-  this->seed = seed;
-}
+PerlinGenerator::PerlinGenerator(int seed) { this->seed = seed; }
 
 float PerlinGenerator::Perlin2d(float x, float y, float freq, int depth)
 {

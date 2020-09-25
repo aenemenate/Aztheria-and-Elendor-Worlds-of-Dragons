@@ -7,8 +7,7 @@
 #include "../entity.h"
 
 
-void MapMenu::CustomDraw(Game* game)
-{
+void MapMenu::CustomDraw(Game* game) {
 // draw world map
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++) {
@@ -18,6 +17,4 @@ void MapMenu::CustomDraw(Game* game)
     PrintCh(xpos + game->world->entities[0].pos.wx, ypos + 1 + game->world->entities[0].pos.wy, game->world->entities[0].gset);
 }
 
-void MapMenu::CustomUpdate(Game* game)
-{
-}
+void MapMenu::CustomUpdate(Game* game) { }

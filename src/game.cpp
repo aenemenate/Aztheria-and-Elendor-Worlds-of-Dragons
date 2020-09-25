@@ -4,15 +4,13 @@
 #include "entity.h"
 #include "map/area.h"
 
-void Game::CleanupResources()
-{
+void Game::CleanupResources() {
   if (this->world != nullptr)
     delete this->world;
   this->world = nullptr;
 }
 
-void Game::Init()
-{
+void Game::Init() {
   key = 0;
   running = true;
   input_block_mode = true;
@@ -23,8 +21,7 @@ void Game::Init()
   world = nullptr;
 }
 
-void Game::CleanupAll()
-{
+void Game::CleanupAll() {
 	// cleanup the all states
   while ( !states.empty() ) {
 	  states.back()->Cleanup();
@@ -34,8 +31,7 @@ void Game::CleanupAll()
   terminal_close();
 }
 
-void Game::ChangeState(GameState* state)
-{
+void Game::ChangeState(GameState* state) {
 // cleanup the current state
   if ( !states.empty() ) {
   	states.back()->Cleanup();
@@ -46,15 +42,13 @@ void Game::ChangeState(GameState* state)
   states.back()->Init(this);
 }
 
-void Game::PushState(GameState* state)
-{
+void Game::PushState(GameState* state) {
 // store and init the new state
   states.push_back(state);
   states.back()->Init(this);
 }
 
-void Game::PopState()
-{
+void Game::PopState() {
 // cleanup the current state
   if ( !states.empty() ) {
 	  states.back()->Cleanup();
@@ -64,26 +58,23 @@ void Game::PopState()
   states.back()->Init(this);
 }
 
-void Game::HandleEvents() 
-{
-  if (input_block_mode || terminal_has_input())
+void Game::HandleEvents() {
+  if (input_block_mode 
+  || terminal_has_input())
     key = terminal_read();
-  else
-    key = 0;
+  else { key = 0; }
 // let the state handle events
   states.back()->HandleEvents(this);
   if (key==TK_CLOSE)
     Quit();
 }
 
-void Game::Update() 
-{
+void Game::Update() {
 // let the state update the game
   states.back()->Update(this);
 }
 
-void Game::Draw() 
-{
+void Game::Draw() {
 // let the state draw the screen
   terminal_clear();
   states.back()->Draw(this);

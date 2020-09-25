@@ -3,8 +3,12 @@
 #include "../game.h"
 #include "../ui/button.h"
 
-class LoadWorldState : public GameState
-{
+class LoadWorldState : public GameState {
+  static LoadWorldState load_world_state;
+  vector<Button> buttons;
+  int menu_caret;
+protected:
+  LoadWorldState() { }
 public:
   void Init(Game *game);
   void Cleanup();
@@ -16,11 +20,4 @@ public:
   static LoadWorldState* Instance() {
 	return &load_world_state;
   }
-
-protected:
-  LoadWorldState() { }
-private:
-  static LoadWorldState load_world_state;
-  vector<Button> buttons;
-  int menu_caret;
 };

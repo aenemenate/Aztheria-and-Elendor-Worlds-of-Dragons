@@ -3,16 +3,14 @@
 #include "world.h"
 #include "map/area.h"
 
-Entity::Entity(Graphic gset, std::string name, Position pos, int viewradius)
-{
+Entity::Entity(Graphic gset, std::string name, Position pos, int viewradius) {
   this->gset = gset;
   this->name = name;
   this->pos = pos;
   this->viewradius = viewradius;
 }
 
-void Entity::Update(Game *game, bool isPlayer)
-{
+void Entity::Update(Game *game, bool isPlayer) {
 // update fov
   World* world = game->world;
   visiblepoints.clear();
@@ -27,8 +25,7 @@ void Entity::Update(Game *game, bool isPlayer)
   }
 }
 
-void Entity::Move(int xsign, int ysign, int zsign, World *world)
-{
+void Entity::Move(int xsign, int ysign, int zsign, World *world) {
 // clamp sign between -1 and 1
   xsign = (xsign <= -1) ? -1 : ((xsign >= 1) ? 1 : 0);
   ysign = (ysign <= -1) ? -1 : ((ysign >= 1) ? 1 : 0);

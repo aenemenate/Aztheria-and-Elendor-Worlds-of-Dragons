@@ -13,12 +13,10 @@ class Entity;
  * 
  */
 
-class World
-{
+class World {
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & width;
     ar & height;
     ar & seed;
@@ -41,6 +39,5 @@ public:
   Area *GetArea(int,int);
   
   void AddEntity(Entity entity);
-  
   void SetEnts();
 };

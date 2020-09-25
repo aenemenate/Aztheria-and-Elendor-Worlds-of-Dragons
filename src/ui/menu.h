@@ -4,12 +4,10 @@
 
 class Game;
 
-class Menu
-{
+class Menu {
   int click_offset;
   std::string title;
   bool dragging, show;
-
   bool isclicked(Game*);
   bool ishovered();
 public:
