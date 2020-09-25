@@ -22,4 +22,4 @@ Note: To build on linux you will have to change the main func from WinMain to ma
 * fov
 * pathfinding
 * save/load, multiple files
-* ui
+* gui (buttons, menus)
