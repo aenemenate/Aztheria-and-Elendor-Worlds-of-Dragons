@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ui/menu.h"
+#include "../gui/menu.h"
 #include <vector>
 
 class MapMenu : public Menu {

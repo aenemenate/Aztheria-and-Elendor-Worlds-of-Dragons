@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../game.h"
-#include "../ui/button.h"
+#include "../gui/button.h"
 
 class LoadWorldState : public GameState {
   static LoadWorldState load_world_state;

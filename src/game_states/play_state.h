@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../game.h"
-#include "../ui/button.h"
-#include "../ui/panel_status.h"
+#include "../gui/button.h"
+#include "../gui/panel_status.h"
 
 class PlayState : public GameState
 {

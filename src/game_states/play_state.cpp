@@ -215,8 +215,10 @@ void PlayState::Draw(Game *game)
     terminal_bkcolor("blue");
     for (auto point : path) {
       int x = point.x - startx, y = point.y - starty;
-      terminal_color(terminal_pick_color(x, y));
-      terminal_put(x, y, terminal_pick(x, y));
+      if (x < map_term_width && x >= 0 && y < term_height && y >= 0) {
+        terminal_color(terminal_pick_color(x, y));
+        terminal_put(x, y, terminal_pick(x, y));
+      }
     }
     terminal_bkcolor("black");
   }
