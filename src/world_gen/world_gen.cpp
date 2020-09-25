@@ -67,8 +67,10 @@ void WorldGen::GeneratePlants(World* world) {
       bool block_is_air = (block->name == "air");
       if (rand() % 10 < 6 && tile_is_dirt && block_is_air) {
         if (cur_point_adjacent_to_water) {
-          // build grass block
-          area->SetBlock(i % areawidth, j % areaheight, 0, BuildGrassBlock());
+          if (rand() % 10 < 1)
+            area->SetBlock(i % areawidth, j % areaheight, 0, BuildTree());
+          else
+            area->SetBlock(i % areawidth, j % areaheight, 0, BuildGrassBlock());
         }
         else if (cur_point_adjacent_to_stone) {
           // build highland grass block

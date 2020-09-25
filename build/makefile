@@ -102,7 +102,7 @@ world_gen.obj:$(SRC_DIR)/world_gen/world_gen.cpp $(SRC_DIR)/world_gen/world_gen.
 block_components.obj:$(SRC_DIR)/map_objects/block_components.cpp $(SRC_DIR)/map_objects/block_components.h $(SRC_DIR)/base.h $(SRC_DIR)/entity.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map_objects/block_components.cpp
 
-block_systems.obj:$(SRC_DIR)/map_objects/block_systems.cpp $(SRC_DIR)/map_objects/block_systems.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h $(SRC_DIR)/base.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/entity.h
+block_systems.obj:$(SRC_DIR)/map_objects/block_systems.cpp $(SRC_DIR)/map_objects/block_systems.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h $(SRC_DIR)/base.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map_helper.h $(SRC_DIR)/entity.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map_objects/block_systems.cpp
   
 block_builders.obj:$(SRC_DIR)/map_objects/block_builders.cpp $(SRC_DIR)/map_objects/block_builders.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block_components.h

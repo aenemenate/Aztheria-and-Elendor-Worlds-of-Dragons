@@ -8,3 +8,4 @@ Block BuildStoneDownStair();
 Block BuildStoneUpStair();
 Block BuildGrassBlock();
 Block BuildHlGrassBlock();
+Block BuildTree();

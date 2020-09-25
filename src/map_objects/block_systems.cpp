@@ -1,6 +1,7 @@
 #include "block_systems.h"
 #include "../world.h"
 #include "../map/area.h"
+#include "../map/map_helper.h"
 #include "../entity.h"
 #include "block.h"
 #include "tile.h"
@@ -34,7 +35,8 @@ void UpdatePlants(World* world) {
             if (seed.y >= tileheight) seed.y -= tileheight;
             if (seed.y < 0) seed.y += tileheight;
             if (area2->GetTile(seed.x, seed.y, 0)->name == "dirt" 
-            &&  area2->GetBlock(seed.x, seed.y, 0)->name == "air") {
+            &&  area2->GetBlock(seed.x, seed.y, 0)->name == "air"
+            &&  MapHelper::SpaceIsClear(area2, {seed.x, seed.y}, 0, pc->GetRequiredSpace())) {
               pc->ResetGrowth();
               block->gr.ch = pc->GetCurrentStage();
               area2->SetBlock(seed.x, seed.y, 0, *block);
@@ -42,7 +44,8 @@ void UpdatePlants(World* world) {
             continue;
           }
           if (area->GetTile(seed.x, seed.y, 0)->name == "dirt" 
-          &&  area->GetBlock(seed.x, seed.y, 0)->name == "air") {
+          &&  area->GetBlock(seed.x, seed.y, 0)->name == "air"
+          &&  MapHelper::SpaceIsClear(area, {seed.x, seed.y}, 0, pc->GetRequiredSpace())) {
             pc->ResetGrowth();
             block->gr.ch = pc->GetCurrentStage();
             area->SetBlock(seed.x, seed.y, 0, *block);

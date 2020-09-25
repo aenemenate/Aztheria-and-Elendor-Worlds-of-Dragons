@@ -56,7 +56,7 @@ Block BuildGrassBlock() {
   block.solid = false;
   block.enterable = false;
   block.name = "grass";
-  block.blockcomponents.push_back(new Plant(3,4,40,{',','\'','"'}));
+  block.blockcomponents.push_back(new Plant(3,4,25,0,{',','\'','"'}));
   return block;
 }
 
@@ -70,6 +70,18 @@ Block BuildHlGrassBlock() {
   block.solid = false;
   block.enterable = false;
   block.name = "highland grass";
-  block.blockcomponents.push_back(new Plant(3,4,40,{',','\'','`'}));
+  block.blockcomponents.push_back(new Plant(3,4,25,0,{',','\'','`'}));
+  return block;
+}
+
+Block BuildTree() {
+  Block block;
+  block.gr = {",", "176,146,122", ""};
+  block.explored = false;
+  block.opaque = true;
+  block.solid = true;
+  block.enterable = false;
+  block.name = "highland grass";
+  block.blockcomponents.push_back(new Plant(6,8,50,2,{'.',',',':',';','o','O'}));
   return block;
 }
