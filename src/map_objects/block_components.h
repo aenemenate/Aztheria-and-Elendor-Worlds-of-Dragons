@@ -20,8 +20,8 @@ public:
   BlockComponent() {}
   BlockComponent(int ID) : ID(ID) {}
   virtual ~BlockComponent() {}
-  virtual void Update(void *src, World *world) = 0;
-  virtual void Activate(void *src, World *world) = 0;
+  virtual bool Update(void *src, World *world) = 0;
+  virtual bool Activate(void *src, World *world) = 0;
 };
 
 class Stair : public BlockComponent {
@@ -36,8 +36,8 @@ public:
   Stair() : BlockComponent() {}
   Stair(ZDirection _zdirection) : zdirection(_zdirection), BlockComponent(STAIR_ID) {}
   virtual ~Stair() {}
-  void Update(void *src, World *world) {}
-  void Activate(void *src, World *world);
+  bool Update(void *src, World *world) { return false; }
+  bool Activate(void *src, World *world);
 };
 
 class Plant : public BlockComponent {
@@ -59,8 +59,8 @@ public:
   Plant() : BlockComponent() {}
   Plant(int numstages, int tickstostage, int seedradius, std::vector<char> stages) : stage(0), 
     numstages(numstages), tickstostage(tickstostage), seedradius(seedradius), stages(stages), BlockComponent(PLANT_ID) {}
-  void Update(void *src, World *world) {}
-  void Activate(void *src, World *world) {}
+  bool Update(void *src, World *world);
+  bool Activate(void *src, World *world) { return false; }
   int GetSeedRadius() { return seedradius; }
   char GetCurrentStage() { return stages[stage]; }
   void ResetGrowth() { stage = 0; }

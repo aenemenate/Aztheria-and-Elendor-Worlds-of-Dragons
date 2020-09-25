@@ -5,12 +5,15 @@
 #include "../game.h"
 #include "../world.h"
 #include "../map/area.h"
+#include "../map/map_helper.h"
 #include "../entity.h"
 #include "../map_objects/block_builders.h"
+#include "../map_objects/block_systems.h"
 
 #include "biome_gen.h"
 #include "dung_gen.h"
 
+#include <string>
 #include <chrono>
 #include <random>
 #include <stdlib.h>
@@ -49,6 +52,34 @@ void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int dep
     }
 }
 
+void WorldGen::GeneratePlants(World* world) {
+  srand(time(0));
+  int areawidth = world->GetArea(0,0)->width,
+      areaheight = world->GetArea(0,0)->height;
+  for (int i = 0; i < world->width * areawidth; i++)
+    for (int j = 0; j < world->height * areaheight; j++) {
+      Area* area = world->GetArea(i / areawidth, j / areaheight);
+      Block *block = area->GetBlock(i % areawidth, j % areaheight, 0);
+      Tile *tile = area->GetTile(i % areawidth, j % areaheight, 0);
+      bool cur_point_adjacent_to_water = MapHelper::PointAdjacentToTileOfType(area, {i % areawidth, j % areaheight}, 0, "water");
+      bool cur_point_adjacent_to_stone = MapHelper::PointAdjacentToBlockOfType(area, {i % areawidth, j % areaheight}, 0, "stone");
+      bool tile_is_dirt = (tile->name == "dirt");
+      bool block_is_air = (block->name == "air");
+      if (rand() % 10 < 6 && tile_is_dirt && block_is_air) {
+        if (cur_point_adjacent_to_water) {
+          // build grass block
+          area->SetBlock(i % areawidth, j % areaheight, 0, BuildGrassBlock());
+        }
+        else if (cur_point_adjacent_to_stone) {
+          // build highland grass block
+          area->SetBlock(i % areawidth, j % areaheight, 0, BuildHlGrassBlock());
+        }
+      }
+    }
+  for (int g = 0; g < 30; g++)
+    UpdatePlants(world);
+}
+
 void WorldGen::GenerateWorld(Game *game, int size, int slot) {
 // pick random seed from clock
   chrono::high_resolution_clock::time_point d = chrono::high_resolution_clock::now();
@@ -79,15 +110,10 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
           break;
       }
     }
-  // generate humidity map
-  BiomeGen::DetermineHumidityMap(game->world);
-  // determine biomes
-  BiomeGen::DetermineBiomes(game->world);
-  DungeonGen::PlaceDungeons(game->world);
-  // seed plants/ trees
-  // SeedPlants(game->world);
-  // for (int i = 0; i < plant_generations; ++i)
-  // game->world->GrowPlants();
+  BiomeGen::DetermineHumidityMap(game->world); // puts humidity for every world tile
+  BiomeGen::DetermineBiomes(game->world);      // assigns biomes to every world tile
+  DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
+  GeneratePlants(game->world);                 // generates plants
   srand(time(0));
   int player_pos = walkable_positions[0+rand()%walkable_positions.size()];
   PlaceEntities(game->world, player_pos);

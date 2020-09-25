@@ -3,7 +3,8 @@ Objs = draw_funcs.obj entity.obj fov.obj game_fio.obj game.obj pathfinder.obj \
 	     createworld_state.obj loadworld_state.obj mainmenu_state.obj \
 	     play_state.obj state_funcs.obj area.obj map.obj perlin_generator.obj \
 	     map_menu.obj button.obj menu.obj panel_status.obj biome_gen.obj \
-	     main.obj block_components.obj block_builders.obj block.obj dung_gen.obj
+	     main.obj block_components.obj block_builders.obj block.obj dung_gen.obj \
+       map_helper.obj block_systems.obj
 
 SRC_DIR = ../src
 
@@ -79,6 +80,9 @@ area.obj:$(SRC_DIR)/map/area.cpp $(SRC_DIR)/map/area.h $(SRC_DIR)/map/dungeon.h 
 map.obj:$(SRC_DIR)/map/map.cpp $(SRC_DIR)/map/map.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map/map.cpp
 
+map_helper.obj:$(SRC_DIR)/map/map_helper.cpp $(SRC_DIR)/map/map_helper.h $(SRC_DIR)/map/area.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h
+  cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map/map_helper.cpp
+
 # src/world_gen
 
 biome_gen.obj:$(SRC_DIR)/world_gen/biome_gen.cpp $(SRC_DIR)/world_gen/biome_gen.h $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h
@@ -90,7 +94,7 @@ dung_gen.obj:$(SRC_DIR)/world_gen/dung_gen.cpp $(SRC_DIR)/world_gen/dung_gen.h $
 perlin_generator.obj:$(SRC_DIR)/world_gen/perlin_generator.cpp $(SRC_DIR)/world_gen/perlin_generator.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/world_gen/perlin_generator.cpp
 
-world_gen.obj:$(SRC_DIR)/world_gen/world_gen.cpp $(SRC_DIR)/world_gen/world_gen.h $(SRC_DIR)/world_gen/perlin_generator.h $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h $(SRC_DIR)/map_objects/block_components.h $(SRC_DIR)/map_objects/block_builders.h $(SRC_DIR)/world_gen/biome_gen.h $(SRC_DIR)/world_gen/dung_gen.h
+world_gen.obj:$(SRC_DIR)/world_gen/world_gen.cpp $(SRC_DIR)/world_gen/world_gen.h $(SRC_DIR)/world_gen/perlin_generator.h $(SRC_DIR)/game.h $(SRC_DIR)/entity.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/map/map.h $(SRC_DIR)/map/map_helper.h $(SRC_DIR)/map/dungeon.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h $(SRC_DIR)/map_objects/block_components.h $(SRC_DIR)/map_objects/block_builders.h $(SRC_DIR)/map_objects/block_systems.h $(SRC_DIR)/world_gen/biome_gen.h $(SRC_DIR)/world_gen/dung_gen.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/world_gen/world_gen.cpp
 
 # src/map_objects
@@ -98,6 +102,9 @@ world_gen.obj:$(SRC_DIR)/world_gen/world_gen.cpp $(SRC_DIR)/world_gen/world_gen.
 block_components.obj:$(SRC_DIR)/map_objects/block_components.cpp $(SRC_DIR)/map_objects/block_components.h $(SRC_DIR)/base.h $(SRC_DIR)/entity.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map_objects/block_components.cpp
 
+block_systems.obj:$(SRC_DIR)/map_objects/block_systems.cpp $(SRC_DIR)/map_objects/block_systems.h $(SRC_DIR)/map_objects/block.h $(SRC_DIR)/map_objects/tile.h $(SRC_DIR)/base.h $(SRC_DIR)/world.h $(SRC_DIR)/map/area.h $(SRC_DIR)/entity.h
+  cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map_objects/block_systems.cpp
+  
 block_builders.obj:$(SRC_DIR)/map_objects/block_builders.cpp $(SRC_DIR)/map_objects/block_builders.h $(SRC_DIR)/base.h $(SRC_DIR)/map_objects/block_components.h
   cl /c /std:c++17 /Z7 /MT /O2 /I"C:\Program Files\boost_1_73_0" /EHsc $(SRC_DIR)/map_objects/block_builders.cpp
 

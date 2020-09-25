@@ -96,7 +96,7 @@ Tile *Area::GetTile(int x, int y, int z) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       return &(tiles[x * height + y]);
-    else
+    else if (z > 0 && z <= dungeon_floors.size())
       return dungeon_floors[z-1].GetTile(x, y);
   }
   return nullptr;
@@ -106,7 +106,7 @@ void Area::SetTile(int x, int y, int z, Tile tile) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       tiles[x * height + y] = tile;
-    else
+    else if (z > 0 && z <= dungeon_floors.size())
       dungeon_floors[z-1].SetTile(x, y, tile);
   }
 }
@@ -115,7 +115,7 @@ Block *Area::GetBlock(int x, int y, int z) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       return &(blocks[x * height + y]);
-    else
+    else if (z > 0 && z <= dungeon_floors.size())
       return dungeon_floors[z-1].GetBlock(x, y);
   }
   return nullptr;
@@ -125,7 +125,7 @@ void Area::SetBlock(int x, int y, int z, Block block) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       blocks[x * height + y] = block;
-    else
+    else if (z > 0 && z <= dungeon_floors.size())
       dungeon_floors[z-1].SetBlock(x, y, block);
   }
 }

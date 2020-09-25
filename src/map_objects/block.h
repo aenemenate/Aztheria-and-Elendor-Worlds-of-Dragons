@@ -28,4 +28,6 @@ struct Block {
   std::vector<BlockComponent*> blockcomponents;
   void Activate(void *src, World *world);
   void Update(void *src, World *world);
+  bool HasComponent(int component_type) { for (auto c : blockcomponents) if (c->ID == component_type) return true; return false; }
+  BlockComponent* GetComponent(int component_type) { for (auto c : blockcomponents) if (c->ID == component_type) return c; return nullptr; }
 };
