@@ -6,7 +6,7 @@
 #include "../world.h"
 #include "../map/area.h"
 #include "../map/map_helper.h"
-#include "../entity.h"
+#include "../entity/entity.h"
 #include "../map_objects/block_builders.h"
 #include "../map_objects/block_systems.h"
 

@@ -4,7 +4,7 @@
 #include "game.h"
 #include "world.h"
 #include "map/area.h"
-#include "entity.h"
+#include "entity/entity.h"
 
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>

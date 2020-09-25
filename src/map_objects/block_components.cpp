@@ -1,5 +1,5 @@
 #include "block_components.h"
-#include "../entity.h"
+#include "../entity/entity.h"
 
 bool Stair::Activate(void *src, World *world) {
   Entity *ent = (Entity*)src;

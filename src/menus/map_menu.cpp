@@ -4,7 +4,7 @@
 #include "../../include/BearLibTerminal.h"
 #include "../world.h"
 #include "../map/area.h"
-#include "../entity.h"
+#include "../entity/entity.h"
 
 
 void MapMenu::CustomDraw(Game* game) {

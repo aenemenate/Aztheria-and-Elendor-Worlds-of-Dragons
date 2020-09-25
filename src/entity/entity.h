@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base.h"
+#include "../base.h"
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/string.hpp>

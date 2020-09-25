@@ -1,7 +1,7 @@
 
 #include "settings.h"
 #include "map/area.h"
-#include "entity.h"
+#include "entity/entity.h"
 #include <vector>
 
 static void init_fov(fov_settings_type* fov_settings);

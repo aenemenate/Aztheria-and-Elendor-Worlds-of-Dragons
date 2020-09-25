@@ -2,7 +2,7 @@
 #include "../world.h"
 #include "../map/area.h"
 #include "../map/map_helper.h"
-#include "../entity.h"
+#include "../entity/entity.h"
 #include "block.h"
 #include "tile.h"
 

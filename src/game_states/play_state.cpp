@@ -3,7 +3,7 @@
 #include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 #include "../base.h"
-#include "../entity.h"
+#include "../entity/entity.h"
 #include "../world.h"
 #include "../map/area.h"
 #include "../game_fio.h"

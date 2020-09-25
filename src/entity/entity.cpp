@@ -1,7 +1,7 @@
 #include "entity.h"
-#include "game.h"
-#include "world.h"
-#include "map/area.h"
+#include "../game.h"
+#include "../world.h"
+#include "../map/area.h"
 
 Entity::Entity(Graphic gset, std::string name, Position pos, int viewradius) {
   this->gset = gset;

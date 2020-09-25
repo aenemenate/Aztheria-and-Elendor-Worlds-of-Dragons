@@ -8,7 +8,7 @@
 
 #include "../world.h"
 #include "../map/area.h"
-#include "../entity.h"
+#include "../entity/entity.h"
 
 void StatusPanel::Update(Game *game) { }
 

@@ -1,5 +1,5 @@
 #include "area.h"
-#include "../entity.h"
+#include "../entity/entity.h"
 
 string GetAreaName(BiomeType biome_type, TerrainType terrain_type) {
   switch (biome_type) {
