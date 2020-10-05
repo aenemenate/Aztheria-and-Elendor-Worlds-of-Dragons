@@ -23,3 +23,5 @@ Note: To build on linux you will have to change the main func from WinMain to ma
 * pathfinding
 * save/load, multiple files
 * gui (buttons, menus)
+* dungeons (not implemented gameplay wise, but supported)
+* plants (trees and grass)
