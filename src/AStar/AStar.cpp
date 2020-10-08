@@ -86,7 +86,7 @@ vector<Node> AStar::search(Node start, Node goal)
 	}
 	if (count < m_grid->getWidth() * m_grid->getHeight())
 	  reconstructPath(closed, start, goal); //construct the shortest path.
-	return m_path.size() > 1 ? std::vector(m_path.begin(), m_path.end() - 1) : m_path;
+	return m_path.size() > 1 ? std::vector<Node>(m_path.begin(), m_path.end() - 1) : m_path;
 }
 
 /* Given start, goal, and closed lists, it reconstructs the path (in reverse) and stores it in m_path
