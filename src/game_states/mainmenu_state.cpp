@@ -1,7 +1,7 @@
+#include <BearLibTerminal.h>
 #include "mainmenu_state.h"
 #include "createworld_state.h"
 #include "loadworld_state.h"
-#include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 #include "../base.h"
 

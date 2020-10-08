@@ -1,8 +1,8 @@
+#include <BearLibTerminal.h>
 #include "loadworld_state.h"
 #include "play_state.h"
 #include "state_funcs.h"
 
-#include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 #include "../base.h"
 

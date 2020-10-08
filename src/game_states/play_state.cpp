@@ -1,6 +1,6 @@
+#include <BearLibTerminal.h>
 #include "play_state.h"
 
-#include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 #include "../base.h"
 #include "../entity/entity.h"

@@ -1,3 +1,4 @@
+#include <BearLibTerminal.h>
 #include "menu.h"
 
 #include "../game.h"
@@ -5,8 +6,6 @@
 #include "../base.h"
 
 #include "../draw_funcs.h"
-
-#include "../../include/BearLibTerminal.h"
 
 void Menu::Draw(Game* game) {
   if (!show)

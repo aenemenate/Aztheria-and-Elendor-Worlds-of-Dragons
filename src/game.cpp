@@ -1,5 +1,5 @@
+#include <BearLibTerminal.h>
 #include "game.h"
-#include "../include/BearLibTerminal.h"
 #include "world.h"
 #include "entity/entity.h"
 #include "map/area.h"
