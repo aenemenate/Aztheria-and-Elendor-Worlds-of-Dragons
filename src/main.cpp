@@ -2,20 +2,18 @@
 
 #include "./game_states/mainmenu_state.h"
 
-/* int WinMain() { */
-/*   Game game; */
-/*   game.Init(); */
-/*   game.ChangeState(MainMenuState::Instance()); */
-/*   while (game.Running()) { */
-/*     game.Draw(); */
-/*     game.HandleEvents(); */
-/*     game.Update(); */
-/*   } */
-/*   game.CleanupAll(); */
-/* } */
+#if defined(_WIN32) || defined(_WIN64)
+
+#define MAIN WinMain
+
+#elif defined(__APPLE__)
+
+#define MAIN main
+
+#endif
 
 
-int main(int argc, char** argv) {
+int MAIN() {
   Game game;
   game.Init();
   game.ChangeState(MainMenuState::Instance());
