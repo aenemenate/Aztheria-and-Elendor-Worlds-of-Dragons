@@ -6,12 +6,10 @@
 #include "../draw_funcs.h"
 
 #include "../world_gen/world_gen.h"
+#include "../util/filesystem.h"
 
-#include <filesystem>
 #include <algorithm>
 #include <sstream>
-
-namespace fs = std::__fs::filesystem;
 
 int worldsize;
 

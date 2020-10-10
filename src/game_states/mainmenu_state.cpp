@@ -4,11 +4,10 @@
 #include "loadworld_state.h"
 #include "../draw_funcs.h"
 #include "../base.h"
+#include "../util/filesystem.h"
 
-#include <filesystem>
 #include <fstream>
 #include <sstream>
-namespace fs = std::__fs::filesystem;
 
 void NewWorld(Game* game) { game->PushState(CreateWorldState::Instance()); game->Update(); }
 

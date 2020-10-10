@@ -7,12 +7,10 @@
 #include "../base.h"
 
 #include "../game_fio.h"
+#include "../util/filesystem.h"
 
-#include <filesystem>
 #include <algorithm>
 #include <sstream>
-
-namespace fs = std::__fs::filesystem;
 
 std::string filepath;
 
