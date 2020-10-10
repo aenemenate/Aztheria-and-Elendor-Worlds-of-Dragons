@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <sstream>
 
-namespace fs = std::filesystem;
+namespace fs = std::__fs::filesystem;
 
 std::string filepath;
 

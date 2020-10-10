@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <algorithm>
 
+#include <iostream>
+
 void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int depth, int seed) {
   PerlinGenerator perlinGenerator = PerlinGenerator(seed);
   int map_w = area->width, map_h = area->height;
@@ -83,17 +85,24 @@ void WorldGen::GeneratePlants(World* world) {
 }
 
 void WorldGen::GenerateWorld(Game *game, int size, int slot) {
+  cout << "start of GenerateWorld" << endl;
 // pick random seed from clock
   chrono::high_resolution_clock::time_point d = chrono::high_resolution_clock::now();
+  cout << "1 " << endl;
   unsigned seed2 = d.time_since_epoch().count();
+  cout << "2 " << endl;
   default_random_engine generator(seed2);
-  binomial_distribution<int> distribution(INT_MAX,.5);
+  cout << "3 " << endl;
+  binomial_distribution<int> distribution(INT_MAX - 1,.5);
+  cout << "4 " << endl;
   int dice_roll = distribution(generator);
+  cout << "initializing" << endl;
 // initialize the world with the seed
   game->CleanupResources();
   game->world = new World(size,size,156,156,slot);
   game->world->seed = dice_roll;
 // generate terrain and determine temperature
+  cout << "generating terrain" << endl;
   vector<int> walkable_positions;
   for (int i = 0; i < game->world->width; i++)
     for (int j = 0; j < game->world->height; j++) {
@@ -112,6 +121,7 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
           break;
       }
     }
+  cout << "generating bioms " << endl;
   BiomeGen::DetermineHumidityMap(game->world); // puts humidity for every world tile
   BiomeGen::DetermineBiomes(game->world);      // assigns biomes to every world tile
   DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
@@ -119,6 +129,8 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
   srand(time(0));
   int player_pos = walkable_positions[0+rand()%walkable_positions.size()];
   PlaceEntities(game->world, player_pos);
+
+  cout << "leaving worldgen" << endl;
 }
 
 void WorldGen::PlaceEntities(World* world, int player_wpos) {
