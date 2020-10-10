@@ -22,7 +22,7 @@ set(BearLibTerminal_LIBRARIES "BearLibTerminal")
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 
 # Build it all
-add_executable(aztheria ${SOURCES})
-target_link_libraries(aztheria ${Boost_LIBRARIES} ${BearLibTerminal_LIBRARIES})
+add_executable(A-and-E-Worlds-of-Dragons ${SOURCES})
+target_link_libraries(A-and-E-Worlds-of-Dragons ${Boost_LIBRARIES} ${BearLibTerminal_LIBRARIES})
 
 
