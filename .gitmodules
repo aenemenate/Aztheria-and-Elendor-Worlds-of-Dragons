@@ -1,3 +1,0 @@
-[submodule "3rdparty/bearlibterminal"]
-	path = 3rdparty/bearlibterminal
-	url = git@github.com:cfyzium/bearlibterminal.git
