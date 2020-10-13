@@ -1,13 +1,11 @@
+#!/bin/sh
 
-@echo off
+pushd .
 
-pushd "%~dp0"
-
-echo .
-
-IF NOT EXIST build(
+if [ ! -d "build" ]
+then
   mkdir build
-)
+fi
 
 cd build
 cmake ..
