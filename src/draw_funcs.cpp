@@ -1,4 +1,4 @@
-#include "../include/BearLibTerminal.h"
+#include <BearLibTerminal.h>
 #include "draw_funcs.h"
 #include "base.h"
 

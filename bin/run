@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "Running Aztheria and Elendor: Worlds of Dragons"
+
+pushd .
+
+cd game
+../build/A-and-E-Worlds-of-Dragons
+
+popd
+

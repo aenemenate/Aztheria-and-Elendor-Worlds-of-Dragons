@@ -1,14 +1,13 @@
+#include <BearLibTerminal.h>
 #include "mainmenu_state.h"
 #include "createworld_state.h"
 #include "loadworld_state.h"
-#include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 #include "../base.h"
+#include "../util/filesystem.h"
 
-#include <filesystem>
 #include <fstream>
 #include <sstream>
-namespace fs = std::filesystem;
 
 void NewWorld(Game* game) { game->PushState(CreateWorldState::Instance()); game->Update(); }
 
@@ -37,7 +36,7 @@ void MainMenuState::Init(Game *game) {
   buttons.push_back(Button(term_width/2-4,term_height/2-1+y_offset*2, "quit game", QuitGame));
   menu_caret = 0;
 // load title
-  ifstream f(".\\data\\title.txt"); //taking file as inputstream
+  ifstream f("./data/title.txt"); //taking file as inputstream
   if(f) {
     ostringstream ss;
     ss << f.rdbuf(); // reading data

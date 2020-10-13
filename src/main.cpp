@@ -1,9 +1,19 @@
-
-#include "../include/BearLibTerminal.h"
+#include <BearLibTerminal.h>
 
 #include "./game_states/mainmenu_state.h"
 
-int WinMain() {
+#if defined(_WIN32) || defined(_WIN64)
+
+#define MAIN WinMain
+
+#elif defined(__APPLE__)
+
+#define MAIN main
+
+#endif
+
+
+int MAIN() {
   Game game;
   game.Init();
   game.ChangeState(MainMenuState::Instance());
@@ -13,4 +23,6 @@ int WinMain() {
     game.Update();
   }
   game.CleanupAll();
+
+  return 0;
 }

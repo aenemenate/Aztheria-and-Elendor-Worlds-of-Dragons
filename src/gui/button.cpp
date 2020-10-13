@@ -1,6 +1,6 @@
+#include <BearLibTerminal.h>
 #include "button.h"
 #include "../game.h"
-#include "../../include/BearLibTerminal.h"
 
 void Button::Activate(Game *game) { callback_f(game); }
 

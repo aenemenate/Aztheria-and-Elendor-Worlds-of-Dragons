@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <algorithm>
 
+#include <iostream>
+
 void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int depth, int seed) {
   PerlinGenerator perlinGenerator = PerlinGenerator(seed);
   int map_w = area->width, map_h = area->height;
@@ -87,7 +89,7 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
   chrono::high_resolution_clock::time_point d = chrono::high_resolution_clock::now();
   unsigned seed2 = d.time_since_epoch().count();
   default_random_engine generator(seed2);
-  binomial_distribution<int> distribution(INT_MAX,.5);
+  binomial_distribution<int> distribution(INT_MAX - 1,.5);
   int dice_roll = distribution(generator);
 // initialize the world with the seed
   game->CleanupResources();

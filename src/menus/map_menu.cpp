@@ -1,7 +1,7 @@
+#include <BearLibTerminal.h>
 #include "map_menu.h"
 #include "../game.h"
 #include "../draw_funcs.h"
-#include "../../include/BearLibTerminal.h"
 #include "../world.h"
 #include "../map/area.h"
 #include "../entity/entity.h"

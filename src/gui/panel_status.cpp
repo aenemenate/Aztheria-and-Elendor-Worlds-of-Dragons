@@ -1,6 +1,6 @@
+#include <BearLibTerminal.h>
 #include "panel_status.h"
 
-#include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 #include "../base.h"
 

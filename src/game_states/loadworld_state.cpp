@@ -1,18 +1,16 @@
+#include <BearLibTerminal.h>
 #include "loadworld_state.h"
 #include "play_state.h"
 #include "state_funcs.h"
 
-#include "../../include/BearLibTerminal.h"
 #include "../draw_funcs.h"
 #include "../base.h"
 
 #include "../game_fio.h"
+#include "../util/filesystem.h"
 
-#include <filesystem>
 #include <algorithm>
 #include <sstream>
-
-namespace fs = std::filesystem;
 
 std::string filepath;
 
