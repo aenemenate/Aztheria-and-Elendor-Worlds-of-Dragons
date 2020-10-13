@@ -3,7 +3,13 @@ project("aztheria_and_elendor")
 
 # Compiler settings. These might need to be platform specific?
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-std=c++17 -stdlib=libc++")
+
+# Platform specific settings
+if(WIN32)
+  include(cmake/windows.cmake)
+elseif(APPLE)
+  include(cmake/macos.cmake)
+endif()
 
 # Setup boost
 find_package(Boost REQUIRED COMPONENTS serialization)
@@ -11,11 +17,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 # Setup bearlibterminal
 include_directories("3rdparty/bearlibterminal/include")
-if(WIN32)
-  link_directories("3rdparty/bearlibterminal/lib/windows")
-elseif(APPLE)
-  link_directories("3rdparty/bearlibterminal/lib/macos")
-endif()
 set(BearLibTerminal_LIBRARIES "BearLibTerminal")
 
 # Specify all the code to compile

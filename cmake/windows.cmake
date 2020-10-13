@@ -1,0 +1,9 @@
+
+
+# Compiler setup
+SET(CMAKE_CXX_FLAGS "/std:c++17 /EHsc")
+
+# Linker setup
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS") 
+set(Boost_USE_STATIC_LIBS ON)
+
