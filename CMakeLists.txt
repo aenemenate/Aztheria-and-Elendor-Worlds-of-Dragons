@@ -11,7 +11,8 @@ elseif(APPLE)
   include(cmake/macos.cmake)
 endif()
 
-# Setup boost
+# Setup boost 
+set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED COMPONENTS serialization)
 include_directories(${Boost_INCLUDE_DIRS})
 
