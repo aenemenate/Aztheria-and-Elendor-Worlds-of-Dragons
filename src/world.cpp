@@ -1,6 +1,6 @@
 #include "world.h"
 #include "map/area.h"
-#include "entity/entity.h"
+#include "ecs/entity.h"
 #include "game.h"
 
 
@@ -28,14 +28,20 @@ Area *World::GetArea(int x, int y) {
 
 void World::AddEntity(Entity entity) {
   entities.push_back(entity);
-  int map_idx = entity.pos.wx * width + entity.pos.wy;
-  areas[map_idx].SetEntity(entity.pos.x, entity.pos.y, entity.pos.z, &(entities[entities.size()-1]));
+  if (entity.HasComponent(EC_POSITION_ID)) {
+    Position pos = (std::dynamic_pointer_cast<EntPosition>(entity.GetComponent(EC_POSITION_ID)))->position;
+    int map_idx = pos.wx * width + pos.wy;
+    areas[map_idx].SetEntity(pos.x, pos.y, pos.z, &(entities[entities.size()-1]));
+  }
 }
 
 void World::SetEnts() {
   for (int e = 0; e < entities.size(); ++e) {
-    Entity *ent = &(entities[e]);
-    int map_idx = ent->pos.wx * width + ent->pos.wy;
-    areas[map_idx].SetEntity(ent->pos.x, ent->pos.y, ent->pos.z, ent);
+    Entity *entity = &(entities[e]);
+    if (entity->HasComponent(EC_POSITION_ID)) {
+      Position pos = (std::dynamic_pointer_cast<EntPosition>(entity->GetComponent(EC_POSITION_ID)))->position;
+      int map_idx = pos.wx * width + pos.wy;
+      areas[map_idx].SetEntity(pos.x, pos.y, pos.z, &(entities[entities.size()-1]));
+    }
   }
 }

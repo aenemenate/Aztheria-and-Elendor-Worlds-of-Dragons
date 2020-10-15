@@ -3,7 +3,7 @@
 #include "perlin_generator.h"
 #include "../world.h"
 #include "../map/area.h"
-#include "../entity/entity.h"
+#include "../ecs/entity.h"
 
 void BiomeGen::DetermineAreaTerrainType(Area* area) {
   int dirt_num=0, water_num=0, mountain_num=0, beach_num=0;

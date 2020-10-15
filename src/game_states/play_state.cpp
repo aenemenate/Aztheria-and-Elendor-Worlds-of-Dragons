@@ -3,7 +3,7 @@
 
 #include "../draw_funcs.h"
 #include "../base.h"
-#include "../entity/entity.h"
+#include "../ecs/entity.h"
 #include "../world.h"
 #include "../map/area.h"
 #include "../game_fio.h"
@@ -51,31 +51,32 @@ void PlayState::HandleEvents(Game *game) {
     this->Init(game);
   // if none of menus are showing
   if (!paused && !map_menu.GetShow()) {
+    Entity *plyr = &(game->world->entities[0]);
+    Position plyr_pos = (std::dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
     switch (game->key) {
       case TK_KP_8:
       case TK_UP:
-        game->world->entities[0].Move(0,-1,0,game->world); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,-1,0))); break;
       case TK_KP_9:
-        game->world->entities[0].Move(1,-1,0,game->world); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,-1,0))); break;
       case TK_KP_6:
       case TK_RIGHT:
-        game->world->entities[0].Move(1,0,0,game->world); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,0,0))); break;
       case TK_KP_3:
-        game->world->entities[0].Move(1,1,0,game->world); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,1,0))); break;
       case TK_KP_2:
       case TK_DOWN:
-        game->world->entities[0].Move(0,1,0,game->world); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,1,0))); break;
       case TK_KP_1:
-        game->world->entities[0].Move(-1,1,0,game->world); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,1,0))); break;
       case TK_KP_4:
       case TK_LEFT:
-        game->world->entities[0].Move(-1,0,0,game->world); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(-1,0,0))); break;
       case TK_KP_7:
-        game->world->entities[0].Move(-1,-1,0,game->world); break;
-      case TK_KP_ENTER: {
-        Entity *plyr = &(game->world->entities[0]);
-        game->world->GetArea(plyr->pos.wx, plyr->pos.wy)->GetBlock(plyr->pos.x, plyr->pos.y, plyr->pos.z)->Activate(plyr, game->world);
-        } break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(-1,-1,0))); break;
+      case TK_KP_ENTER:
+        game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->Activate(plyr, game->world);
+        break;
       case TK_M:
         map_menu.SetShow(true);
         break;
@@ -84,26 +85,27 @@ void PlayState::HandleEvents(Game *game) {
         break;
     }
     int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
-    int startx = min(max(0,game->world->GetArea(0,0)->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
-    int starty = min(max(0,game->world->GetArea(0,0)->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));  
+    int startx = min(max(0,game->world->GetArea(0,0)->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
+    int starty = min(max(0,game->world->GetArea(0,0)->height-term_height), max(0, plyr_pos.y - term_height/2));  
     if (game->key == (TK_MOUSE_RIGHT|TK_KEY_RELEASED) && terminal_state(TK_MOUSE_X) < map_term_width) {
-      Entity *player = &(game->world->entities[0]);
-      player_path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.z, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
+      player_path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y, 
+                                        terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
       game->SetInputBlockMode(false);
     }
     if (game->key == (TK_MOUSE_LEFT|TK_KEY_RELEASED)) {
-      Entity *player = &(game->world->entities[0]);
-      if (terminal_state(TK_MOUSE_X)+startx == player->pos.x && terminal_state(TK_MOUSE_Y)+starty == player->pos.y) {
-        if (player->pos.x == 0)
-          player->Move(-1,0,0,game->world);
-        else if (player->pos.y == 0)
-          player->Move(0,-1,0,game->world);
-        else if (player->pos.x == game->world->GetArea(0,0)->width - 1)
-          player->Move(1,0,0,game->world);
-        else if (player->pos.y == game->world->GetArea(0,0)->height - 1)
-          player->Move(0,1,0,game->world);
-        else if (game->world->GetArea(player->pos.wx, player->pos.wy)->GetBlock(player->pos.x, player->pos.y, player->pos.z)->enterable)
-          game->world->GetArea(player->pos.wx, player->pos.wy)->GetBlock(player->pos.x, player->pos.y, player->pos.z)->Activate(player, game->world);
+      if (terminal_state(TK_MOUSE_X)+startx == plyr_pos.x && terminal_state(TK_MOUSE_Y)+starty == plyr_pos.y) {
+        if (game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->enterable)
+          game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->Activate(plyr, game->world);
+        else {
+          if (plyr_pos.x == 0)
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(-1,0,0)));
+          else if (plyr_pos.y == 0)
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,-1,0)));
+          if (plyr_pos.x == game->world->GetArea(0,0)->width - 1)
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,0,0)));
+          else if (plyr_pos.y == game->world->GetArea(0,0)->height - 1)
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,1,0)));
+        }
       }
     }
   }
@@ -142,38 +144,44 @@ void PlayState::Update(Game *game)
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Update(game);
   else {
+    Entity *plyr = &(game->world->entities[0]);
+    Position plyr_pos = (std::dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
     if (player_path.size() > 0) {
-      game->world->entities[0].Move(player_path.back().x - game->world->entities[0].pos.x, player_path.back().y - game->world->entities[0].pos.y, 0, game->world);
+      plyr->actions.clear();
+      plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(player_path.back().x - plyr_pos.x,
+                                                                                               player_path.back().y - plyr_pos.y,0)));
       player_path.pop_back();
       if (player_path.size() == 0)
         game->SetInputBlockMode(true);
     }
-    game->world->entities[0].Update(game, true);
-    for (int e = game->world->entities.size() - 1; e >= 1; --e)
-      game->world->entities[e].Update(game, false);
+    for (int e = 0; e < game->world->entities.size(); ++e)
+      game->world->entities[e].Tick(game);
+    for (int e = 0; e < game->world->entities.size(); ++e)
+      game->world->entities[e].Act(game->world);
   }
   map_menu.Update(game);
 }
 
 void PlayState::Draw(Game *game)
 {
-// set values
-  int curwx = game->world->entities[0].pos.wx, 
-      curwy = game->world->entities[0].pos.wy;
-  Area *area = game->world->GetArea(curwx, curwy);
   Entity *plyr = &(game->world->entities[0]);
+  Position plyr_pos = (std::dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
+// set values
+  int curwx = plyr_pos.wx, 
+      curwy = plyr_pos.wy;
+  Area *area = game->world->GetArea(curwx, curwy);
   int term_width = terminal_state(TK_WIDTH), 
       map_term_width = status_panel.start_x(term_width), 
       term_height = terminal_state(TK_HEIGHT);
-  int startx = min(max(0,area->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
-  int starty = min(max(0,area->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
+  int startx = min(max(0,area->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
+  int starty = min(max(0,area->height-term_height), max(0, plyr_pos.y - term_height/2));
 // draw status panel
   status_panel.Draw(game, startx, starty);
 // draw map
   for (int i = startx; i < area->width && i-startx < map_term_width; i++)
     for (int j = starty; j < area->height && j-starty < term_height; j++) {
-      Tile *tile = area->GetTile(i, j, plyr->pos.z);
-      Block *block = area->GetBlock(i, j, plyr->pos.z);
+      Tile *tile = area->GetTile(i, j, plyr_pos.z);
+      Block *block = area->GetBlock(i, j, plyr_pos.z);
       if (tile->explored) {
         if (block->gr.ch != " ")
           PrintCh(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
@@ -182,8 +190,9 @@ void PlayState::Draw(Game *game)
       }
     }
 // draw visible points
-  for (int vp = 0; vp < plyr->visiblepoints.size(); vp++) {
-    Position point = plyr->visiblepoints[vp];
+  std::shared_ptr<Fov> fov_c = std::dynamic_pointer_cast<Fov>(plyr->GetComponent(EC_FOV_ID));
+  for (int vp = 0; vp < fov_c->visiblepoints.size(); vp++) {
+    Position point = fov_c->visiblepoints[vp];
     if (point.x - startx < map_term_width
     &&  point.y - starty < map_term_width
     &&  point.x - startx >= 0
@@ -193,24 +202,27 @@ void PlayState::Draw(Game *game)
       Entity *entity = area->GetEntity(point.x, point.y, point.z);
       if (entity == nullptr) {
         if (block->gr.ch != " ")
-          PrintCh(point.x - startx, point.y - starty, {block->gr.ch,block->gr.fgcolor,tile->gr.bgcolor});
+          PrintCh(point.x - startx, point.y - starty, { block->gr.ch, block->gr.fgcolor, tile->gr.bgcolor });
         else
           PrintCh(point.x - startx, point.y - starty, tile->gr);
       }
-      else
-        PrintCh(point.x - startx, point.y - starty, entity->gset);
+      else {
+        std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(entity->GetComponent(EC_RENDERABLE_ID));
+        PrintCh(point.x - startx, point.y - starty, rend_c->graphic); // fix
+      }
     }
   }
 // draw player
-  Point plyr_sc_pos = { plyr->pos.x - startx, plyr->pos.y - starty };
-  int plyr_z = plyr->pos.z;
-  PrintCh(plyr_sc_pos.x, plyr_sc_pos.y, plyr->gset);
+  Point plyr_sc_pos = { plyr_pos.x - startx, plyr_pos.y - starty };
+  int plyr_z = plyr_pos.z;
+  std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
+  PrintCh(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic); // fix
 // draw path if necessary
   if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width 
   && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0 
   && terminal_state(TK_MOUSE_Y) < term_height) {
     std::vector<Point> path;
-    path = Pathfinder::GetPath(game->world, plyr->pos.wx, plyr->pos.wy, plyr->pos.z, plyr->pos.x, plyr->pos.y, 
+    path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y, 
                                terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
     terminal_bkcolor("blue");
     for (auto point : path) {
