@@ -30,7 +30,7 @@ Block BuildStoneDownStair() {
   block.solid = false;
   block.enterable = true;
   block.name = "stone down stairs";
-  block.blockcomponents.push_back(new Stair(ZDirection::down));
+  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Stair(ZDirection::down)));
   return block;
 }
 
@@ -42,7 +42,7 @@ Block BuildStoneUpStair() {
   block.solid = false;
   block.enterable = true;
   block.name = "stone up stairs";
-  block.blockcomponents.push_back(new Stair(ZDirection::up));
+  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Stair(ZDirection::up)));
   return block;
 }
 
@@ -54,7 +54,7 @@ Block BuildGrassBlock() {
   block.solid = false;
   block.enterable = false;
   block.name = "grass";
-  block.blockcomponents.push_back(new Plant(3,4,25,0,{',','\'','"'}));
+  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Plant(3,4,25,0,{',','\'','\"'})));
   return block;
 }
 
@@ -66,7 +66,7 @@ Block BuildHlGrassBlock() {
   block.solid = false;
   block.enterable = false;
   block.name = "highland grass";
-  block.blockcomponents.push_back(new Plant(3,4,25,0,{',','\'','`'}));
+  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Plant(3,4,25,0,{',','\'','`'})));
   return block;
 }
 
@@ -78,6 +78,6 @@ Block BuildTree() {
   block.solid = true;
   block.enterable = false;
   block.name = "tree";
-  block.blockcomponents.push_back(new Plant(6,4,50,2,{'.',',',':',';','o','O'}));
+  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Plant(6,4,50,2,{'.',',',':',';','o','O'})));
   return block;
 }
