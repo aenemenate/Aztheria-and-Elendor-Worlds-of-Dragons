@@ -1,7 +1,7 @@
 #include "map.h"
 #include "../map_objects/block.h"
 #include "../map_objects/tile.h"
-#include "../entity/entity.h"
+#include "../ecs/entity.h"
 
 Map::Map() { 
   width = 0;
