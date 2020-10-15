@@ -33,7 +33,7 @@ public:
 
   bool PointWithinBounds(int,int);
 
-  Entity *GetEntity(int,int);// note: this can return null (indicates no entity at given position)
+  Entity *GetEntity(int,int); // note: this can return null (indicates no entity at given position)
   void SetEntity(int,int,Entity*);
   Tile *GetTile(int,int);
   void SetTile(int,int,Tile);

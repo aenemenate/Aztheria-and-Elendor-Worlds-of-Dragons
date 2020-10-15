@@ -6,7 +6,7 @@
 #include "../world.h"
 #include "../map/area.h"
 #include "../map/map_helper.h"
-#include "../entity/entity.h"
+#include "../ecs/entity.h"
 #include "../map_objects/block_builders.h"
 #include "../map_objects/block_systems.h"
 
@@ -137,5 +137,11 @@ void WorldGen::PlaceEntities(World* world, int player_wpos) {
   uint16_t x_pos = static_cast<uint16_t>(player_pos / world->GetArea(0,0)->width), 
            y_pos = static_cast<uint16_t>(player_pos % world->GetArea(0,0)->width);
 // add player
-  world->AddEntity(Entity({"@", "yellow", "black" }, "player", { x_pos, y_pos, 0, world_x, world_y }, 28));
+  Entity player;
+  player.components.push_back(std::shared_ptr<Renderable>(new Renderable({"@", "yellow", "black"})));
+  player.components.push_back(std::shared_ptr<EntPosition>(new EntPosition({ x_pos, y_pos, 0, world_x, world_y })));
+  player.components.push_back(std::shared_ptr<Name>(new Name("player")));
+  player.components.push_back(std::shared_ptr<Fov>(new Fov(28)));
+  player.components.push_back(std::shared_ptr<Player>(new Player(true)));
+  world->AddEntity(player);
 }

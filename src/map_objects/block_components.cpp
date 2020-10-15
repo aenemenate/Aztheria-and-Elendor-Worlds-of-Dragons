@@ -1,9 +1,9 @@
 #include "block_components.h"
-#include "../entity/entity.h"
+#include "../ecs/entity.h"
 
 bool Stair::Activate(void *src, World *world) {
   Entity *ent = (Entity*)src;
-  ent->Move(0, 0, zdirection, world);
+  ent->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,0,zdirection)));
   return true;
 }
 
