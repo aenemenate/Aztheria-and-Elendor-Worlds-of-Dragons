@@ -56,27 +56,26 @@ void PlayState::HandleEvents(Game *game) {
     switch (game->key) {
       case TK_KP_8:
       case TK_UP:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,-1,0))); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,-1,0))); break;
       case TK_KP_9:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,-1,0))); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,-1,0))); break;
       case TK_KP_6:
       case TK_RIGHT:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,0,0))); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,0,0))); break;
       case TK_KP_3:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,1,0))); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,1,0))); break;
       case TK_KP_2:
       case TK_DOWN:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,1,0))); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0))); break;
       case TK_KP_1:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,1,0))); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,1,0))); break;
       case TK_KP_4:
       case TK_LEFT:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(-1,0,0))); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,0,0))); break;
       case TK_KP_7:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(-1,-1,0))); break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,-1,0))); break;
       case TK_KP_ENTER:
-        game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->Activate(plyr, game->world);
-        break;
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new ActivateBlock(0, 0))); break;
       case TK_M:
         map_menu.SetShow(true);
         break;
@@ -98,13 +97,13 @@ void PlayState::HandleEvents(Game *game) {
           game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->Activate(plyr, game->world);
         else {
           if (plyr_pos.x == 0)
-            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(-1,0,0)));
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,0,0)));
           else if (plyr_pos.y == 0)
-            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,-1,0)));
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(0,-1,0)));
           if (plyr_pos.x == game->world->GetArea(0,0)->width - 1)
-            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(1,0,0)));
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(1,0,0)));
           else if (plyr_pos.y == game->world->GetArea(0,0)->height - 1)
-            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,1,0)));
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0)));
         }
       }
     }
@@ -148,16 +147,16 @@ void PlayState::Update(Game *game)
     Position plyr_pos = (std::dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
     if (player_path.size() > 0) {
       plyr->actions.clear();
-      plyr->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(player_path.back().x - plyr_pos.x,
+      plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(player_path.back().x - plyr_pos.x,
                                                                                                player_path.back().y - plyr_pos.y,0)));
       player_path.pop_back();
       if (player_path.size() == 0)
         game->SetInputBlockMode(true);
     }
     for (int e = 0; e < game->world->entities.size(); ++e)
-      game->world->entities[e].Tick(game);
-    for (int e = 0; e < game->world->entities.size(); ++e)
       game->world->entities[e].Act(game->world);
+    for (int e = 0; e < game->world->entities.size(); ++e)
+      game->world->entities[e].Tick(game);
   }
   map_menu.Update(game);
 }
