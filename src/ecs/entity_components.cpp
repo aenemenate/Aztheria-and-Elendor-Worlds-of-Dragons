@@ -1,7 +1,7 @@
 #include "entity_components.h"
-#include "..\game.h"
-#include "..\world.h"
-#include "..\map\area.h"
+#include "../game.h"
+#include "../world.h"
+#include "../map/area.h"
 #include "entity.h"
 
 bool Fov::Tick(Entity *src, Game *game) {

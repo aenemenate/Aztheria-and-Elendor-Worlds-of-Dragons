@@ -1,7 +1,7 @@
 #include "entity_actions.h"
-#include "..\game.h"
-#include "..\world.h"
-#include "..\map\area.h"
+#include "../game.h"
+#include "../world.h"
+#include "../map/area.h"
 #include "entity.h"
 
 void Move::Do(Entity *src, World *world) {
