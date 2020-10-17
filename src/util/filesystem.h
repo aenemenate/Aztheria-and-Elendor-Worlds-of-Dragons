@@ -4,7 +4,7 @@
 
 // For some reason, the STL library on MacOS has filesystem under 
 // std::__fs, not std. This is a work around that.
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64) || defined(linux)
 
 namespace fs = std::filesystem;
 

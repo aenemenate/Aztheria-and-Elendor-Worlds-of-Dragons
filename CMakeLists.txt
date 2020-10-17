@@ -9,9 +9,11 @@ if(WIN32)
   include(cmake/windows.cmake)
 elseif(APPLE)
   include(cmake/macos.cmake)
+elseif(UNIX)
+  include(cmake/unix.cmake)
 endif()
 
-# Setup boost 
+# Setup boost
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED COMPONENTS serialization)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -26,5 +28,3 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 # Build it all
 add_executable(A-and-E-Worlds-of-Dragons ${SOURCES})
 target_link_libraries(A-and-E-Worlds-of-Dragons ${Boost_LIBRARIES} ${BearLibTerminal_LIBRARIES})
-
-

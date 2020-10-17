@@ -1,5 +1,4 @@
 
-
 # Compiler setup
 set(CMAKE_CXX_FLAGS "-std=c++17 -stdlib=libc++")
 
