@@ -4,7 +4,7 @@
 #include "../map/area.h"
 #include "entity.h"
 
-void WantsToMove::Do(Entity *src, World *world) {
+void Move::Do(Entity *src, World *world) {
 // clamp sign between -1 and 1
   int xsign = (xdir <= -1) ? -1 : ((xdir >= 1) ? 1 : 0);
   int ysign = (ydir <= -1) ? -1 : ((ydir >= 1) ? 1 : 0);
@@ -77,5 +77,13 @@ void WantsToMove::Do(Entity *src, World *world) {
     pos->z = new_z;
     pos->wx = new_wx;
     pos->wy = new_wy;
+  }
+}
+
+void ActivateBlock::Do(Entity *src, World *world) {
+  if (src->HasComponent(EC_POSITION_ID)) {
+    Position this_pos = (std::dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID)))->position;
+    Position block_pos = { this_pos.x + this->xdir, this_pos.y + this->ydir, this_pos.z, this_pos.wx, this_pos.wy };
+    world->GetArea(block_pos.wx, block_pos.wy)->GetBlock(block_pos.x, block_pos.y, block_pos.z)->Activate((void*)src, world);
   }
 }

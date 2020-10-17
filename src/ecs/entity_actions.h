@@ -16,12 +16,21 @@ public:
 
 // Defined Actions 
 
-#define EA_WANTSTOMOVE_ID	0
+#define EA_MOVE_ID		0
+#define EA_ACTIVATEBLOCK_ID	1
 
-class WantsToMove : public EntityAction {
+class Move : public EntityAction {
 public:
   int xdir, ydir, zdir;
-  WantsToMove() : EntityAction() {}
-  WantsToMove(int _xdir, int _ydir, int _zdir) : xdir(_xdir), ydir(_ydir), zdir(_zdir), EntityAction(EA_WANTSTOMOVE_ID) {}
+  Move() : EntityAction() {}
+  Move(int _xdir, int _ydir, int _zdir) : xdir(_xdir), ydir(_ydir), zdir(_zdir), EntityAction(EA_MOVE_ID) {}
+  void Do(Entity *src, World *world);
+};
+
+class ActivateBlock : public EntityAction {
+public:
+  int xdir, ydir;
+  ActivateBlock() : EntityAction() {}
+  ActivateBlock(int _xdir, int _ydir) : xdir(_xdir), ydir(_ydir), EntityAction(EA_ACTIVATEBLOCK_ID) {}
   void Do(Entity *src, World *world);
 };

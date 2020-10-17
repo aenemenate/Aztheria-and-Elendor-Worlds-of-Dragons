@@ -3,7 +3,7 @@
 
 bool Stair::Activate(void *src, World *world) {
   Entity *ent = (Entity*)src;
-  ent->actions.push_back(std::shared_ptr<EntityAction>(new WantsToMove(0,0,zdirection)));
+  ent->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,0,zdirection)));
   return true;
 }
 
