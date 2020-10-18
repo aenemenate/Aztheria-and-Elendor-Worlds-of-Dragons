@@ -38,7 +38,7 @@ void LoadWorldState::Init(Game *game) {
       term_height = terminal_state(TK_HEIGHT);
 // push buttons
   int y_offset = 0;
-  for(const auto& entry : fs::directory_iterator(".\\saves"))
+  for(const auto& entry : fs::directory_iterator("./saves"))
     if (entry.path().extension() == ".bin") {
       buttons.push_back(Button(term_width/2 - 10,term_height/2-15+y_offset*2, entry.path().string(), LoadWorld));
       y_offset++;
