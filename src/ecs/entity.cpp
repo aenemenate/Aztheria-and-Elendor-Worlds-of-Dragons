@@ -4,9 +4,9 @@
 #include "../map/area.h"
 
 void Entity::RemoveComponent(int component_type) {
-  components.erase(
-    std::remove_if(components.begin(), components.end(), [component_type](std::shared_ptr<EntityComponent> c){ return c->ID != component_type; }),
-    components.end()
+  components.erase(
+    std::remove_if(components.begin(), components.end(), [component_type](std::shared_ptr<EntityComponent> c){ return c->ID != component_type; }),
+    components.end()
   );
 }
 
