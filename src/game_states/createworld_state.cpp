@@ -1,9 +1,10 @@
-#include <BearLibTerminal.h>
 #include "createworld_state.h"
 #include "play_state.h"
 #include "state_funcs.h"
 
+#include "../base.h"
 #include "../draw_funcs.h"
+#include <BearLibTerminal.h>
 
 #include "../world_gen/world_gen.h"
 #include "../util/filesystem.h"
@@ -45,10 +46,12 @@ void CreateWorldState::Init(Game *game) {
   buttons.clear();
   int term_width  = terminal_state(TK_WIDTH), 
       term_height = terminal_state(TK_HEIGHT);
-// push buttons
+// change world size buttons
   buttons.push_back(Button(1,1, "<->", DecrementWorldSize));
   buttons.push_back(Button(8,1, "<+>", IncrementWorldSize));
+// create world button
   buttons.push_back(Button(term_width - 2 - 14,term_height-2, "[[c]]reate world", CreateWorld));
+// go back button
   buttons.push_back(Button(1,term_height-2, "go [[b]]ack", GoBack));
   worldsize = 12;
 }
@@ -58,8 +61,10 @@ void CreateWorldState::Cleanup() {
 }
 
 void CreateWorldState::HandleEvents(Game *game) {
+// reset our graphical elements if terminal is resized
   if (terminal_state(TK_EVENT) == TK_RESIZED)
     this->Init(game);
+// handle key input
   switch (game->key) {
     case TK_KP_6:
     case TK_RIGHT:
@@ -80,16 +85,19 @@ void CreateWorldState::HandleEvents(Game *game) {
 }
 
 void CreateWorldState::Update(Game *game) {
+// update buttons
   for (int b=0;b<buttons.size();b++)
     buttons[b].Update(game);
 }
 
 void CreateWorldState::Draw(Game *game) {
-  int term_width  = terminal_state(TK_WIDTH), 
-      term_height = terminal_state(TK_HEIGHT);
+  int term_width  = GetTermWidth(), 
+      term_height = GetTermHeight();
+// draw buttons
   for (int b=0;b<buttons.size();b++)
     buttons[b].Render(game);
+// print world size
   std::stringstream sstream;
   sstream << worldsize;
-  terminal_print(5, 1, sstream.str().c_str());
+  PrintGraphic(5, 1, {sstream.str(), "white", "black"});
 }

@@ -169,9 +169,9 @@ void PlayState::Draw(Game *game)
   int curwx = plyr_pos.wx, 
       curwy = plyr_pos.wy;
   Area *area = game->world->GetArea(curwx, curwy);
-  int term_width = terminal_state(TK_WIDTH), 
+  int term_width = GetTermWidth(), 
       map_term_width = status_panel.start_x(term_width), 
-      term_height = terminal_state(TK_HEIGHT);
+      term_height = GetTermHeight();
   int startx = min(max(0,area->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
   int starty = min(max(0,area->height-term_height), max(0, plyr_pos.y - term_height/2));
 // draw status panel
@@ -183,9 +183,9 @@ void PlayState::Draw(Game *game)
       Block *block = area->GetBlock(i, j, plyr_pos.z);
       if (tile->explored) {
         if (block->gr.ch != " ")
-          PrintCh(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
+          PrintGraphic(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
         else
-          PrintCh(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
+          PrintGraphic(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
       }
     }
 // draw visible points
@@ -201,13 +201,13 @@ void PlayState::Draw(Game *game)
       Entity *entity = area->GetEntity(point.x, point.y, point.z);
       if (entity == nullptr) {
         if (block->gr.ch != " ")
-          PrintCh(point.x - startx, point.y - starty, { block->gr.ch, block->gr.fgcolor, tile->gr.bgcolor });
+          PrintGraphic(point.x - startx, point.y - starty, { block->gr.ch, block->gr.fgcolor, tile->gr.bgcolor });
         else
-          PrintCh(point.x - startx, point.y - starty, tile->gr);
+          PrintGraphic(point.x - startx, point.y - starty, tile->gr);
       }
       else {
         std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(entity->GetComponent(EC_RENDERABLE_ID));
-        PrintCh(point.x - startx, point.y - starty, rend_c->graphic); // fix
+        PrintGraphic(point.x - startx, point.y - starty, rend_c->graphic); // fix
       }
     }
   }
@@ -215,31 +215,25 @@ void PlayState::Draw(Game *game)
   Point plyr_sc_pos = { plyr_pos.x - startx, plyr_pos.y - starty };
   int plyr_z = plyr_pos.z;
   std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
-  PrintCh(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic); // fix
+  PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic);
 // draw path if necessary
-  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width 
-  && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0 
+  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width
+  && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0
   && terminal_state(TK_MOUSE_Y) < term_height) {
     std::vector<Point> path;
-    path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y, 
+    path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y,
                                terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
-    terminal_bkcolor("blue");
     for (auto point : path) {
       int x = point.x - startx, y = point.y - starty;
       if (x < map_term_width && x >= 0 && y < term_height && y >= 0) {
-        terminal_color(terminal_pick_color(x, y));
-        terminal_put(x, y, terminal_pick(x, y));
+        PrintGraphic(x, y, {"", "", "blue"});
       }
     }
-    terminal_bkcolor("black");
   }
 // draw ui overlays related to clickable tiles
   if (terminal_state(TK_MOUSE_X) == plyr_sc_pos.x && terminal_state(TK_MOUSE_Y) == plyr_sc_pos.y
   && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
-    terminal_bkcolor("blue");
-      terminal_color(terminal_pick_color(plyr_sc_pos.x, plyr_sc_pos.y));
-      terminal_put(plyr_sc_pos.x, plyr_sc_pos.y, terminal_pick(plyr_sc_pos.x, plyr_sc_pos.y));
-    terminal_bkcolor("black");
+    PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, {"", "", "blue"});
   }
 // draw menu if necessary
   if (paused) {
@@ -247,7 +241,7 @@ void PlayState::Draw(Game *game)
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Render(game);
     DrawBorder({term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4}, "white", "black");
-    PrintCh(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
+    PrintGraphic(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
   }
   map_menu.Draw(game);
 }

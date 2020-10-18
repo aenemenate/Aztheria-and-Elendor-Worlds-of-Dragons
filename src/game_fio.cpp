@@ -1,4 +1,3 @@
-#include <BearLibTerminal.h>
 #include "game_fio.h"
 
 #include "game.h"
@@ -13,9 +12,12 @@
 #include <iostream>
 #include <sstream>
 
+#include "draw_funcs.h"
+#include "base.h"
+
 void GameFIO::LoadWorld(Game *game, int slot) {
-  terminal_print(0, 0, "Loading . . .");
-  terminal_refresh();
+  PrintGraphic(0, 0, {"Loading . . .", "white", "black"});
+  RefreshTerminal();
   game->CleanupResources();
   try {
     stringstream filepath;
@@ -31,8 +33,8 @@ void GameFIO::LoadWorld(Game *game, int slot) {
 }
 
 void GameFIO::SaveWorld(Game *game) {
-  terminal_print(0, 0, "Saving . . .");
-  terminal_refresh();
+  PrintGraphic(0, 0, {"Saving . . .", "white", "black"});
+  RefreshTerminal();
   try {
     stringstream filepath;
     filepath << "./saves/world" << game->world->slot << ".bin";

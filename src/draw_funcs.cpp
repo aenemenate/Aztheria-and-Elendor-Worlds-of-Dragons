@@ -1,8 +1,41 @@
-#include <BearLibTerminal.h>
 #include "draw_funcs.h"
 #include "base.h"
-
+#include <BearLibTerminal.h>
 #include <sstream>
+
+
+color_t term_fgcolor = color_from_name("white");
+color_t term_bkcolor = color_from_name("black");
+
+
+void SetTerminal(std::string set_text) {
+  terminal_open();
+  terminal_set(set_text.c_str());
+}
+
+void ClearTerminal() {
+  terminal_bkcolor(term_bkcolor = color_from_name("black"));
+  terminal_clear();
+}
+
+void RefreshTerminal() {
+  terminal_refresh();
+}
+
+void PrintGraphic(int x, int y, Graphic gr) {
+  std::string text = gr.ch;
+  if (gr.fgcolor == "")
+    terminal_color(term_fgcolor = terminal_pick_color(x, y));
+  else if (term_fgcolor != color_from_name(gr.fgcolor.c_str()))
+    terminal_color(term_fgcolor = color_from_name(gr.fgcolor.c_str()));
+  if (gr.bgcolor == "")
+    terminal_bkcolor(term_bkcolor = terminal_pick_bkcolor(x, y));
+  else if (term_bkcolor != color_from_name(gr.bgcolor.c_str()))
+    terminal_bkcolor(term_bkcolor = color_from_name(gr.bgcolor.c_str()));
+  if (text == "")
+    text = std::string{(char)terminal_pick(x, y, 0)};
+  terminal_print(x, y, text.c_str());
+}
 
 void DrawBorder(Rectangle rect, string fgcolor, string bgcolor) {
   terminal_color(fgcolor.c_str());
@@ -21,8 +54,10 @@ void DrawBorder(Rectangle rect, string fgcolor, string bgcolor) {
   terminal_print(rect.right, rect.bottom, "╝"); 
 }
 
-void PrintCh(int x, int y, Graphic gr) {
-  terminal_color(gr.fgcolor.c_str());
-  terminal_bkcolor(gr.bgcolor.c_str());
-  terminal_print(x, y, gr.ch.c_str());
+int GetTermWidth() {
+  return terminal_state(TK_WIDTH);
+}
+
+int GetTermHeight() {
+  return terminal_state(TK_HEIGHT);
 }
