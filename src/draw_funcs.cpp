@@ -14,6 +14,7 @@ void SetTerminal(std::string set_text) {
 }
 
 void ClearTerminal() {
+  terminal_bkcolor(term_bkcolor = color_from_name("black"));
   terminal_clear();
 }
 
@@ -22,11 +23,18 @@ void RefreshTerminal() {
 }
 
 void PrintGraphic(int x, int y, Graphic gr) {
-  if (term_fgcolor != color_from_name(gr.fgcolor.c_str()))
+  std::string text = gr.ch;
+  if (gr.fgcolor == "")
+    terminal_color(term_fgcolor = terminal_pick_color(x, y));
+  else if (term_fgcolor != color_from_name(gr.fgcolor.c_str()))
     terminal_color(term_fgcolor = color_from_name(gr.fgcolor.c_str()));
-  if (term_bkcolor != color_from_name(gr.bgcolor.c_str()))
+  if (gr.bgcolor == "")
+    terminal_bkcolor(term_bkcolor = terminal_pick_bkcolor(x, y));
+  else if (term_bkcolor != color_from_name(gr.bgcolor.c_str()))
     terminal_bkcolor(term_bkcolor = color_from_name(gr.bgcolor.c_str()));
-  terminal_print(x, y, gr.ch.c_str());
+  if (text == "")
+    text = std::string{(char)terminal_pick(x, y, 0)};
+  terminal_print(x, y, text.c_str());
 }
 
 void DrawBorder(Rectangle rect, string fgcolor, string bgcolor) {

@@ -215,7 +215,7 @@ void PlayState::Draw(Game *game)
   Point plyr_sc_pos = { plyr_pos.x - startx, plyr_pos.y - starty };
   int plyr_z = plyr_pos.z;
   std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
-  PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic); // fix
+  PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic);
 // draw path if necessary
   if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width
   && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0
@@ -223,23 +223,17 @@ void PlayState::Draw(Game *game)
     std::vector<Point> path;
     path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y,
                                terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
-    terminal_bkcolor("blue");
     for (auto point : path) {
       int x = point.x - startx, y = point.y - starty;
       if (x < map_term_width && x >= 0 && y < term_height && y >= 0) {
-        terminal_color(terminal_pick_color(x, y));
-        terminal_put(x, y, terminal_pick(x, y));
+        PrintGraphic(x, y, {"", "", "blue"});
       }
     }
-    terminal_bkcolor("black");
   }
 // draw ui overlays related to clickable tiles
   if (terminal_state(TK_MOUSE_X) == plyr_sc_pos.x && terminal_state(TK_MOUSE_Y) == plyr_sc_pos.y
   && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
-    terminal_bkcolor("blue");
-      terminal_color(terminal_pick_color(plyr_sc_pos.x, plyr_sc_pos.y));
-      terminal_put(plyr_sc_pos.x, plyr_sc_pos.y, terminal_pick(plyr_sc_pos.x, plyr_sc_pos.y));
-    terminal_bkcolor("black");
+    PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, {"", "", "blue"});
   }
 // draw menu if necessary
   if (paused) {
