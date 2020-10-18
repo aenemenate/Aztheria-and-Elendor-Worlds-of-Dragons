@@ -5,5 +5,5 @@ I initially started developing this game so my sister could play a game about dr
 To build simply run bin/build (Verified on Windows 7+, MacOS, and Linux)
 
 Dependencies:
+
   All Systems: Boost Serialization static version
-  Linux: xsel
