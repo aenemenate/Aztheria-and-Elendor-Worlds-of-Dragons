@@ -1,8 +1,12 @@
-#include <BearLibTerminal.h>
 #include "draw_funcs.h"
 #include "base.h"
-
+#include <BearLibTerminal.h>
 #include <sstream>
+
+
+color_t term_fgcolor = color_from_name("white");
+color_t term_bkcolor = color_from_name("black");
+
 
 void SetTerminal(std::string set_text) {
   terminal_open();
@@ -18,8 +22,10 @@ void RefreshTerminal() {
 }
 
 void PrintGraphic(int x, int y, Graphic gr) {
-  terminal_color(gr.fgcolor.c_str());
-  terminal_bkcolor(gr.bgcolor.c_str());
+  if (term_fgcolor != color_from_name(gr.fgcolor.c_str()))
+    terminal_color(term_fgcolor = color_from_name(gr.fgcolor.c_str()));
+  if (term_bkcolor != color_from_name(gr.bgcolor.c_str()))
+    terminal_bkcolor(term_bkcolor = color_from_name(gr.bgcolor.c_str()));
   terminal_print(x, y, gr.ch.c_str());
 }
 
