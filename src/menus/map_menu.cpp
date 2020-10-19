@@ -1,3 +1,4 @@
+#include <BearLibTerminal.h>
 #include "map_menu.h"
 #include "../game.h"
 #include "../draw_funcs.h"

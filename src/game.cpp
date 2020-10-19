@@ -3,7 +3,7 @@
 #include "ecs/entity.h"
 #include "map/area.h"
 #include "draw_funcs.h"
-#include "input_funcs.h"
+#include <BearLibTerminal.h> // for input code
 
 void Game::CleanupResources() {
   if (this->world != nullptr)
@@ -12,20 +12,22 @@ void Game::CleanupResources() {
 }
 
 void Game::Init() {
+  key = 0;
   running = true;
+  input_block_mode = true;
   SetTerminal("window.size=60x40");
 // set values
   world = nullptr;
 }
 
 void Game::CleanupAll() {
-// cleanup all the states
+	// cleanup the all states
   while ( !states.empty() ) {
 	  states.back()->Cleanup();
 	  states.pop_back();
   }
   CleanupResources();
-  CloseTerminal();
+  terminal_close();
 }
 
 void Game::ChangeState(GameState* state) {
@@ -56,10 +58,13 @@ void Game::PopState() {
 }
 
 void Game::HandleEvents() {
-  TerminalReadKey();
+  if (input_block_mode 
+  || terminal_has_input())
+    key = terminal_read();
+  else { key = 0; }
 // let the state handle events
   states.back()->HandleEvents(this);
-  if (TerminalWasClosed())
+  if (key==TK_CLOSE)
     Quit();
 }
 

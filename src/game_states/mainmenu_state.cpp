@@ -1,9 +1,9 @@
+#include <BearLibTerminal.h>
 #include "mainmenu_state.h"
 #include "createworld_state.h"
 #include "loadworld_state.h"
 #include "../draw_funcs.h"
 #include "../base.h"
-#include "../input_funcs.h"
 #include "../util/filesystem.h"
 
 #include <fstream>
@@ -18,8 +18,8 @@ void QuitGame(Game* game) { game->Quit(); }
 MainMenuState MainMenuState::mainMenuState;
 
 void MainMenuState::Init(Game *game) {
-  int term_width  = GetTermWidth(), 
-      term_height = GetTermHeight(),
+  int term_width  = terminal_state(TK_WIDTH), 
+      term_height = terminal_state(TK_HEIGHT),
       y_offset = 0;
   buttons.clear();
   bool save_exists = false;
@@ -49,20 +49,20 @@ void MainMenuState::Cleanup() {
 }
 
 void MainMenuState::HandleEvents(Game *game) {
-  if (TerminalWasResized())
+  if (terminal_state(TK_EVENT) == TK_RESIZED)
     this->Init(game);
-  switch (TerminalGetKey()) {
-    case MTK_KP_8:
-    case MTK_UP:
+  switch (game->key) {
+    case TK_KP_8:
+    case TK_UP:
       menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret; 
       break;
-    case MTK_KP_2:
-    case MTK_DOWN:
+    case TK_KP_2:
+    case TK_DOWN:
       menu_caret = (menu_caret < buttons.size() - 1) ? ++menu_caret : menu_caret;
       break;
-    case MTK_KP_ENTER:
-    case MTK_ENTER:
-    case MTK_SPACE:
+    case TK_KP_ENTER:
+    case TK_ENTER:
+    case TK_SPACE:
       buttons[menu_caret].Activate(game);
       break;
   }
@@ -74,10 +74,10 @@ void MainMenuState::Update(Game *game) {
 }
 
 void MainMenuState::Draw(Game *game) {
-  int term_width  = GetTermWidth(), 
-      term_height = GetTermHeight();
+  int term_width  = terminal_state(TK_WIDTH), 
+      term_height = terminal_state(TK_HEIGHT);
   for (int b=0;b<buttons.size();b++)
-    buttons[b].Render();
+    buttons[b].Render(game);
   PrintGraphic(buttons[menu_caret].GetX() - 2, term_height/2 - 1 + menu_caret*2, {">", "white", "black"});
-  PrintGraphic(term_width/2 - 26, term_height/2 - 11, {title, "white", "black"});
+  terminal_print(term_width/2 - 26, term_height/2 - 11, title.c_str());
 }
