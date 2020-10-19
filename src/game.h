@@ -9,9 +9,8 @@ class World;
 
 class Game {
   vector<GameState*> states;
-  bool running, input_block_mode;
+  bool running;
 public:
-  int key;
   Settings settings;
   World *world;
 
@@ -29,6 +28,4 @@ public:
 
   bool Running() { return running; }
   void Quit() { running = false; }
-
-  void SetInputBlockMode(bool value) { input_block_mode = value;}
 };
