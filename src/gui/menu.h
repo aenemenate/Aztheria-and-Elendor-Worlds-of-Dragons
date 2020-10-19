@@ -8,7 +8,7 @@ class Menu {
   int click_offset;
   std::string title;
   bool dragging, show;
-  bool isclicked(Game*);
+  bool isclicked();
   bool ishovered();
 public:
   int xpos, ypos, width, height;

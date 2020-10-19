@@ -10,8 +10,12 @@ class Rectangle;
 
 void SetTerminal(std::string);
 
+void ClearTerminalArea(int, int, int, int);
 void ClearTerminal();
 void RefreshTerminal();
+void CloseTerminal();
+
+bool TerminalWasResized();
 
 void PrintGraphic(int,int,Graphic);
 void DrawBorder(Rectangle, string, string);

@@ -15,11 +15,11 @@ public:
   Button(int x, int y, string text, void(*callback_f)(Game*))
     : x(x), y(y), text(text), callback_f(callback_f) {  }
 
-  void Activate(Game* game);
-  bool isclicked(Game* game);
+  void Activate(Game *game);
+  void Update(Game *game);
+  void Render();
 
-  void Update(Game* game);
-  void Render(Game* game);
+  bool isclicked();
 
   void SetText(string value) { text = value; }
   string GetText() { return text; }
