@@ -1,5 +1,11 @@
 #pragma once
 
+// TODO (aenem):
+//   add tick function
+//   add component list
+//   add component function
+//   remove component function
+
 #include "../base.h"
 #include "entity_components.h"
 #include "entity_actions.h"
