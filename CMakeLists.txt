@@ -13,6 +13,9 @@ elseif(UNIX)
   include(cmake/unix.cmake)
 endif()
 
+# Include rapidxml
+include_directories("3rdparty/rapidxml-1.13")
+
 # Setup boost
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED COMPONENTS serialization)
