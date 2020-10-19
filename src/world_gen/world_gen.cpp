@@ -138,9 +138,9 @@ void WorldGen::PlaceEntities(World* world, int player_wpos) {
            y_pos = static_cast<uint16_t>(player_pos % world->GetArea(0,0)->width);
 // add player
   Entity player;
-  player.components.push_back(std::shared_ptr<Renderable>(new Renderable({"@", "yellow", "black"})));
+  player.components.push_back(std::shared_ptr<Renderable>(new Renderable({"D", "red", ""})));
   player.components.push_back(std::shared_ptr<EntPosition>(new EntPosition({ x_pos, y_pos, 0, world_x, world_y })));
-  player.components.push_back(std::shared_ptr<Name>(new Name("player")));
+  player.components.push_back(std::shared_ptr<Name>(new Name("a dragon")));
   player.components.push_back(std::shared_ptr<Fov>(new Fov(28)));
   player.components.push_back(std::shared_ptr<Player>(new Player(true)));
   world->AddEntity(player);
