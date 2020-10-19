@@ -18,8 +18,20 @@ void ClearTerminal() {
   terminal_clear();
 }
 
+void ClearTerminalArea(int left, int top, int width, int height) {
+  terminal_clear_area(left, top, width, height);
+}
+
 void RefreshTerminal() {
   terminal_refresh();
+}
+
+void CloseTerminal() {
+  terminal_close();
+}
+
+bool TerminalWasResized() {
+  return terminal_state(TK_EVENT) == TK_RESIZED;
 }
 
 void PrintGraphic(int x, int y, Graphic gr) {

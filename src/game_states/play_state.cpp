@@ -1,8 +1,8 @@
-#include <BearLibTerminal.h>
 #include "play_state.h"
 
 #include "../draw_funcs.h"
 #include "../base.h"
+#include "../input_funcs.h"
 #include "../ecs/entity.h"
 #include "../world.h"
 #include "../map/area.h"
@@ -28,8 +28,8 @@ void StopPlaying(Game *game) { game->PopState(); game->CleanupResources(); }
 void SaveGame(Game *game) { GameFIO::SaveWorld(game); StopPlaying(game); }
 
 void PlayState::Init(Game *game) {
-  int term_width  = terminal_state(TK_WIDTH), 
-      term_height = terminal_state(TK_HEIGHT);
+  int term_width  = GetTermWidth(), 
+      term_height = GetTermHeight();
   status_panel = StatusPanel(20);
   pmenu_buttons.resize(0);
   pmenu_buttons.push_back(Button(term_width/2-4,term_height/2, "save & quit", SaveGame));
@@ -47,52 +47,52 @@ void PlayState::Cleanup() {
 
 void PlayState::HandleEvents(Game *game) {
   int xsign = 0, ysign = 0;
-  if (terminal_state(TK_EVENT) == TK_RESIZED)
+  if (TerminalWasResized())
     this->Init(game);
   // if none of menus are showing
   if (!paused && !map_menu.GetShow()) {
     Entity *plyr = &(game->world->entities[0]);
     Position plyr_pos = (std::dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
-    switch (game->key) {
-      case TK_KP_8:
-      case TK_UP:
+    switch (TerminalGetKey()) {
+      case MTK_KP_8:
+      case MTK_UP:
         plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,-1,0))); break;
-      case TK_KP_9:
+      case MTK_KP_9:
         plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,-1,0))); break;
-      case TK_KP_6:
-      case TK_RIGHT:
+      case MTK_KP_6:
+      case MTK_RIGHT:
         plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,0,0))); break;
-      case TK_KP_3:
+      case MTK_KP_3:
         plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,1,0))); break;
-      case TK_KP_2:
-      case TK_DOWN:
+      case MTK_KP_2:
+      case MTK_DOWN:
         plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0))); break;
-      case TK_KP_1:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,1,0))); break;
-      case TK_KP_4:
-      case TK_LEFT:
+      case MTK_KP_1:
+        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,1,0))); break;
+      case MTK_KP_4:
+      case MTK_LEFT:
         plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,0,0))); break;
-      case TK_KP_7:
+      case MTK_KP_7:
         plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,-1,0))); break;
-      case TK_KP_ENTER:
+      case MTK_KP_ENTER:
         plyr->actions.push_back(std::shared_ptr<EntityAction>(new ActivateBlock(0, 0))); break;
-      case TK_M:
+      case MTK_M:
         map_menu.SetShow(true);
         break;
-      case TK_ESCAPE:
+      case MTK_ESCAPE:
         paused = true;
         break;
     }
-    int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
+    int term_width = GetTermWidth(), map_term_width = status_panel.start_x(term_width), term_height = GetTermHeight();
     int startx = min(max(0,game->world->GetArea(0,0)->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
     int starty = min(max(0,game->world->GetArea(0,0)->height-term_height), max(0, plyr_pos.y - term_height/2));  
-    if (game->key == (TK_MOUSE_RIGHT|TK_KEY_RELEASED) && terminal_state(TK_MOUSE_X) < map_term_width) {
+    if (TerminalGetKey() == (MTK_MOUSE_RIGHT|MTK_KEY_RELEASED) && TerminalGetMouseX() < map_term_width) {
       player_path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y, 
-                                        terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
-      game->SetInputBlockMode(false);
+                                        TerminalGetMouseX()+startx, TerminalGetMouseY()+starty);
+      TerminalSetInputBlockMode(false);
     }
-    if (game->key == (TK_MOUSE_LEFT|TK_KEY_RELEASED)) {
-      if (terminal_state(TK_MOUSE_X)+startx == plyr_pos.x && terminal_state(TK_MOUSE_Y)+starty == plyr_pos.y) {
+    if (TerminalGetKey() == (MTK_MOUSE_LEFT|MTK_KEY_RELEASED)) {
+      if (TerminalGetMouseX()+startx == plyr_pos.x && TerminalGetMouseY()+starty == plyr_pos.y) {
         if (game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->enterable)
           game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->Activate(plyr, game->world);
         else {
@@ -109,28 +109,28 @@ void PlayState::HandleEvents(Game *game) {
     }
   }
   else if (paused)
-    switch (game->key) {
-      case TK_KP_8:
-      case TK_UP:
+    switch (TerminalGetKey()) {
+      case MTK_KP_8:
+      case MTK_UP:
         menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret; 
         break;
-      case TK_KP_2:
-      case TK_DOWN:
+      case MTK_KP_2:
+      case MTK_DOWN:
         menu_caret = (menu_caret < pmenu_buttons.size() - 1) ? ++menu_caret : menu_caret;
         break;
-      case TK_KP_ENTER:
-      case TK_ENTER:
+      case MTK_KP_ENTER:
+      case MTK_ENTER:
         pmenu_buttons[menu_caret].Activate(game);
-        game->key = 0;
+        TerminalClearKey();
         break;
-      case TK_ESCAPE:
+      case MTK_ESCAPE:
         paused = false;
         break;
     }
   else if (map_menu.GetShow())
-    switch (game->key) {
-      case TK_ESCAPE:
-      case TK_M:
+    switch (TerminalGetKey()) {
+      case MTK_ESCAPE:
+      case MTK_M:
         map_menu.SetShow(false);
         break;
     }
@@ -151,7 +151,7 @@ void PlayState::Update(Game *game)
                                                                                                player_path.back().y - plyr_pos.y,0)));
       player_path.pop_back();
       if (player_path.size() == 0)
-        game->SetInputBlockMode(true);
+        TerminalSetInputBlockMode(true);
     }
     for (int e = 0; e < game->world->entities.size(); ++e)
       game->world->entities[e].Act(game->world);
@@ -217,12 +217,12 @@ void PlayState::Draw(Game *game)
   std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
   PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic);
 // draw path if necessary
-  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width
-  && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0
-  && terminal_state(TK_MOUSE_Y) < term_height) {
+  if (TerminalRightMouseHeld() && TerminalGetMouseX() < map_term_width
+  && TerminalGetMouseX() >= 0 && TerminalGetMouseY() >= 0
+  && TerminalGetMouseY() < term_height) {
     std::vector<Point> path;
     path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y,
-                               terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
+                               TerminalGetMouseX()+startx, TerminalGetMouseY()+starty);
     for (auto point : path) {
       int x = point.x - startx, y = point.y - starty;
       if (x < map_term_width && x >= 0 && y < term_height && y >= 0) {
@@ -231,15 +231,15 @@ void PlayState::Draw(Game *game)
     }
   }
 // draw ui overlays related to clickable tiles
-  if (terminal_state(TK_MOUSE_X) == plyr_sc_pos.x && terminal_state(TK_MOUSE_Y) == plyr_sc_pos.y
+  if (TerminalGetMouseX() == plyr_sc_pos.x && TerminalGetMouseY() == plyr_sc_pos.y
   && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
     PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, {"", "", "blue"});
   }
 // draw menu if necessary
   if (paused) {
-    terminal_clear_area(term_width/2-7,term_height/2-2,15,6);
+    ClearTerminalArea(term_width/2-7,term_height/2-2,15,6);
     for (int b=0;b<pmenu_buttons.size();b++)
-      pmenu_buttons[b].Render(game);
+      pmenu_buttons[b].Render();
     DrawBorder({term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4}, "white", "black");
     PrintGraphic(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
   }
