@@ -10,6 +10,10 @@
 using namespace rapidxml;
 
 namespace XmlParser {
+/* rapidxml uses a specific method for speed which requires that the source
+ * text always exists, this is why we must specify a wrapper struct which also
+ * hold the text
+ */
   struct XmlDoc {
     xml_document<> doc;
     std::string text;
