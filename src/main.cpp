@@ -1,3 +1,4 @@
+#include <BearLibTerminal.h>
 #include "./game_states/mainmenu_state.h"
 
 #if defined(_WIN32) || defined(_WIN64)

@@ -1,17 +1,15 @@
+#include <BearLibTerminal.h>
 #include "button.h"
 #include "../game.h"
-#include "../draw_funcs.h"
-#include "../base.h"
-#include <BearLibTerminal.h>
 
 void Button::Activate(Game *game) { callback_f(game); }
 
 void Button::Update(Game *game) { if (isclicked(game)) callback_f(game); }
 
 void Button::Render(Game *game) {
-  std::string bkcolor = "black";
-  std::string fgcolor = (ishovered() ? "green" : "white");
-  PrintGraphic(this->x, this->y, {text, fgcolor, bkcolor});
+  std::string t = "[bkcolor=black]" + text;
+    t = (ishovered() ? "[color=green]" : "[color=white]") + t;
+  terminal_print_ext(this->x, this->y, this->text.length(), 1, TK_ALIGN_CENTER, t.c_str());
 }
 
 bool Button::isclicked(Game *game) {

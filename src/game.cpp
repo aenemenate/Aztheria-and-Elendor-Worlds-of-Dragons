@@ -1,9 +1,8 @@
+#include <BearLibTerminal.h>
 #include "game.h"
 #include "world.h"
 #include "ecs/entity.h"
 #include "map/area.h"
-#include "draw_funcs.h"
-#include <BearLibTerminal.h> // for input code
 
 void Game::CleanupResources() {
   if (this->world != nullptr)
@@ -15,7 +14,9 @@ void Game::Init() {
   key = 0;
   running = true;
   input_block_mode = true;
-  SetTerminal("window.size=60x40");
+  terminal_open();
+  terminal_set("window.size=60x40");
+  terminal_refresh();
 // set values
   world = nullptr;
 }
@@ -75,7 +76,7 @@ void Game::Update() {
 
 void Game::Draw() {
 // let the state draw the screen
-  ClearTerminal();
+  terminal_clear();
   states.back()->Draw(this);
-  RefreshTerminal();
+  terminal_refresh();
 }

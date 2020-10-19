@@ -1,8 +1,11 @@
-#include "menu.h"
-#include "../game.h"
-#include "../base.h"
-#include "../draw_funcs.h"
 #include <BearLibTerminal.h>
+#include "menu.h"
+
+#include "../game.h"
+
+#include "../base.h"
+
+#include "../draw_funcs.h"
 
 void Menu::Draw(Game* game) {
   if (!show)
@@ -10,14 +13,14 @@ void Menu::Draw(Game* game) {
   DrawBorder({xpos-1, xpos+width, ypos, ypos+height+1}, "white", "black");
   for (int i = 0; i < width; i++) {
     if (title.length() > i)
-      PrintGraphic(xpos + i, ypos, {title.substr(i,1),"white", "black"});
+      PrintCh(xpos + i, ypos, {title.substr(i,1),"white", "black"});
     else
-      PrintGraphic(xpos + i, ypos, {"═", "white", "black"});
+      terminal_print(xpos + i, ypos, "═");
   }
-  PrintGraphic(xpos + width - 1, ypos, {"x","red", "black"});
+  PrintCh(xpos + width - 1, ypos, {"x","red", "black"});
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++)
-        PrintGraphic(xpos + i, ypos + 1 + j, {" ","white", "black"});
+        PrintCh(xpos + i, ypos + 1 + j, {" ","white", "black"});
   CustomDraw(game);
 }
 

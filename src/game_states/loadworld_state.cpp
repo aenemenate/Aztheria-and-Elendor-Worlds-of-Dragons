@@ -1,10 +1,10 @@
+#include <BearLibTerminal.h>
 #include "loadworld_state.h"
 #include "play_state.h"
 #include "state_funcs.h"
 
 #include "../draw_funcs.h"
 #include "../base.h"
-#include <BearLibTerminal.h>
 
 #include "../game_fio.h"
 #include "../util/filesystem.h"
@@ -36,16 +36,14 @@ void LoadWorldState::Init(Game *game) {
   buttons.clear();
   int term_width  = terminal_state(TK_WIDTH), 
       term_height = terminal_state(TK_HEIGHT);
-// push buttons (based on available save files)
+// push buttons
   int y_offset = 0;
   for(const auto& entry : fs::directory_iterator("./saves"))
     if (entry.path().extension() == ".bin") {
       buttons.push_back(Button(term_width/2 - 10,term_height/2-15+y_offset*2, entry.path().string(), LoadWorld));
       y_offset++;
     }
-// push go back button
   buttons.push_back(Button(1,term_height-2, "go [[b]]ack", GoBack));
-// init menu caret
   menu_caret = 0;
 }
 
@@ -54,10 +52,8 @@ void LoadWorldState::Cleanup() {
 }
 
 void LoadWorldState::HandleEvents(Game *game) {
-// re-init if resized
   if (terminal_state(TK_EVENT) == TK_RESIZED)
     this->Init(game);
-// handle input
   switch (game->key) {
     case TK_KP_8:
     case TK_UP:
@@ -81,7 +77,6 @@ void LoadWorldState::HandleEvents(Game *game) {
 }
 
 void LoadWorldState::Update(Game *game) {
-// update buttons
   for (int b=0;b<buttons.size();b++) {
     if (buttons[b].isclicked(game))
       filepath = buttons[b].GetText();
@@ -92,9 +87,7 @@ void LoadWorldState::Update(Game *game) {
 void LoadWorldState::Draw(Game *game) {
   int term_width  = terminal_state(TK_WIDTH), 
       term_height = terminal_state(TK_HEIGHT);
-// draw buttons
   for (int b=0;b<buttons.size();b++)
     buttons[b].Render(game);
-// print menu caret
-  PrintGraphic(term_width/2-12, term_height/2 - 15 + menu_caret*2, {">", "white", "black"});
+  PrintCh(term_width/2-12, term_height/2 - 15 + menu_caret*2, {">", "white", "black"});
 }

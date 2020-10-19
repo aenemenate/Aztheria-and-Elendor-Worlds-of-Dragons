@@ -169,9 +169,9 @@ void PlayState::Draw(Game *game)
   int curwx = plyr_pos.wx, 
       curwy = plyr_pos.wy;
   Area *area = game->world->GetArea(curwx, curwy);
-  int term_width = GetTermWidth(), 
+  int term_width = terminal_state(TK_WIDTH), 
       map_term_width = status_panel.start_x(term_width), 
-      term_height = GetTermHeight();
+      term_height = terminal_state(TK_HEIGHT);
   int startx = min(max(0,area->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
   int starty = min(max(0,area->height-term_height), max(0, plyr_pos.y - term_height/2));
 // draw status panel
@@ -183,9 +183,9 @@ void PlayState::Draw(Game *game)
       Block *block = area->GetBlock(i, j, plyr_pos.z);
       if (tile->explored) {
         if (block->gr.ch != " ")
-          PrintGraphic(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
+          PrintCh(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
         else
-          PrintGraphic(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
+          PrintCh(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
       }
     }
 // draw visible points
@@ -201,13 +201,13 @@ void PlayState::Draw(Game *game)
       Entity *entity = area->GetEntity(point.x, point.y, point.z);
       if (entity == nullptr) {
         if (block->gr.ch != " ")
-          PrintGraphic(point.x - startx, point.y - starty, { block->gr.ch, block->gr.fgcolor, tile->gr.bgcolor });
+          PrintCh(point.x - startx, point.y - starty, { block->gr.ch, block->gr.fgcolor, tile->gr.bgcolor });
         else
-          PrintGraphic(point.x - startx, point.y - starty, tile->gr);
+          PrintCh(point.x - startx, point.y - starty, tile->gr);
       }
       else {
         std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(entity->GetComponent(EC_RENDERABLE_ID));
-        PrintGraphic(point.x - startx, point.y - starty, rend_c->graphic); // fix
+        PrintCh(point.x - startx, point.y - starty, rend_c->graphic); // fix
       }
     }
   }
@@ -215,13 +215,13 @@ void PlayState::Draw(Game *game)
   Point plyr_sc_pos = { plyr_pos.x - startx, plyr_pos.y - starty };
   int plyr_z = plyr_pos.z;
   std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
-  PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic); // fix
+  PrintCh(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic); // fix
 // draw path if necessary
-  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width
-  && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0
+  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width 
+  && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0 
   && terminal_state(TK_MOUSE_Y) < term_height) {
     std::vector<Point> path;
-    path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y,
+    path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y, 
                                terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
     terminal_bkcolor("blue");
     for (auto point : path) {
@@ -247,7 +247,7 @@ void PlayState::Draw(Game *game)
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Render(game);
     DrawBorder({term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4}, "white", "black");
-    PrintGraphic(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
+    PrintCh(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
   }
   map_menu.Draw(game);
 }
