@@ -126,20 +126,13 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
 void WorldGen::PlaceEntities(World* world, int player_wpos) {
   uint16_t world_x = static_cast<uint16_t>(player_wpos / world->width), 
            world_y = static_cast<uint16_t>(player_wpos % world->width);
-  vector<int> walkable_positions;
-  for (int i = 0; i < world->GetArea(0,0)->width; i++)
-    for (int j = 0; j < world->GetArea(0,0)->height; j++) {
-      if (world->GetArea(world_x, world_y)->GetTile(i,j,0)->walkable)
-        walkable_positions.push_back(i * world->GetArea(0,0)->width + j);
-    }
+  std::vector<Point> walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
   srand(time(0));
-  int player_pos = walkable_positions[rand()%walkable_positions.size()];
-  uint16_t x_pos = static_cast<uint16_t>(player_pos / world->GetArea(0,0)->width), 
-           y_pos = static_cast<uint16_t>(player_pos % world->GetArea(0,0)->width);
+  Point player_pos = walkable_positions[rand()%walkable_positions.size()];
 // add player
   Entity player;
   player.components.push_back(std::shared_ptr<Renderable>(new Renderable({"@", "yellow", "black"})));
-  player.components.push_back(std::shared_ptr<EntPosition>(new EntPosition({ x_pos, y_pos, 0, world_x, world_y })));
+  player.components.push_back(std::shared_ptr<EntPosition>(new EntPosition({ player_pos.x, player_pos.y, 0, world_x, world_y })));
   player.components.push_back(std::shared_ptr<Name>(new Name("player")));
   player.components.push_back(std::shared_ptr<Fov>(new Fov(28)));
   player.components.push_back(std::shared_ptr<Player>(new Player(true)));
