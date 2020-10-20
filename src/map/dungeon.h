@@ -17,5 +17,6 @@ public:
   Dungeon() : Map() {}
   Dungeon(uint16_t width,uint16_t height) : Map(width,height) {}
   
+  void ClearEnts();
   string GetName() { return this->name; }
 };
