@@ -1,0 +1,17 @@
+ #!/bin/sh
+
+pushd .
+
+if [ ! -d "build" ]
+then
+  mkdir build
+fi
+
+cd build
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake --build .
+
+cd ../game
+gdb ../build/A-and-E-Worlds-of-Dragons
+
+popd

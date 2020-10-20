@@ -6,7 +6,7 @@
 #include <streambuf>
 
 namespace FileHelper {
-/*  Does the given file exist?  */
+/* Does the given file exist? */
   inline bool file_exists(std::string name) {
     if (FILE *file = fopen(name.c_str(), "r")) {
       fclose(file);
@@ -14,7 +14,7 @@ namespace FileHelper {
     } 
     else return false;
   }
-
+/* Get the content of a file as a string */
   inline std::string get_file_contents(std::string filename) {
     std::ifstream t(filename);
     std::string str{(std::istreambuf_iterator<char>(t)),

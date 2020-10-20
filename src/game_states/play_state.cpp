@@ -52,7 +52,7 @@ void PlayState::HandleEvents(Game *game) {
   // if none of menus are showing
   if (!paused && !map_menu.GetShow()) {
     Entity *plyr = &(game->world->entities[0]);
-    Position plyr_pos = (std::dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
+    Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
     switch (TerminalGetKey()) {
       case MTK_KP_8:
       case MTK_UP:
@@ -144,18 +144,20 @@ void PlayState::Update(Game *game)
       pmenu_buttons[b].Update(game);
   else {
     Entity *plyr = &(game->world->entities[0]);
-    Position plyr_pos = (std::dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
+    Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
     if (player_path.size() > 0) {
       plyr->actions.clear();
       plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(player_path.back().x - plyr_pos.x,
-                                                                                               player_path.back().y - plyr_pos.y,0)));
+                                                                     player_path.back().y - plyr_pos.y,0)));
       player_path.pop_back();
       if (player_path.size() == 0)
         TerminalSetInputBlockMode(true);
     }
-    for (int e = 0; e < game->world->entities.size(); ++e)
+    for (int e = 0; e < game->world->entities.size(); ++e)
+
       game->world->entities[e].Act(game->world);
-    for (int e = 0; e < game->world->entities.size(); ++e)
+    for (int e = 0; e < game->world->entities.size(); ++e)
+
       game->world->entities[e].Tick(game);
   }
   map_menu.Update(game);
@@ -164,7 +166,7 @@ void PlayState::Update(Game *game)
 void PlayState::Draw(Game *game)
 {
   Entity *plyr = &(game->world->entities[0]);
-  Position plyr_pos = (std::dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
+  Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
 // set values
   int curwx = plyr_pos.wx, 
       curwy = plyr_pos.wy;
@@ -189,7 +191,7 @@ void PlayState::Draw(Game *game)
       }
     }
 // draw visible points
-  std::shared_ptr<Fov> fov_c = std::dynamic_pointer_cast<Fov>(plyr->GetComponent(EC_FOV_ID));
+  std::shared_ptr<Fov> fov_c = dynamic_pointer_cast<Fov>(plyr->GetComponent(EC_FOV_ID));
   for (int vp = 0; vp < fov_c->visiblepoints.size(); vp++) {
     Position point = fov_c->visiblepoints[vp];
     if (point.x - startx < map_term_width
@@ -202,19 +204,19 @@ void PlayState::Draw(Game *game)
       if (entity == nullptr) {
         if (block->gr.ch != " ")
           PrintGraphic(point.x - startx, point.y - starty, { block->gr.ch, block->gr.fgcolor, tile->gr.bgcolor });
-        else
+        else 
           PrintGraphic(point.x - startx, point.y - starty, tile->gr);
       }
       else {
-        std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(entity->GetComponent(EC_RENDERABLE_ID));
-        PrintGraphic(point.x - startx, point.y - starty, rend_c->graphic); // fix
+        std::shared_ptr<Renderable> rend_c = dynamic_pointer_cast<Renderable>(entity->GetComponent(EC_RENDERABLE_ID));
+        PrintGraphic(point.x - startx, point.y - starty, rend_c->graphic);
       }
     }
   }
 // draw player
   Point plyr_sc_pos = { plyr_pos.x - startx, plyr_pos.y - starty };
   int plyr_z = plyr_pos.z;
-  std::shared_ptr<Renderable> rend_c = std::dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
+  std::shared_ptr<Renderable> rend_c = dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
   PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic);
 // draw path if necessary
   if (TerminalRightMouseHeld() && TerminalGetMouseX() < map_term_width

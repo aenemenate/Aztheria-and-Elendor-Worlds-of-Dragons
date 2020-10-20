@@ -33,7 +33,8 @@ public:
   
   World() { }
   World(uint8_t,uint8_t,uint16_t,uint16_t,int);
-  
+  ~World();  
+
   bool PointWithinBounds(int,int);
   
   Area *GetArea(int,int);

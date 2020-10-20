@@ -11,7 +11,7 @@ void Move::Do(Entity *src, World *world) {
   int zsign = (zdir <= -1) ? -1 : ((zdir >= 1) ? 1 : 0);
 // set variables
   if (src->HasComponent(EC_POSITION_ID)) {
-    std::shared_ptr<EntPosition> pos_c = std::dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID));
+    std::shared_ptr<EntPosition> pos_c = dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID));
     Position *pos = &(pos_c->position);
     int new_x = pos->x + xsign, 
         new_y = pos->y + ysign,
@@ -82,7 +82,7 @@ void Move::Do(Entity *src, World *world) {
 
 void ActivateBlock::Do(Entity *src, World *world) {
   if (src->HasComponent(EC_POSITION_ID)) {
-    Position this_pos = (std::dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID)))->position;
+    Position this_pos = ( dynamic_pointer_cast<EntPosition>( src->GetComponent(EC_POSITION_ID) ) )->position;
     Position block_pos = { this_pos.x + this->xdir, this_pos.y + this->ydir, this_pos.z, this_pos.wx, this_pos.wy };
     world->GetArea(block_pos.wx, block_pos.wy)->GetBlock(block_pos.x, block_pos.y, block_pos.z)->Activate((void*)src, world);
   }
