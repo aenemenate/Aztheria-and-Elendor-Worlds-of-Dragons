@@ -14,17 +14,23 @@ class EntityComponent {
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version) {
     ar & ID;
+    ar & prio;
   }
 public:
   int ID;
+  int prio;
   EntityComponent() {}
-  EntityComponent(int ID) : ID(ID) {}
+  EntityComponent(int ID, int prio) : ID(ID), prio(prio) {}
   virtual ~EntityComponent() {}
   virtual bool Tick(Entity *ent, Game *game) = 0;
 };
 
 
 // Defined components
+
+#define EC_PRIO_NULL		0
+#define EC_PRIO_PRE		1
+#define EC_PRIO_POST		2
 
 #define EC_RENDERABLE_ID	0
 #define EC_POSITION_ID		1
@@ -42,7 +48,7 @@ class Renderable : public EntityComponent {
 public:
   Graphic graphic;
   Renderable() : EntityComponent() {}
-  Renderable(Graphic _graphic) : graphic(_graphic), EntityComponent(EC_RENDERABLE_ID) {}
+  Renderable(Graphic _graphic) : graphic(_graphic), EntityComponent(EC_RENDERABLE_ID, EC_PRIO_NULL) {}
   bool Tick(Entity *src, Game *game) { return false; }
 };
 
@@ -56,7 +62,7 @@ class EntPosition : public EntityComponent {
 public:
   Position position;
   EntPosition() : EntityComponent() {}
-  EntPosition(Position _position) : position(_position), EntityComponent(EC_POSITION_ID) {}
+  EntPosition(Position _position) : position(_position), EntityComponent(EC_POSITION_ID, EC_PRIO_NULL) {}
   bool Tick(Entity *src, Game *game) { return false; }
 };
 
@@ -70,7 +76,7 @@ class Name : public EntityComponent {
 public:
   std::string name;
   Name() : EntityComponent() {}
-  Name(std::string _name) : name(_name), EntityComponent(EC_NAME_ID) {}
+  Name(std::string _name) : name(_name), EntityComponent(EC_NAME_ID, EC_PRIO_NULL) {}
   bool Tick(Entity *src, Game *game) { return false; }
 };
 
@@ -86,7 +92,7 @@ public:
   int viewradius;
   std::vector<Position> visiblepoints;
   Fov() : EntityComponent() {}
-  Fov(int _viewradius) : viewradius(_viewradius), EntityComponent(EC_FOV_ID) {}
+  Fov(int _viewradius) : viewradius(_viewradius), EntityComponent(EC_FOV_ID, EC_PRIO_POST) {}
   bool Tick(Entity *src, Game *game);
 };
 
@@ -98,8 +104,8 @@ class Player : public EntityComponent {
   }
 public:
   Player() : EntityComponent() {}
-  Player(bool empty_val) : EntityComponent(EC_PLAYER_ID) {}
-  bool Tick(Entity *src, Game *game) { return false; }
+  Player(bool empty_val) : EntityComponent(EC_PLAYER_ID, EC_PRIO_PRE) {}
+  bool Tick(Entity *src, Game *game);
 };
 
 
