@@ -13,6 +13,8 @@
 #include "biome_gen.h"
 #include "dung_gen.h"
 
+#include "../xml/xml_parser.h"
+
 #include <string>
 #include <chrono>
 #include <random>
@@ -131,10 +133,19 @@ void WorldGen::PlaceEntities(World* world, int player_wpos) {
   Point player_pos = walkable_positions[rand()%walkable_positions.size()];
 // add player
   Entity player;
-  player.components.push_back(std::shared_ptr<Renderable>(new Renderable({"@", "yellow", "black"})));
-  player.components.push_back(std::shared_ptr<EntPosition>(new EntPosition({ player_pos.x, player_pos.y, 0, world_x, world_y })));
-  player.components.push_back(std::shared_ptr<Name>(new Name("player")));
-  player.components.push_back(std::shared_ptr<Fov>(new Fov(28)));
-  player.components.push_back(std::shared_ptr<Player>(new Player(true)));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new Renderable({"@", "yellow", "black"})));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new EntPosition({ player_pos.x, player_pos.y, 0, world_x, world_y })));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new Name("player")));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new Fov(28)));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new Player(true)));
   world->AddEntity(player);
+// add entities from xml
+  std::vector<Entity> entities;
+  entities = XmlParser::GetEntitiesFromXml("./data/monsters.xml");
+  for (int i = 0; i < entities.size(); ++i) {
+    Entity e = entities[i];
+    Point e_pos = walkable_positions[rand()%walkable_positions.size()];
+    e.components.push_back(std::shared_ptr<EntityComponent>(new EntPosition({ e_pos.x, e_pos.y, 0, world_x, world_y })));
+    world->AddEntity(e);
+  }
 }

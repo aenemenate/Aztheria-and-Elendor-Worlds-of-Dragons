@@ -24,14 +24,28 @@ class Entity {
 public:
   std::vector<std::shared_ptr<EntityComponent>> components;
   std::vector<std::shared_ptr<EntityAction>> actions;
-// (De-)Initializers
+
+  /* Initializer, for boost serialization */
   Entity() {}
-// Component handles
+
+  /* Destructor */
+//  ~Entity() { actions.clear(); for (auto c : components) delete c; components.clear();}
+
+  /* Check if the entity has a given component, based on Component ID. */
   bool HasComponent(int component_type) { for (auto c : components) if (c->ID == component_type) return true; return false; }
+
+  /* Get the entity\'s given component, based on Component ID. */
   std::shared_ptr<EntityComponent> GetComponent(int component_type) { for (auto c : components) if (c->ID == component_type) return c; return nullptr; }
+
+  /* Add a component. */
   void AddComponent(std::shared_ptr<EntityComponent> component) { components.push_back(component); }
+
+  /* Remove a component. */
   void RemoveComponent(int component_type);
-// Tick systems
+
+  /* Tick components. */
   void Tick(Game *game);
+
+  /* Perform actions. */
   void Act(World *world);
 };

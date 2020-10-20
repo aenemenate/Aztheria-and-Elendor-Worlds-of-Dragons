@@ -3,8 +3,8 @@
 class World;
 class Entity;
 
-// Entity Action
-
+/* An action stored as an object, can perform itself (upon which it is deleted),
+   and has data which are arguments */
 class EntityAction {
 public:
   int ID;
@@ -14,11 +14,13 @@ public:
   virtual void Do(Entity *ent, World *world) = 0;
 };
 
-// Defined Actions 
-
 #define EA_MOVE_ID		0
 #define EA_ACTIVATEBLOCK_ID	1
 
+
+/* All-purpose move, takes a direction (x, y, and z), and tries to move that
+ * direction. It will move maps if necessary.
+ */
 class Move : public EntityAction {
 public:
   int xdir, ydir, zdir;
@@ -27,6 +29,7 @@ public:
   void Do(Entity *src, World *world);
 };
 
+/* Can activate any block in a radius. */
 class ActivateBlock : public EntityAction {
 public:
   int xdir, ydir;
