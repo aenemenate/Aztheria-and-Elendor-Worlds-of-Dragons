@@ -44,7 +44,7 @@ public:
   void RemoveComponent(int component_type);
 
   /* Tick components. */
-  void Tick(Game *game);
+  void Tick(Game *game, int prio);
 
   /* Perform actions. */
   void Act(World *world);

@@ -10,8 +10,10 @@ void Entity::RemoveComponent(int component_type) {
   );
 }
 
-void Entity::Tick(Game *game) {
-  for (auto c : components) c->Tick(this, game);
+void Entity::Tick(Game *game, int prio) {
+  for (auto c : components)
+    if (c->prio == prio)
+      c->Tick(this, game);
 }
 
 void Entity::Act(World *world) {

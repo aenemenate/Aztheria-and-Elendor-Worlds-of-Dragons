@@ -51,31 +51,7 @@ void PlayState::HandleEvents(Game *game) {
     this->Init(game);
   // if none of menus are showing
   if (!paused && !map_menu.GetShow()) {
-    Entity *plyr = &(game->world->entities[0]);
-    Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
     switch (TerminalGetKey()) {
-      case MTK_KP_8:
-      case MTK_UP:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,-1,0))); break;
-      case MTK_KP_9:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,-1,0))); break;
-      case MTK_KP_6:
-      case MTK_RIGHT:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,0,0))); break;
-      case MTK_KP_3:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,1,0))); break;
-      case MTK_KP_2:
-      case MTK_DOWN:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0))); break;
-      case MTK_KP_1:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,1,0))); break;
-      case MTK_KP_4:
-      case MTK_LEFT:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,0,0))); break;
-      case MTK_KP_7:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,-1,0))); break;
-      case MTK_KP_ENTER:
-        plyr->actions.push_back(std::shared_ptr<EntityAction>(new ActivateBlock(0, 0))); break;
       case MTK_M:
         map_menu.SetShow(true);
         break;
@@ -83,6 +59,9 @@ void PlayState::HandleEvents(Game *game) {
         paused = true;
         break;
     }
+// handle mouse input for moving the player, done here because it is dependent on gui elements
+    Entity *plyr = &(game->world->entities[0]);
+    Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
     int term_width = GetTermWidth(), map_term_width = status_panel.start_x(term_width), term_height = GetTermHeight();
     int startx = min(max(0,game->world->GetArea(0,0)->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
     int starty = min(max(0,game->world->GetArea(0,0)->height-term_height), max(0, plyr_pos.y - term_height/2));  
@@ -112,7 +91,7 @@ void PlayState::HandleEvents(Game *game) {
     switch (TerminalGetKey()) {
       case MTK_KP_8:
       case MTK_UP:
-        menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret; 
+        menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret;
         break;
       case MTK_KP_2:
       case MTK_DOWN:
@@ -154,11 +133,12 @@ void PlayState::Update(Game *game)
         TerminalSetInputBlockMode(true);
     }
     for (int e = 0; e < game->world->entities.size(); ++e)
-
+      game->world->entities[e].Tick(game, EC_PRIO_PRE);
+    for (int e = 0; e < game->world->entities.size(); ++e)
       game->world->entities[e].Act(game->world);
     for (int e = 0; e < game->world->entities.size(); ++e)
-
-      game->world->entities[e].Tick(game);
+      game->world->entities[e].Tick(game, EC_PRIO_POST);
+    
   }
   map_menu.Update(game);
 }
