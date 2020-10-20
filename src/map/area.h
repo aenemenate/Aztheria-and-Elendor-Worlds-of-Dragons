@@ -57,6 +57,8 @@ public:
 
   Area() : Map() { height_map.clear(); dungeon_floors.clear(); }
   Area(uint16_t width,uint16_t height) : Map(width,height) { height_map.resize(width*height, 0); dungeon_floors.clear(); }
+
+  void ClearEnts();
 /* Check if there are any dungeon floors */
   bool HasDungeon() { return dungeon_floors.size() > 0;}
 /* 3-dimensional varients of the map getters/setters, z of 0 gets world map, every subsequent (1,2,etc.) z gets dungeon floor */

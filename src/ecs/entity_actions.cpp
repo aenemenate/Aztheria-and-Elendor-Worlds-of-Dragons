@@ -62,15 +62,17 @@ void Move::Do(Entity *src, World *world) {
       if (!newmap->GetTile(new_x,new_y,new_z)->walkable 
       ||  newmap->GetEntity(new_x,new_y,new_z) != nullptr
       ||  newmap->GetBlock(new_x,new_y,new_z)->solid) {
-        new_x = pos->x;
-        new_y = pos->y;
-        new_z = pos->z;
-        new_wx = pos->wx;
-        new_wy = pos->wy;
+	new_x = pos->x;
+	new_y = pos->y;
+	new_z = pos->z;
+	new_wx = pos->wx;
+	new_wy = pos->wy;
       }
     }
     world->GetArea(pos->wx, pos->wy)->SetEntity(pos->x,pos->y,pos->z,nullptr);
     world->GetArea(new_wx, new_wy)->SetEntity(new_x,new_y,new_z,src);
+    if (new_wx != pos->wx || new_wy != pos->wy || new_z != pos->z)
+      world->GetArea(new_wx, new_wy)->ClearEnts();
 // set the new positions
     pos->x = new_x;
     pos->y = new_y;

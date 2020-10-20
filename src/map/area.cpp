@@ -92,6 +92,14 @@ Graphic GetAreaGraphic(Area *area) {
   return {" ", "black", "black"};
 }
 
+void Area::ClearEnts() {
+  ent_map.clear();
+  ent_map.resize(width * height, nullptr);
+  for (int i = 0; i < dungeon_floors.size(); ++i) {
+    dungeon_floors[i].ClearEnts();
+  }
+}
+
 Tile *Area::GetTile(int x, int y, int z) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)

@@ -38,6 +38,9 @@ void World::AddEntity(Entity entity) {
 }
 
 void World::SetEnts() {
+  for (int i = 0; i < width; ++i)
+    for (int j = 0; j < height; ++j)
+      GetArea(i, j)->ClearEnts();
   for (int e = 0; e < entities.size(); ++e) {
     Entity *entity = &(entities[e]);
     if (entity->HasComponent(EC_POSITION_ID)) {
