@@ -1,12 +1,17 @@
 <monsters>
+
   <monster>
-    <name value="goblin"/>
-    <renderable ch="g" fgcolor="green" bgcolor="black"/>
-    <fov viewradius="11"/>
+    <name value="frog"/>
+    <renderable ch="u" fgcolor="green" bgcolor="black"/>
+    <fov viewradius="7"/>
+    <animalai/>
   </monster>
+
   <monster>
     <name value="ratling"/>
     <renderable ch="r" fgcolor="gray" bgcolor="black"/>
-    <fov viewradius="7"/>
+    <fov viewradius="11"/>
+    <animalai/>
   </monster>
+
 </monsters> 

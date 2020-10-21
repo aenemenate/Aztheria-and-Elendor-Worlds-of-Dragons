@@ -5,7 +5,13 @@
 #include "entity.h"
 #include "../input_funcs.h"
 
-bool Fov::Tick(Entity *src, Game *game) {
+#include <iostream>
+
+Entity *Fov::ClosestVisibleEnemy(World *world, Position pos) {
+  return nullptr;
+}
+
+void Fov::Tick(Entity *src, Game *game) {
   visiblepoints.clear();
   if (src->HasComponent(EC_POSITION_ID)) {
     World *world = game->world;
@@ -20,10 +26,9 @@ bool Fov::Tick(Entity *src, Game *game) {
         map_ptr->GetBlock(temp_pos->x, temp_pos->y, temp_pos->z)->explored = true;
       }
   }
-  return false;
 }
 
-bool Player::Tick(Entity *src, Game *game) {
+void Player::Tick(Entity *src, Game *game) {
   Position plyr_pos = (dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID)))->position;
   switch (TerminalGetKey()) {
     case MTK_KP_8:
@@ -49,5 +54,33 @@ bool Player::Tick(Entity *src, Game *game) {
     case MTK_KP_ENTER:
       src->actions.push_back(std::shared_ptr<EntityAction>(new ActivateBlock(0, 0))); break;
   }
-  return false;
+}
+
+void AnimalAi::Tick(Entity *src, Game *game) {
+  if (src->HasComponent(EC_POSITION_ID)) {
+    Position pos = (dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID)))->position;
+    if (src->HasComponent(EC_FOV_ID)) {
+      std::shared_ptr<Fov> fov = dynamic_pointer_cast<Fov>(src->GetComponent(EC_FOV_ID));
+      Entity *ent;
+      if ((ent = fov->ClosestVisibleEnemy(game->world, pos)) != nullptr) {
+	// move away from entity
+	
+      }
+      else {
+	// random move
+        srand(time(0));
+	int dir = rand()%4;
+	switch (dir) {
+	  case (0):
+            src->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,0,0))); break;
+	  case (1): 
+	    src->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,0,0))); break;
+	  case (2):
+	    src->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0))); break;
+	  case (3):
+	    src->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,-1,0))); break;
+	}
+      }
+    }
+  }
 }

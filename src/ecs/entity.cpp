@@ -16,9 +16,11 @@ void Entity::Tick(Game *game, int prio) {
       c->Tick(this, game);
 }
 
-void Entity::Act(World *world) {
+bool Entity::Act(World *world) {
   if (actions.size() > 0) {
     actions[0]->Do(this, world);
     actions.erase(actions.begin());
+    return true;
   }
+  return false;
 }

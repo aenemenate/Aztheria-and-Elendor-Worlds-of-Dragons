@@ -4,7 +4,6 @@
 #include <bits/stdc++.h>
 #include <iostream>
 
-#include <rapidxml_utils.hpp>
 #include <rapidxml_print.hpp>
 
 std::shared_ptr<Renderable> renderableFromNode(xml_node<> *node) {
@@ -25,6 +24,10 @@ std::shared_ptr<Fov> fovFromNode(xml_node<> *node) {
   return std::shared_ptr<Fov>(new Fov(std::stoi(std::string(node->first_attribute()->value()))));
 }
 
+std::shared_ptr<AnimalAi> animalAiFromNode(xml_node<> *node) {
+  return std::shared_ptr<AnimalAi>(new AnimalAi(false));
+}
+
 std::shared_ptr<EntityComponent> componentFromNode(xml_node<> *node) {
   if (std::string(node->name()) == "renderable") {
     return renderableFromNode(node);
@@ -34,6 +37,9 @@ std::shared_ptr<EntityComponent> componentFromNode(xml_node<> *node) {
   }
   if (std::string(node->name()) == "fov") {
     return fovFromNode(node);
+  }
+  if (std::string(node->name()) == "animalai") {
+    return animalAiFromNode(node);
   }
   return nullptr;
 }
