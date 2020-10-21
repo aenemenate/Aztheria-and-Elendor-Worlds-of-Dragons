@@ -28,9 +28,6 @@ public:
   /* Initializer, for boost serialization */
   Entity() {}
 
-  /* Destructor */
-//  ~Entity() { actions.clear(); for (auto c : components) delete c; components.clear();}
-
   /* Check if the entity has a given component, based on Component ID. */
   bool HasComponent(int component_type) { for (auto c : components) if (c->ID == component_type) return true; return false; }
 
@@ -47,5 +44,5 @@ public:
   void Tick(Game *game, int prio);
 
   /* Perform actions. */
-  void Act(World *world);
+  bool Act(World *world);
 };

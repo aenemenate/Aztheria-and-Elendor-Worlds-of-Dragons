@@ -6,6 +6,7 @@
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/base_object.hpp>
 
+class World;
 class Game;
 class Entity;
 
@@ -22,7 +23,7 @@ public:
   EntityComponent() {}
   EntityComponent(int ID, int prio) : ID(ID), prio(prio) {}
   virtual ~EntityComponent() {}
-  virtual bool Tick(Entity *ent, Game *game) = 0;
+  virtual void Tick(Entity *ent, Game *game) = 0;
 };
 
 
@@ -37,6 +38,7 @@ public:
 #define EC_NAME_ID		2
 #define EC_FOV_ID		3
 #define EC_PLAYER_ID		4
+#define EC_ANIMALAI_ID		5
 
 class Renderable : public EntityComponent {
   friend class boost::serialization::access;
@@ -49,7 +51,7 @@ public:
   Graphic graphic;
   Renderable() : EntityComponent() {}
   Renderable(Graphic _graphic) : graphic(_graphic), EntityComponent(EC_RENDERABLE_ID, EC_PRIO_NULL) {}
-  bool Tick(Entity *src, Game *game) { return false; }
+  void Tick(Entity *src, Game *game) { return false; }
 };
 
 class EntPosition : public EntityComponent {
@@ -63,7 +65,7 @@ public:
   Position position;
   EntPosition() : EntityComponent() {}
   EntPosition(Position _position) : position(_position), EntityComponent(EC_POSITION_ID, EC_PRIO_NULL) {}
-  bool Tick(Entity *src, Game *game) { return false; }
+  void Tick(Entity *src, Game *game) { return false; }
 };
 
 class Name : public EntityComponent {
@@ -77,7 +79,7 @@ public:
   std::string name;
   Name() : EntityComponent() {}
   Name(std::string _name) : name(_name), EntityComponent(EC_NAME_ID, EC_PRIO_NULL) {}
-  bool Tick(Entity *src, Game *game) { return false; }
+  void Tick(Entity *src, Game *game) { return false; }
 };
 
 class Fov : public EntityComponent {
@@ -93,7 +95,10 @@ public:
   std::vector<Position> visiblepoints;
   Fov() : EntityComponent() {}
   Fov(int _viewradius) : viewradius(_viewradius), EntityComponent(EC_FOV_ID, EC_PRIO_POST) {}
-  bool Tick(Entity *src, Game *game);
+  /* Fov helper functions */
+  Entity *ClosestVisibleEnemy(World *world, Position pos);
+  /* Update fov and update the map if this entity has EC_PLAYER */
+  void Tick(Entity *src, Game *game);
 };
 
 class Player : public EntityComponent {
@@ -105,9 +110,20 @@ class Player : public EntityComponent {
 public:
   Player() : EntityComponent() {}
   Player(bool empty_val) : EntityComponent(EC_PLAYER_ID, EC_PRIO_PRE) {}
-  bool Tick(Entity *src, Game *game);
+  void Tick(Entity *src, Game *game);
 };
 
+class AnimalAi : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+  }
+public:
+  AnimalAi() : EntityComponent() {}
+  AnimalAi(bool empty_val) : EntityComponent(EC_ANIMALAI_ID, EC_PRIO_PRE) {}
+  void Tick(Entity *src, Game *game);
+};
 
 // Functions
 

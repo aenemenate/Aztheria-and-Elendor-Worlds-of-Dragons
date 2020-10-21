@@ -132,13 +132,16 @@ void PlayState::Update(Game *game)
       if (player_path.size() == 0)
         TerminalSetInputBlockMode(true);
     }
+// tick pre-action components
     for (int e = 0; e < game->world->entities.size(); ++e)
       game->world->entities[e].Tick(game, EC_PRIO_PRE);
-    for (int e = 0; e < game->world->entities.size(); ++e)
-      game->world->entities[e].Act(game->world);
+// act, only allowing other entities to act if the player does
+    if (game->world->entities[0].Act(game->world))
+      for (int e = 1; e < game->world->entities.size(); ++e)
+        game->world->entities[e].Act(game->world);
+// tick post-action components
     for (int e = 0; e < game->world->entities.size(); ++e)
       game->world->entities[e].Tick(game, EC_PRIO_POST);
-    
   }
   map_menu.Update(game);
 }
