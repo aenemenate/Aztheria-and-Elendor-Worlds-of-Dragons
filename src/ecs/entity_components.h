@@ -51,7 +51,7 @@ public:
   Graphic graphic;
   Renderable() : EntityComponent() {}
   Renderable(Graphic _graphic) : graphic(_graphic), EntityComponent(EC_RENDERABLE_ID, EC_PRIO_NULL) {}
-  void Tick(Entity *src, Game *game) { return false; }
+  void Tick(Entity *src, Game *game) {}
 };
 
 class EntPosition : public EntityComponent {
@@ -65,7 +65,7 @@ public:
   Position position;
   EntPosition() : EntityComponent() {}
   EntPosition(Position _position) : position(_position), EntityComponent(EC_POSITION_ID, EC_PRIO_NULL) {}
-  void Tick(Entity *src, Game *game) { return false; }
+  void Tick(Entity *src, Game *game) {}
 };
 
 class Name : public EntityComponent {
@@ -79,7 +79,7 @@ public:
   std::string name;
   Name() : EntityComponent() {}
   Name(std::string _name) : name(_name), EntityComponent(EC_NAME_ID, EC_PRIO_NULL) {}
-  void Tick(Entity *src, Game *game) { return false; }
+  void Tick(Entity *src, Game *game) {}
 };
 
 class Fov : public EntityComponent {
