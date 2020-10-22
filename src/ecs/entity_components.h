@@ -128,10 +128,11 @@ public:
 // Functions
 
 template<class Archive>
-void RegisterEntityComponentTypes(Archive &ar) {
+inline void RegisterEntityComponentTypes(Archive &ar) {
     ar.template register_type<Renderable>();
     ar.template register_type<EntPosition>();
     ar.template register_type<Name>();
     ar.template register_type<Fov>();
     ar.template register_type<Player>();
+    ar.template register_type<AnimalAi>();
 }

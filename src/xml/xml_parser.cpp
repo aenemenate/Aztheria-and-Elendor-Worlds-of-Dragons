@@ -66,7 +66,6 @@ std::vector<Entity> XmlParser::GetEntitiesFromXml(std::string filepath) {
          t_node; t_node = t_node->next_sibling()) {
       Entity entity = entityFromNode(t_node);
       entities.push_back(entity);
-      std::cout << entity.components.back()->ID << std::endl;
     }
   }
   return entities;
