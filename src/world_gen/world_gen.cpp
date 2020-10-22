@@ -86,6 +86,46 @@ void WorldGen::GeneratePlants(World* world) {
     UpdatePlants(world);
 }
 
+void WorldGen::PlaceEntities(World* world) {
+  vector<Point> walkable_areas;
+  for (int i = 0; i < world->width; i++)
+    for (int j = 0; j < world->height; j++) {
+      TerrainType tt = world->GetArea(i, j)->terrain_type;
+      switch (tt) {
+        case TerrainType::Plain: 
+        case TerrainType::Hill:
+          walkable_areas.push_back({i, j});
+          break;
+      }
+    }
+  int wp_index = rand()%walkable_areas.size();
+  uint16_t world_x = walkable_areas[wp_index].x, world_y = walkable_areas[wp_index].y;
+  std::vector<Point> walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
+  srand(time(0));
+  Point pos = walkable_positions[rand()%walkable_positions.size()];
+// add player
+  Entity player;
+  player.components.push_back(std::shared_ptr<EntityComponent>(new Renderable({"@", "yellow", "black"})));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new EntPosition({ pos.x, pos.y, 0, world_x, world_y })));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new Name("player")));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new Fov(28)));
+  player.components.push_back(std::shared_ptr<EntityComponent>(new Player(true)));
+  world->AddEntity(player);
+// add animals from xml
+  std::vector<Entity> entities;
+  entities = XmlParser::GetEntitiesFromXml("./data/animals.xml");
+  for (int e = 0; e < world->width * world->height * 5; ++e) {
+    wp_index = rand()%walkable_areas.size();
+    world_x = walkable_areas[wp_index].x;
+    world_y = walkable_areas[wp_index].y;
+    walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
+    Entity ent = entities[rand()%entities.size()];
+    Point ent_pos = walkable_positions[rand()%walkable_positions.size()];
+    ent.components.push_back(std::shared_ptr<EntityComponent>(new EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
+    world->AddEntity(ent);
+  }
+}
+
 void WorldGen::GenerateWorld(Game *game, int size, int slot) {
 // pick random seed from clock
   chrono::high_resolution_clock::time_point d = chrono::high_resolution_clock::now();
@@ -98,7 +138,6 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
   game->world = new World(size,size,156,156,slot);
   game->world->seed = dice_roll;
 // generate terrain and determine temperature
-  vector<int> walkable_positions;
   for (int i = 0; i < game->world->width; i++)
     for (int j = 0; j < game->world->height; j++) {
     // generate height map
@@ -107,45 +146,10 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
       BiomeGen::DetermineAreaTerrainType(game->world->GetArea(i, j));
     // determine temperature
       BiomeGen::DetermineAreaTemperature(game->world->GetArea(i, j), j, game->world->height);
-    // collect areas where we want to place the player
-      TerrainType tt = game->world->GetArea(i, j)->terrain_type;
-      switch (tt) {
-        case TerrainType::Plain: 
-        case TerrainType::Hill:
-          walkable_positions.push_back(i * game->world->width + j);
-          break;
-      }
     }
   BiomeGen::DetermineHumidityMap(game->world); // puts humidity for every world tile
   BiomeGen::DetermineBiomes(game->world);      // assigns biomes to every world tile
   DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
   GeneratePlants(game->world);                 // generates plants
-  srand(time(0));
-  int player_pos = walkable_positions[0+rand()%walkable_positions.size()];
-  PlaceEntities(game->world, player_pos);
-}
-
-void WorldGen::PlaceEntities(World* world, int player_wpos) {
-  uint16_t world_x = static_cast<uint16_t>(player_wpos / world->width), 
-           world_y = static_cast<uint16_t>(player_wpos % world->width);
-  std::vector<Point> walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
-  srand(time(0));
-  Point player_pos = walkable_positions[rand()%walkable_positions.size()];
-// add player
-  Entity player;
-  player.components.push_back(std::shared_ptr<EntityComponent>(new Renderable({"@", "yellow", "black"})));
-  player.components.push_back(std::shared_ptr<EntityComponent>(new EntPosition({ player_pos.x, player_pos.y, 0, world_x, world_y })));
-  player.components.push_back(std::shared_ptr<EntityComponent>(new Name("player")));
-  player.components.push_back(std::shared_ptr<EntityComponent>(new Fov(28)));
-  player.components.push_back(std::shared_ptr<EntityComponent>(new Player(true)));
-  world->AddEntity(player);
-// add entities from xml
-  std::vector<Entity> entities;
-  entities = XmlParser::GetEntitiesFromXml("./data/monsters.xml");
-  for (int i = 0; i < entities.size(); ++i) {
-    Entity e = entities[i];
-    Point e_pos = walkable_positions[rand()%walkable_positions.size()];
-    e.components.push_back(std::shared_ptr<EntityComponent>(new EntPosition({ e_pos.x, e_pos.y, 0, world_x, world_y })));
-    world->AddEntity(e);
-  }
+  PlaceEntities(game->world);
 }
