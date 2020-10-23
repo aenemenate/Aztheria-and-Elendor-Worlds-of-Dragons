@@ -13,19 +13,19 @@ std::shared_ptr<Renderable> renderableFromNode(xml_node<> *node) {
   std::string fgcolor = std::string(attr->value());
   attr = attr->next_attribute();
   std::string bgcolor = std::string(attr->value());
-  return std::shared_ptr<Renderable>(new Renderable({ch, fgcolor, bgcolor}));
+  return std::make_shared<Renderable>(Renderable({ch, fgcolor, bgcolor}));
 }
 
 std::shared_ptr<Name> nameFromNode(xml_node<> *node) {
-  return std::shared_ptr<Name>(new Name(std::string(node->first_attribute()->value())));
+  return std::make_shared<Name>(Name(std::string(node->first_attribute()->value())));
 }
 
 std::shared_ptr<Fov> fovFromNode(xml_node<> *node) {
-  return std::shared_ptr<Fov>(new Fov(std::stoi(std::string(node->first_attribute()->value()))));
+  return std::make_shared<Fov>(Fov(std::stoi(std::string(node->first_attribute()->value()))));
 }
 
 std::shared_ptr<AnimalAi> animalAiFromNode(xml_node<> *node) {
-  return std::shared_ptr<AnimalAi>(new AnimalAi(false));
+  return std::make_shared<AnimalAi>(AnimalAi(false));
 }
 
 std::shared_ptr<EntityComponent> componentFromNode(xml_node<> *node) {

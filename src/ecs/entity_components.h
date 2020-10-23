@@ -5,6 +5,7 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/base_object.hpp>
+#include <memory>
 
 class World;
 class Game;
@@ -24,6 +25,7 @@ public:
   EntityComponent(int ID, int prio) : ID(ID), prio(prio) {}
   virtual ~EntityComponent() {}
   virtual void Tick(Entity *ent, Game *game) = 0;
+  virtual inline std::shared_ptr<EntityComponent> GetCopy() = 0;
 };
 
 
@@ -52,6 +54,7 @@ public:
   Renderable() : EntityComponent() {}
   Renderable(Graphic _graphic) : graphic(_graphic), EntityComponent(EC_RENDERABLE_ID, EC_PRIO_NULL) {}
   void Tick(Entity *src, Game *game) {}
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Renderable>(Renderable(graphic)); }
 };
 
 class EntPosition : public EntityComponent {
@@ -66,6 +69,7 @@ public:
   EntPosition() : EntityComponent() {}
   EntPosition(Position _position) : position(_position), EntityComponent(EC_POSITION_ID, EC_PRIO_NULL) {}
   void Tick(Entity *src, Game *game) {}
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<EntPosition>(EntPosition(position)); }
 };
 
 class Name : public EntityComponent {
@@ -80,6 +84,7 @@ public:
   Name() : EntityComponent() {}
   Name(std::string _name) : name(_name), EntityComponent(EC_NAME_ID, EC_PRIO_NULL) {}
   void Tick(Entity *src, Game *game) {}
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Name>(Name(name)); }
 };
 
 class Fov : public EntityComponent {
@@ -99,6 +104,7 @@ public:
   Entity *ClosestVisibleEnemy(World *world, Position pos);
   /* Update fov and update the map if this entity has EC_PLAYER */
   void Tick(Entity *src, Game *game);
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Fov>(Fov(viewradius)); }
 };
 
 class Player : public EntityComponent {
@@ -111,6 +117,7 @@ public:
   Player() : EntityComponent() {}
   Player(bool empty_val) : EntityComponent(EC_PLAYER_ID, EC_PRIO_PRE) {}
   void Tick(Entity *src, Game *game);
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Player>(Player(false)); }
 };
 
 class AnimalAi : public EntityComponent {
@@ -123,6 +130,7 @@ public:
   AnimalAi() : EntityComponent() {}
   AnimalAi(bool empty_val) : EntityComponent(EC_ANIMALAI_ID, EC_PRIO_PRE) {}
   void Tick(Entity *src, Game *game);
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<AnimalAi>(AnimalAi(false)); }
 };
 
 // Functions
