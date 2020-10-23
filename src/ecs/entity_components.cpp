@@ -33,26 +33,26 @@ void Player::Tick(Entity *src, Game *game) {
   switch (TerminalGetKey()) {
     case MTK_KP_8:
     case MTK_UP:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,-1,0))); break;
+      src->actions.push_back(std::make_shared<Move>(Move(0,-1,0))); break;
     case MTK_KP_9:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,-1,0))); break;
+      src->actions.push_back(std::make_shared<Move>(Move(1,-1,0))); break;
     case MTK_KP_6:
     case MTK_RIGHT:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,0,0))); break;
+      src->actions.push_back(std::make_shared<Move>(Move(1,0,0))); break;
     case MTK_KP_3:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,1,0))); break;
+      src->actions.push_back(std::make_shared<Move>(Move(1,1,0))); break;
     case MTK_KP_2:
     case MTK_DOWN:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0))); break;
+      src->actions.push_back(std::make_shared<Move>(Move(0,1,0))); break;
     case MTK_KP_1:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,1,0))); break;
+      src->actions.push_back(std::make_shared<Move>(Move(-1,1,0))); break;
     case MTK_KP_4:
     case MTK_LEFT:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,0,0))); break;
+      src->actions.push_back(std::make_shared<Move>(Move(-1,0,0))); break;
     case MTK_KP_7:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,-1,0))); break;
+      src->actions.push_back(std::make_shared<Move>(Move(-1,-1,0))); break;
     case MTK_KP_ENTER:
-      src->actions.push_back(std::shared_ptr<EntityAction>(new ActivateBlock(0, 0))); break;
+      src->actions.push_back(std::make_shared<ActivateBlock>(ActivateBlock(0, 0))); break;
   }
 }
 
@@ -72,13 +72,13 @@ void AnimalAi::Tick(Entity *src, Game *game) {
 	int dir = rand()%4;
 	switch (dir) {
 	  case (0):
-            src->actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,0,0))); break;
+            src->actions.push_back(std::make_shared<Move>(Move(-1,0,0))); break;
 	  case (1): 
-	    src->actions.push_back(std::shared_ptr<EntityAction>(new Move(1,0,0))); break;
+	    src->actions.push_back(std::make_shared<Move>(Move(1,0,0))); break;
 	  case (2):
-	    src->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0))); break;
+	    src->actions.push_back(std::make_shared<Move>(Move(0,1,0))); break;
 	  case (3):
-	    src->actions.push_back(std::shared_ptr<EntityAction>(new Move(0,-1,0))); break;
+	    src->actions.push_back(std::make_shared<Move>(Move(0,-1,0))); break;
 	}
       }
     }
