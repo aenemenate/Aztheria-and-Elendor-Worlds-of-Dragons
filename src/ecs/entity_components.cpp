@@ -68,7 +68,6 @@ void AnimalAi::Tick(Entity *src, Game *game) {
       }
       else {
 	// random move
-        srand(time(0));
 	int dir = rand()%4;
 	switch (dir) {
 	  case (0):
