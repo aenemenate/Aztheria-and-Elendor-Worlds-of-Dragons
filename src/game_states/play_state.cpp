@@ -133,15 +133,23 @@ void PlayState::Update(Game *game)
         TerminalSetInputBlockMode(true);
     }
 // tick pre-action components
-    for (int e = 0; e < game->world->entities.size(); ++e)
-      game->world->entities[e].Tick(game, EC_PRIO_PRE);
+    for (int e = 0; e < game->world->entities.size(); ++e) {
+      Position pos = (dynamic_pointer_cast<EntPosition>(game->world->entities[e].GetComponent(EC_POSITION_ID)))->position;
+      if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
+      &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
+        game->world->entities[e].Tick(game, EC_PRIO_PRE);
+    }
 // act, only allowing other entities to act if the player does
     if (game->world->entities[0].Act(game->world))
       for (int e = 1; e < game->world->entities.size(); ++e)
         game->world->entities[e].Act(game->world);
 // tick post-action components
-    for (int e = 0; e < game->world->entities.size(); ++e)
-      game->world->entities[e].Tick(game, EC_PRIO_POST);
+    for (int e = 0; e < game->world->entities.size(); ++e) {
+      Position pos = (dynamic_pointer_cast<EntPosition>(game->world->entities[e].GetComponent(EC_POSITION_ID)))->position;
+      if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
+      &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
+        game->world->entities[e].Tick(game, EC_PRIO_POST);
+    }
   }
   map_menu.Update(game);
 }
