@@ -105,11 +105,11 @@ void WorldGen::PlaceEntities(World* world) {
   Point pos = walkable_positions[rand()%walkable_positions.size()];
 // add player
   Entity player;
-  player.components.push_back(std::shared_ptr<EntityComponent>(new Renderable({"@", "yellow", "black"})));
-  player.components.push_back(std::shared_ptr<EntityComponent>(new EntPosition({ pos.x, pos.y, 0, world_x, world_y })));
-  player.components.push_back(std::shared_ptr<EntityComponent>(new Name("player")));
-  player.components.push_back(std::shared_ptr<EntityComponent>(new Fov(28)));
-  player.components.push_back(std::shared_ptr<EntityComponent>(new Player(true)));
+  player.AddComponent(std::make_shared<Renderable>(Renderable({"@", "yellow", "black"})));
+  player.AddComponent(std::make_shared<EntPosition>(EntPosition({ pos.x, pos.y, 0, world_x, world_y })));
+  player.AddComponent(std::make_shared<Name>(Name("player")));
+  player.AddComponent(std::make_shared<Fov>(Fov(28)));
+  player.AddComponent(std::make_shared<Player>(Player(true)));
   world->AddEntity(player);
 // add animals from xml
   std::vector<Entity> entities;
@@ -119,9 +119,11 @@ void WorldGen::PlaceEntities(World* world) {
     world_x = walkable_areas[wp_index].x;
     world_y = walkable_areas[wp_index].y;
     walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
-    Entity ent = entities[rand()%entities.size()];
+    Entity ent;
+    for (auto component : entities[rand()%entities.size()].components)
+      ent.AddComponent(component->GetCopy());
     Point ent_pos = walkable_positions[rand()%walkable_positions.size()];
-    ent.components.push_back(std::shared_ptr<EntityComponent>(new EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
+    ent.AddComponent(std::shared_ptr<EntityComponent>(new EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
     world->AddEntity(ent);
   }
 }
