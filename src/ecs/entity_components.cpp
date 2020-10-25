@@ -57,7 +57,7 @@ void Player::Tick(Entity *src, Game *game) {
 }
 
 void AnimalAi::Tick(Entity *src, Game *game) {
-  if (src->HasComponent(EC_POSITION_ID)) {
+  if (src->HasComponent(EC_POSITION_ID) && src->actions.size() == 0) {
     Position pos = (dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID)))->position;
     if (src->HasComponent(EC_FOV_ID)) {
       std::shared_ptr<Fov> fov = dynamic_pointer_cast<Fov>(src->GetComponent(EC_FOV_ID));
@@ -68,7 +68,7 @@ void AnimalAi::Tick(Entity *src, Game *game) {
       }
       else {
 	// random move
-	int dir = rand()%4;
+	int dir = rand()%8;
 	switch (dir) {
 	  case (0):
             src->actions.push_back(std::make_shared<Move>(Move(-1,0,0))); break;
@@ -78,6 +78,14 @@ void AnimalAi::Tick(Entity *src, Game *game) {
 	    src->actions.push_back(std::make_shared<Move>(Move(0,1,0))); break;
 	  case (3):
 	    src->actions.push_back(std::make_shared<Move>(Move(0,-1,0))); break;
+	  case (4):
+            src->actions.push_back(std::make_shared<Move>(Move(1,1,0))); break;
+	  case (5): 
+	    src->actions.push_back(std::make_shared<Move>(Move(1,-1,0))); break;
+	  case (6):
+	    src->actions.push_back(std::make_shared<Move>(Move(-1,1,0))); break;
+	  case (7):
+	    src->actions.push_back(std::make_shared<Move>(Move(-1,-1,0))); break;
 	}
       }
     }
