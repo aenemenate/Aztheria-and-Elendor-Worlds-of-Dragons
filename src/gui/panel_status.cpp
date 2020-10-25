@@ -24,8 +24,17 @@ void StatusPanel::Draw(Game *game, int map_startx, int map_starty) {
   if (game->world->GetArea(0,0)->PointWithinBounds(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty)) {
     std::shared_ptr<EntPosition> pos_c = dynamic_pointer_cast<EntPosition>(game->world->entities[0].GetComponent(EC_POSITION_ID));
     Position pos = pos_c->position;
-    std::string block_name = game->world->GetArea(pos.wx, pos.wy)->GetBlock(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z)->name;
-    if (block_name == "air") block_name = game->world->GetArea(pos.wx, pos.wy)->GetTile(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z)->name;
-    PrintGraphic(start_x(term_width) + 1, term_height - 3, {block_name, "white", "black"});
+    Block *block = game->world->GetArea(pos.wx, pos.wy)->GetBlock(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z);
+    if (block->explored) {
+      Tile  *tile  = game->world->GetArea(pos.wx, pos.wy)->GetTile(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z);
+      Entity *ent = game->world->GetArea(pos.wx, pos.wy)->GetEntity(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z);
+      std::string block_name = block->name;
+      if (block_name == "air") 
+	block_name = tile->name;
+      if (ent != nullptr)
+        if (ent->HasComponent(EC_NAME_ID))
+          block_name = dynamic_pointer_cast<Name>(ent->GetComponent(EC_NAME_ID))->name;
+      PrintGraphic(start_x(term_width) + 1, term_height - 3, {block_name, "white", "black"});
+    }
   }
 }
