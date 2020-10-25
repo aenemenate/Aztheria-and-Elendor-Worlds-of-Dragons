@@ -14,21 +14,21 @@ enum TerrainType {
 };
 
 enum BiomeType {
-  Desert,
-  Mesa,
-  Taiga, 
-  Tundra,
-  BorealForest,
-  GrassyPlain,
-  SnowyPlain,
-  MagicalForest,
-  HauntedForest,
-  TropicalBeach,
-  TropicalForest,
-  BambooForest,
-  Swamp,
-  SnowyMountain,
-  Barren
+  Desert	= 0,
+  Mesa		= 1,
+  Taiga		= 2, 
+  Tundra	= 3,
+  BorealForest	= 4,
+  GrassyPlain	= 5,
+  SnowyPlain	= 6,
+  MagicalForest	= 7,
+  HauntedForest	= 8,
+  TropicalBeach	= 9,
+  TropicalForest= 10,
+  BambooForest	= 11,
+  Swamp		= 12,
+  SnowyMountain	= 13,
+  Barren	= 14
 };
 
 class Area : public Map {

@@ -1,8 +1,8 @@
+#include "entity.h"
 #include "entity_components.h"
 #include "../game.h"
 #include "../world.h"
 #include "../map/area.h"
-#include "entity.h"
 #include "../input_funcs.h"
 
 #include <iostream>
