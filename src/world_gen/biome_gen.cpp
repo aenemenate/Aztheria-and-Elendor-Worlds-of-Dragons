@@ -143,7 +143,8 @@ void BiomeGen::DetermineBiomes(World* world) {
 	convertToSandBiome(area);
       if (area->biome_type == BiomeType::Tundra
       ||  area->biome_type == BiomeType::Taiga
-      ||  area->biome_type == BiomeType::SnowyPlain)
+      ||  area->biome_type == BiomeType::SnowyPlain
+      ||  area->biome_type == BiomeType::SnowyMountain)
 	convertToSnowBiome(area);
     }
 }
