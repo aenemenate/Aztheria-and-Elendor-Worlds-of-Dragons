@@ -159,11 +159,11 @@ void PlayState::Draw(Game *game)
   Entity *plyr = &(game->world->entities[0]);
   Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
 // set values
-  int curwx = plyr_pos.wx, 
+  int curwx = plyr_pos.wx,
       curwy = plyr_pos.wy;
   Area *area = game->world->GetArea(curwx, curwy);
-  int term_width = GetTermWidth(), 
-      map_term_width = status_panel.start_x(term_width), 
+  int term_width = GetTermWidth(),
+      map_term_width = status_panel.start_x(term_width),
       term_height = GetTermHeight();
   int startx = min(max(0,area->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
   int starty = min(max(0,area->height-term_height), max(0, plyr_pos.y - term_height/2));
@@ -193,10 +193,14 @@ void PlayState::Draw(Game *game)
       Block *block = area->GetBlock(point.x, point.y, point.z);
       Entity *entity = area->GetEntity(point.x, point.y, point.z);
       if (entity == nullptr) {
-        if (block->gr.ch != " ")
-          PrintGraphic(point.x - startx, point.y - starty, { block->gr.ch, block->gr.fgcolor, tile->gr.bgcolor });
-        else 
-          PrintGraphic(point.x - startx, point.y - starty, tile->gr);
+        if (block->gr.ch != " ") {
+	  std::string fg_color = ((tile->isSnowy) ? "white" : block->gr.fgcolor);
+          PrintGraphic(point.x - startx, point.y - starty, { block->gr.ch, fg_color, tile->gr.bgcolor });
+	}
+        else {
+	  std::string fg_color = ((tile->isSnowy) ? "white" : tile->gr.fgcolor);
+          PrintGraphic(point.x - startx, point.y - starty, {tile->gr.ch, fg_color, tile->gr.bgcolor});
+	}
       }
       else {
         std::shared_ptr<Renderable> rend_c = dynamic_pointer_cast<Renderable>(entity->GetComponent(EC_RENDERABLE_ID));

@@ -79,6 +79,13 @@ void convertToSandBiome(Area* area) {
     }
 }
 
+void convertToSnowBiome(Area* area) {
+  for (int i = 0; i < area->width; i++)
+    for (int j = 0; j < area->height; j++)
+      if (rand()%100 < 75 && area->GetTile(i,j,0)->name != "water")
+        area->GetTile(i, j, 0)->isSnowy = true;
+}
+
 void BiomeGen::DetermineBiomes(World* world) {
   for (int j = 0; j < world->height; ++j)
     for (int i = 0; i < world->width; ++i) {
@@ -134,5 +141,9 @@ void BiomeGen::DetermineBiomes(World* world) {
       }
       if (area->biome_type == BiomeType::Desert)
 	convertToSandBiome(area);
+      if (area->biome_type == BiomeType::Tundra
+      ||  area->biome_type == BiomeType::Taiga
+      ||  area->biome_type == BiomeType::SnowyPlain)
+	convertToSnowBiome(area);
     }
 }
