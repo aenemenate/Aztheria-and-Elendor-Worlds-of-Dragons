@@ -8,7 +8,6 @@
 
 using namespace Pathfinder;
 
-int gwx, gwy, gz;
 Grid *grid;
 
 void InitializeGrid(Area *area, int z) {
@@ -27,10 +26,7 @@ void InitializeGrid(Area *area, int z) {
 }
 
 std::vector<Point> Pathfinder::GetPath(World *world, int wx, int wy, int z, int startx, int starty, int endx, int endy) {
-  if (grid == nullptr || wx != gwx || wy != gwy || z != gz) {
-    InitializeGrid(world->GetArea(wx, wy), z);
-    gwx = wx; gwy = wy; gz = z;
-  }
+  InitializeGrid(world->GetArea(wx, wy), z);
   Node start = Node(startx, starty);
   Node goal = Node(endx, endy);
   AStar astar(grid);

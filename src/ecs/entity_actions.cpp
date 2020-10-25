@@ -71,8 +71,6 @@ void Move::Do(Entity *src, World *world) {
     }
     world->GetArea(pos->wx, pos->wy)->SetEntity(pos->x,pos->y,pos->z,nullptr);
     world->GetArea(new_wx, new_wy)->SetEntity(new_x,new_y,new_z,src);
-    if (new_wx != pos->wx || new_wy != pos->wy || new_z != pos->z)
-      world->GetArea(new_wx, new_wy)->ClearEnts();
 // set the new positions
     pos->x = new_x;
     pos->y = new_y;

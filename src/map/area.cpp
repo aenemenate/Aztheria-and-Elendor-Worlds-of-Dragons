@@ -151,7 +151,7 @@ Entity *Area::GetEntity(int x, int y, int z) {
 void Area::SetEntity(int x, int y, int z, Entity *entity) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
-      ent_map[x*height+y] = entity;
+      ent_map[x*height+y] = (entity != nullptr) ? entity : nullptr;
     else
       dungeon_floors[z-1].SetEntity(x, y, entity);
   }
