@@ -95,7 +95,6 @@ class Fov : public EntityComponent {
   void serialize(Archive & ar, const unsigned int version) {
     ar & boost::serialization::base_object<EntityComponent>(*this);
     ar & viewradius;
-    ar & visiblepoints;
   }
 public:
   int viewradius;
@@ -127,6 +126,7 @@ class AnimalAi : public EntityComponent {
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version) {
     ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & biome;
   }
 public:
   BiomeType biome;
