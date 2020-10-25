@@ -1,11 +1,13 @@
 #pragma once
 
-#include "../base.h"
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/base_object.hpp>
 #include <memory>
+
+#include "../base.h"
+#include "../map/area.h"
 
 class World;
 class Game;
@@ -127,10 +129,11 @@ class AnimalAi : public EntityComponent {
     ar & boost::serialization::base_object<EntityComponent>(*this);
   }
 public:
+  BiomeType biome;
   AnimalAi() : EntityComponent() {}
-  AnimalAi(bool empty_val) : EntityComponent(EC_ANIMALAI_ID, EC_PRIO_PRE) {}
+  AnimalAi(BiomeType biome) : biome(biome), EntityComponent(EC_ANIMALAI_ID, EC_PRIO_PRE) {}
   void Tick(Entity *src, Game *game);
-  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<AnimalAi>(AnimalAi(false)); }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<AnimalAi>(AnimalAi(biome)); }
 };
 
 // Functions

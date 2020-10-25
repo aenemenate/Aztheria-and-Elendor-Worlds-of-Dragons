@@ -21,11 +21,11 @@ std::shared_ptr<Name> nameFromNode(xml_node<> *node) {
 }
 
 std::shared_ptr<Fov> fovFromNode(xml_node<> *node) {
-  return std::make_shared<Fov>(Fov(std::stoi(std::string(node->first_attribute()->value()))));
+  return std::make_shared<Fov>(Fov(std::stoi(std::string(node->first_attribute("viewradius")->value()))));
 }
 
 std::shared_ptr<AnimalAi> animalAiFromNode(xml_node<> *node) {
-  return std::make_shared<AnimalAi>(AnimalAi(false));
+  return std::make_shared<AnimalAi>(AnimalAi((BiomeType)std::stoi(std::string(node->first_attribute("biome")->value()))));
 }
 
 std::shared_ptr<EntityComponent> componentFromNode(xml_node<> *node) {

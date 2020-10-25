@@ -118,13 +118,23 @@ void WorldGen::PlaceEntities(World* world) {
     wp_index = rand()%walkable_areas.size();
     world_x = walkable_areas[wp_index].x;
     world_y = walkable_areas[wp_index].y;
-    walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
-    Entity ent;
-    for (auto component : entities[rand()%entities.size()].components)
-      ent.AddComponent(component->GetCopy());
-    Point ent_pos = walkable_positions[rand()%walkable_positions.size()];
-    ent.AddComponent(std::shared_ptr<EntityComponent>(new EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
-    world->AddEntity(ent);
+    std::vector<int> ents_of_biome;
+    for (int i = 0; i < entities.size(); ++i) 
+      if (entities[i].HasComponent(EC_ANIMALAI_ID)) {
+	std::shared_ptr<AnimalAi> animalAi = dynamic_pointer_cast<AnimalAi>(entities[i].GetComponent(EC_ANIMALAI_ID));
+        if (animalAi->biome == world->GetArea(world_x, world_y)->biome_type)
+          ents_of_biome.push_back(i);
+      }
+    if (ents_of_biome.size() > 0) {
+      walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
+      Entity *ent_orig = &(entities[ents_of_biome[rand()%ents_of_biome.size()]]);
+      Entity ent;
+      for (auto component : ent_orig->components)
+        ent.AddComponent(component->GetCopy());
+      Point ent_pos = walkable_positions[rand()%walkable_positions.size()];
+      ent.AddComponent(std::shared_ptr<EntityComponent>(new EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
+      world->AddEntity(ent);
+    }
   }
 }
 
