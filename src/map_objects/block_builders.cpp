@@ -46,6 +46,17 @@ Block BuildStoneUpStair() {
   return block;
 }
 
+Block BuildSandstoneBlock() {
+  Block block;
+  block.gr = {"#", "brown", ""};
+  block.explored = false;
+  block.opaque = true;
+  block.solid = true;
+  block.enterable = false;
+  block.name = "sandstone";
+  return block;
+}
+
 Block BuildGrassBlock() {
   Block block;
   block.gr = {",", "96,128,56", ""};

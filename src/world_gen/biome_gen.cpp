@@ -5,15 +5,17 @@
 #include "../map/area.h"
 #include "../ecs/entity.h"
 
+#include "../map_objects/block_builders.h"
+
 void BiomeGen::DetermineAreaTerrainType(Area* area) {
   int dirt_num=0, water_num=0, mountain_num=0, beach_num=0;
   for (int i = 0; i < area->width; i++)
     for (int j = 0; j < area->height; j++) {
-      if (area->GetBlock(i,j,0)->gr.ch == "#")
+      if (area->GetBlock(i,j,0)->name == "stone")
         mountain_num++;
-      else if (area->GetTile(i,j,0)->gr.ch == ".")
+      else if (area->GetTile(i,j,0)->name == "dirt")
         dirt_num++;
-      else if (area->GetTile(i,j,0)->gr.ch == "~")
+      else if (area->GetTile(i,j,0)->name == "water")
         water_num++;
     }
     if (dirt_num >= water_num && dirt_num >= mountain_num) {
@@ -65,6 +67,16 @@ void BiomeGen::DetermineHumidityMap(World* world) {
         ++areas_since_mountain;
     }
   }
+}
+
+void convertToSandBiome(Area* area) {
+  for (int i = 0; i < area->width; i++)
+    for (int j = 0; j < area->height; j++) {
+      if (area->GetTile(i, j, 0)->name == "dirt")
+	area->SetTile(i, j, 0, TILE_SAND);
+      if (area->GetBlock(i, j, 0)->name == "stone")
+	area->SetBlock(i, j, 0, BuildSandstoneBlock());
+    }
 }
 
 void BiomeGen::DetermineBiomes(World* world) {
@@ -120,5 +132,7 @@ void BiomeGen::DetermineBiomes(World* world) {
           }
           break;
       }
+      if (area->biome_type == BiomeType::Desert)
+	convertToSandBiome(area);
     }
 }
