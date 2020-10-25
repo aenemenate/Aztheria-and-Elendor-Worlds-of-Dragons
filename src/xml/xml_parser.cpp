@@ -54,7 +54,7 @@ Entity entityFromNode(xml_node<> *node) {
 }
 
 std::vector<Entity> XmlParser::GetEntitiesFromXml(std::string filepath) {
-  char *text = new char[4096];
+  char *text = new char[4096*2];
   strcpy(text, FileHelper::get_file_contents(filepath).c_str());
   xml_document<> doc;
   doc.parse<0>(text);
@@ -68,5 +68,6 @@ std::vector<Entity> XmlParser::GetEntitiesFromXml(std::string filepath) {
       entities.push_back(entity);
     }
   }
+  delete text;
   return entities;
 }
