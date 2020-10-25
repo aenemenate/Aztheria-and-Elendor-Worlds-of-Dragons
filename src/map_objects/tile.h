@@ -20,3 +20,4 @@ struct Tile {
 
 #define TILE_WATER {{"~", "blue", "black"},false,false, "water"}
 #define TILE_DIRT  {{".", "165,42,42", "black"},false,true, "dirt"}
+#define TILE_SAND {{"~", "light brown", "black"},false,true, "sand"}
