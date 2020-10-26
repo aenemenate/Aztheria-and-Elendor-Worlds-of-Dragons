@@ -2,13 +2,12 @@
 
 #include "world.h"
 #include "map/area.h"
-#include "entity/entity.h"
+#include "ecs/entity.h"
 
 #include "./AStar/AStar.h"
 
 using namespace Pathfinder;
 
-int gwx, gwy, gz;
 Grid *grid;
 
 void InitializeGrid(Area *area, int z) {
@@ -18,7 +17,7 @@ void InitializeGrid(Area *area, int z) {
   vector<Node> obstacles;
   for (int i = 0; i < cols; i++)
     for (int j = 0; j < rows; j++) {
-      if (!area->GetTile(i, j, z)->walkable || area->GetBlock(i, j, z)->solid)
+      if (!area->GetTile(i, j, z)->walkable || area->GetBlock(i, j, z)->solid || area->GetEntity(i,j,z) != nullptr)
 	      obstacles.push_back(Node(i, j));
     }
   if (grid != nullptr)
@@ -27,10 +26,7 @@ void InitializeGrid(Area *area, int z) {
 }
 
 std::vector<Point> Pathfinder::GetPath(World *world, int wx, int wy, int z, int startx, int starty, int endx, int endy) {
-  if (grid == nullptr || wx != gwx || wy != gwy || z != gz) {
-    InitializeGrid(world->GetArea(wx, wy), z);
-    gwx = wx; gwy = wy; gz = z;
-  }
+  InitializeGrid(world->GetArea(wx, wy), z);
   Node start = Node(startx, starty);
   Node goal = Node(endx, endy);
   AStar astar(grid);

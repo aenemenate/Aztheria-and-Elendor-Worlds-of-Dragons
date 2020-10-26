@@ -1,10 +1,10 @@
-#include <BearLibTerminal.h>
 #include "loadworld_state.h"
 #include "play_state.h"
 #include "state_funcs.h"
 
 #include "../draw_funcs.h"
 #include "../base.h"
+#include "../input_funcs.h"
 
 #include "../game_fio.h"
 #include "../util/filesystem.h"
@@ -34,16 +34,18 @@ LoadWorldState LoadWorldState::load_world_state;
 
 void LoadWorldState::Init(Game *game) {
   buttons.clear();
-  int term_width  = terminal_state(TK_WIDTH), 
-      term_height = terminal_state(TK_HEIGHT);
-// push buttons
+  int term_width  = GetTermWidth(), 
+      term_height = GetTermHeight();
+// push buttons (based on available save files)
   int y_offset = 0;
-  for(const auto& entry : fs::directory_iterator(".\\saves"))
+  for(const auto& entry : fs::directory_iterator("./saves"))
     if (entry.path().extension() == ".bin") {
       buttons.push_back(Button(term_width/2 - 10,term_height/2-15+y_offset*2, entry.path().string(), LoadWorld));
       y_offset++;
     }
+// push go back button
   buttons.push_back(Button(1,term_height-2, "go [[b]]ack", GoBack));
+// init menu caret
   menu_caret = 0;
 }
 
@@ -52,42 +54,47 @@ void LoadWorldState::Cleanup() {
 }
 
 void LoadWorldState::HandleEvents(Game *game) {
-  if (terminal_state(TK_EVENT) == TK_RESIZED)
+// re-init if resized
+  if (TerminalWasResized())
     this->Init(game);
-  switch (game->key) {
-    case TK_KP_8:
-    case TK_UP:
+// handle input
+  switch (TerminalGetKey()) {
+    case MTK_KP_8:
+    case MTK_UP:
       menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret; 
       break;
-    case TK_KP_2:
-    case TK_DOWN:
+    case MTK_KP_2:
+    case MTK_DOWN:
       menu_caret = (menu_caret < buttons.size() - 2) ? ++menu_caret : menu_caret;
       break;
-    case TK_KP_ENTER:
-    case TK_ENTER:
-    case TK_SPACE:
+    case MTK_KP_ENTER:
+    case MTK_ENTER:
+    case MTK_SPACE:
       filepath = buttons[menu_caret].GetText();
       buttons[menu_caret].Activate(game);
       break;
-    case TK_ESCAPE:
-    case TK_B:
+    case MTK_ESCAPE:
+    case MTK_B:
       GoBack(game);
       break;
   }
 }
 
 void LoadWorldState::Update(Game *game) {
+// update buttons
   for (int b=0;b<buttons.size();b++) {
-    if (buttons[b].isclicked(game))
+    if (buttons[b].isclicked())
       filepath = buttons[b].GetText();
     buttons[b].Update(game);
   }
 }
 
 void LoadWorldState::Draw(Game *game) {
-  int term_width  = terminal_state(TK_WIDTH), 
-      term_height = terminal_state(TK_HEIGHT);
+  int term_width  = GetTermWidth(), 
+      term_height = GetTermHeight();
+// draw buttons
   for (int b=0;b<buttons.size();b++)
-    buttons[b].Render(game);
-  PrintCh(term_width/2-12, term_height/2 - 15 + menu_caret*2, {">", "white", "black"});
+    buttons[b].Render();
+// print menu caret
+  PrintGraphic(term_width/2-12, term_height/2 - 15 + menu_caret*2, {">", "white", "black"});
 }

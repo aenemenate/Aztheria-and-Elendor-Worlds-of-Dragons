@@ -1,9 +1,10 @@
-#include <BearLibTerminal.h>
 #include "createworld_state.h"
 #include "play_state.h"
 #include "state_funcs.h"
 
+#include "../base.h"
 #include "../draw_funcs.h"
+#include "../input_funcs.h"
 
 #include "../world_gen/world_gen.h"
 #include "../util/filesystem.h"
@@ -43,12 +44,14 @@ CreateWorldState CreateWorldState::create_world_state;
 
 void CreateWorldState::Init(Game *game) {
   buttons.clear();
-  int term_width  = terminal_state(TK_WIDTH), 
-      term_height = terminal_state(TK_HEIGHT);
-// push buttons
+  int term_width  = GetTermWidth(), 
+      term_height = GetTermHeight();
+// change world size buttons
   buttons.push_back(Button(1,1, "<->", DecrementWorldSize));
   buttons.push_back(Button(8,1, "<+>", IncrementWorldSize));
+// create world button
   buttons.push_back(Button(term_width - 2 - 14,term_height-2, "[[c]]reate world", CreateWorld));
+// go back button
   buttons.push_back(Button(1,term_height-2, "go [[b]]ack", GoBack));
   worldsize = 12;
 }
@@ -58,38 +61,43 @@ void CreateWorldState::Cleanup() {
 }
 
 void CreateWorldState::HandleEvents(Game *game) {
-  if (terminal_state(TK_EVENT) == TK_RESIZED)
+// reset our graphical elements if terminal is resized
+  if (TerminalWasResized())
     this->Init(game);
-  switch (game->key) {
-    case TK_KP_6:
-    case TK_RIGHT:
+// handle key input
+  switch (TerminalGetKey()) {
+    case MTK_KP_6:
+    case MTK_RIGHT:
       IncrementWorldSize(game);
       break;
-    case TK_KP_4:
-    case TK_LEFT:
+    case MTK_KP_4:
+    case MTK_LEFT:
       DecrementWorldSize(game);
       break;
-    case TK_C:
+    case MTK_C:
       CreateWorld(game);
       break;
-    case TK_ESCAPE:
-    case TK_B:
+    case MTK_ESCAPE:
+    case MTK_B:
       GoBack(game);
       break;
   }
 }
 
 void CreateWorldState::Update(Game *game) {
+// update buttons
   for (int b=0;b<buttons.size();b++)
     buttons[b].Update(game);
 }
 
 void CreateWorldState::Draw(Game *game) {
-  int term_width  = terminal_state(TK_WIDTH), 
-      term_height = terminal_state(TK_HEIGHT);
+  int term_width  = GetTermWidth(), 
+      term_height = GetTermHeight();
+// draw buttons
   for (int b=0;b<buttons.size();b++)
-    buttons[b].Render(game);
+    buttons[b].Render();
+// print world size
   std::stringstream sstream;
   sstream << worldsize;
-  terminal_print(5, 1, sstream.str().c_str());
+  PrintGraphic(5, 1, {sstream.str(), "white", "black"});
 }

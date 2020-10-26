@@ -1,6 +1,6 @@
 #include "world.h"
 #include "map/area.h"
-#include "entity/entity.h"
+#include "ecs/entity.h"
 #include "game.h"
 
 
@@ -10,6 +10,9 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
   areas.resize(width*height, Area(map_w,map_h));
   seed = 0;
   this->slot = slot;
+}
+
+World::~World() {
 }
 
 bool World::PointWithinBounds(int x, int y) {
@@ -28,14 +31,22 @@ Area *World::GetArea(int x, int y) {
 
 void World::AddEntity(Entity entity) {
   entities.push_back(entity);
-  int map_idx = entity.pos.wx * width + entity.pos.wy;
-  areas[map_idx].SetEntity(entity.pos.x, entity.pos.y, entity.pos.z, &(entities[entities.size()-1]));
+  if (entity.HasComponent(EC_POSITION_ID)) {
+    Position pos = (dynamic_pointer_cast<EntPosition>(entity.GetComponent(EC_POSITION_ID)))->position;
+    SetEnts();
+  }
 }
 
 void World::SetEnts() {
+  for (int i = 0; i < width; ++i)
+    for (int j = 0; j < height; ++j)
+      GetArea(i, j)->ClearEnts();
   for (int e = 0; e < entities.size(); ++e) {
-    Entity *ent = &(entities[e]);
-    int map_idx = ent->pos.wx * width + ent->pos.wy;
-    areas[map_idx].SetEntity(ent->pos.x, ent->pos.y, ent->pos.z, ent);
+    Entity *entity = &(entities[e]);
+    if (entity->HasComponent(EC_POSITION_ID)) {
+      Position pos = (dynamic_pointer_cast<EntPosition>(entity->GetComponent(EC_POSITION_ID)))->position;
+      int map_idx = pos.wx * width + pos.wy;
+      areas[map_idx].SetEntity(pos.x, pos.y, pos.z, entity);
+    }
   }
 }

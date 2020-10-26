@@ -1,7 +1,7 @@
 #include "map.h"
 #include "../map_objects/block.h"
 #include "../map_objects/tile.h"
-#include "../entity/entity.h"
+#include "../ecs/entity.h"
 
 Map::Map() { 
   width = 0;
@@ -24,7 +24,7 @@ Map::Map(uint16_t width, uint16_t height) {
 bool Map::PointWithinBounds(int x, int y) { return (x >= 0 && y >= 0 && x < width && y < height); }
 
 Entity *Map::GetEntity(int x, int y) { return PointWithinBounds(x, y) ? ent_map[x*height+y] : nullptr; }
-void Map::SetEntity(int x, int y, Entity *entity) { if (PointWithinBounds(x, y)) ent_map[x*height+y] = entity; }
+void Map::SetEntity(int x, int y, Entity *entity) { if (PointWithinBounds(x, y)) ent_map[x*height+y] = (entity != nullptr) ? entity : nullptr; }
 
 Tile *Map::GetTile(int x, int y) { return PointWithinBounds(x, y) ? &(tiles[x*width+y]) : nullptr; }
 void Map::SetTile(int x, int y, Tile tile) { if (PointWithinBounds(x, y)) tiles[x*height+y] = tile; }

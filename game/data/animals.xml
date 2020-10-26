@@ -1,0 +1,261 @@
+<animals>
+
+
+  <!-- Desert Animals -->
+
+  <scorpion>
+    <name value="scorpion"/>
+    <renderable ch="t" fgcolor="brown" bgcolor=""/>
+    <fov viewradius="11"/>
+    <animalai biome="0"/>
+  </scorpion>
+
+  <cactus>
+    <name value="cactus man"/>
+    <renderable ch="o" fgcolor="green" bgcolor=""/>
+    <fov viewradius="8"/>
+    <animalai biome="0"/>
+  </cactus>
+
+  <lizard>
+    <name value="lizard"/>
+    <renderable ch="l" fgcolor="dark green" bgcolor=""/>
+    <fov viewradius="7"/>
+    <animalai biome="0"/>
+  </lizard>
+
+
+  <!-- Taiga Animals -->
+
+  <moose>
+    <name value="moose"/>
+    <renderable ch="m" fgcolor="brown" bgcolor=""/>
+    <fov viewradius="16"/>
+    <animalai biome="2"/>
+  </moose>
+
+  <reindeer>
+    <name value="reindeer"/>
+    <renderable ch="r" fgcolor="brown" bgcolor=""/>
+    <fov viewradius="13"/>
+    <animalai biome="2"/>
+  </reindeer>
+
+  <snowshoehare>
+    <name value="snowshoe hare"/>
+    <renderable ch="h" fgcolor="white" bgcolor=""/>
+    <fov viewradius="10"/>
+    <animalai biome="2"/>
+  </snowshoehare>
+
+  <lynx>
+    <name value="lynx"/>
+    <renderable ch="l" fgcolor="orange" bgcolor=""/>
+    <fov viewradius="14"/>
+    <animalai biome="2"/>
+  </lynx>
+
+  <fox>
+    <name value="fox"/>
+    <renderable ch="f" fgcolor="white" bgcolor=""/>
+    <fov viewradius="9"/>
+    <animalai biome="2"/>
+  </fox>
+
+
+  <!-- Tundra Animals -->
+
+  <polarbear>
+    <name value="polar bear"/>
+    <renderable ch="B" fgcolor="white" bgcolor=""/>
+    <fov viewradius="14"/>
+    <animalai biome="3"/>
+  </polarbear>
+
+  <seal>
+    <name value="seal"/>
+    <renderable ch="s" fgcolor="light gray" bgcolor=""/>
+    <fov viewradius="7"/>
+    <animalai biome="3"/>
+  </seal>
+
+  <penguin>
+    <name value="penguin"/>
+    <renderable ch="p" fgcolor="light gray" bgcolor=""/>
+    <fov viewradius="8"/>
+    <animalai biome="3"/>
+  </penguin>
+
+
+  <!-- Boreal Forest Animals -->
+
+  <deer>
+    <name value="deer"/>
+    <renderable ch="d" fgcolor="brown" bgcolor=""/>
+    <fov viewradius="12"/>
+    <animalai biome="4"/>
+  </deer>
+
+  <porcupine>
+    <name value="porcupine"/>
+    <renderable ch="p" fgcolor="dark brown" bgcolor=""/>
+    <fov viewradius="4"/>
+    <animalai biome="4"/>
+  </porcupine>
+
+  <mink>
+    <name value="mink"/>
+    <renderable ch="m" fgcolor="dark gray" bgcolor=""/>
+    <fov viewradius="8"/>
+    <animalai biome="4"/>
+  </mink>
+
+  <frog>
+    <name value="frog"/>
+    <renderable ch="f" fgcolor="green" bgcolor=""/>
+    <fov viewradius="7"/>
+    <animalai biome="4"/>
+  </frog>
+
+  <crossbill>
+    <name value="crossbill"/>
+    <renderable ch="c" fgcolor="orange" bgcolor=""/>
+    <fov viewradius="9"/>
+    <animalai biome="4"/>
+  </crossbill>
+
+
+  <!-- Plains Animals -->
+
+  <ratling>
+    <name value="ratling"/>
+    <renderable ch="r" fgcolor="gray" bgcolor=""/>
+    <fov viewradius="7"/>
+    <animalai biome="5"/>
+  </ratling>
+
+  <prairiedog>
+    <name value="prairie dog"/>
+    <renderable ch="d" fgcolor="brown" bgcolor=""/>
+    <fov viewradius="17"/>
+    <animalai biome="5"/>
+  </prairiedog>
+
+  <cattle>
+    <name value="cattle"/>
+    <renderable ch="c" fgcolor="brown" bgcolor=""/>
+    <fov viewradius="8"/>
+    <animalai biome="5"/>
+  </cattle>
+
+  <fox>
+    <name value="fox"/>
+    <renderable ch="f" fgcolor="gray" bgcolor=""/>
+    <fov viewradius="10"/>
+    <animalai biome="5"/>
+  </fox>
+
+  <gopher>
+    <name value="gopher"/>
+    <renderable ch="g" fgcolor="gray" bgcolor=""/>
+    <fov viewradius="7"/>
+    <animalai biome="5"/>
+  </gopher>
+
+
+  <!-- Snowy Plain Animals -->
+
+  <rabbit>
+    <name value="rabbit"/>
+    <renderable ch="r" fgcolor="white" bgcolor=""/>
+    <fov viewradius="9"/>
+    <animalai biome="6"/>
+  </rabbit>
+
+  <owl>
+    <name value="owl"/>
+    <renderable ch="w" fgcolor="white" bgcolor=""/>
+    <fov viewradius="12"/>
+    <animalai biome="6"/>
+  </owl>
+
+  <bison>
+    <name value="plains bison"/>
+    <renderable ch="p" fgcolor="brown" bgcolor=""/>
+    <fov viewradius="16"/>
+    <animalai biome="6"/>
+  </bison>
+
+
+  <!-- Tropical Forest Animals -->
+
+  <parrot>
+    <name value="parrot"/>
+    <renderable ch="j" fgcolor="red" bgcolor=""/>
+    <fov viewradius="18"/>
+    <animalai biome="10"/>
+  </parrot>
+
+  <macaw>
+    <name value="macaw"/>
+    <renderable ch="i" fgcolor="orange" bgcolor=""/>
+    <fov viewradius="16"/>
+    <animalai biome="10"/>
+  </macaw>
+
+  <toucan>
+    <name value="toucan"/>
+    <renderable ch="t" fgcolor="yellow" bgcolor=""/>
+    <fov viewradius="14"/>
+    <animalai biome="10"/>
+  </toucan>
+
+  <gorilla>
+    <name value="gorilla"/>
+    <renderable ch="g" fgcolor="dark gray" bgcolor=""/>
+    <fov viewradius="15"/>
+    <animalai biome="10"/>
+  </gorilla>
+
+  <ant>
+    <name value="ant"/>
+    <renderable ch="a" fgcolor="red" bgcolor=""/>
+    <fov viewradius="5"/>
+    <animalai biome="10"/>
+  </ant>
+
+  <sloth>
+    <name value="sloth"/>
+    <renderable ch="s" fgcolor="gray" bgcolor=""/>
+    <fov viewradius="9"/>
+    <animalai biome="10"/>
+  </sloth>
+
+
+  <!-- Swamp Animals -->
+
+  <frog>
+    <name value="frog"/>
+    <renderable ch="g" fgcolor="green" bgcolor=""/>
+    <fov viewradius="6"/>
+    <animalai biome="12"/>
+  </frog>
+
+
+  <!-- Snowy Mountain Animals -->
+
+  <owl>
+    <name value="owl"/>
+    <renderable ch="w" fgcolor="white" bgcolor=""/>
+    <fov viewradius="12"/>
+    <animalai biome="18"/>
+  </owl>
+
+  <eagle>
+    <name value="eagle"/>
+    <renderable ch="e" fgcolor="dark white" bgcolor=""/>
+    <fov viewradius="12"/>
+    <animalai biome="22"/>
+  </eagle>
+
+</animals> 

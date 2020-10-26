@@ -1,9 +1,9 @@
-#include <BearLibTerminal.h>
 #include "play_state.h"
 
 #include "../draw_funcs.h"
 #include "../base.h"
-#include "../entity/entity.h"
+#include "../input_funcs.h"
+#include "../ecs/entity.h"
 #include "../world.h"
 #include "../map/area.h"
 #include "../game_fio.h"
@@ -28,8 +28,8 @@ void StopPlaying(Game *game) { game->PopState(); game->CleanupResources(); }
 void SaveGame(Game *game) { GameFIO::SaveWorld(game); StopPlaying(game); }
 
 void PlayState::Init(Game *game) {
-  int term_width  = terminal_state(TK_WIDTH), 
-      term_height = terminal_state(TK_HEIGHT);
+  int term_width  = GetTermWidth(), 
+      term_height = GetTermHeight();
   status_panel = StatusPanel(20);
   pmenu_buttons.resize(0);
   pmenu_buttons.push_back(Button(term_width/2-4,term_height/2, "save & quit", SaveGame));
@@ -47,89 +47,69 @@ void PlayState::Cleanup() {
 
 void PlayState::HandleEvents(Game *game) {
   int xsign = 0, ysign = 0;
-  if (terminal_state(TK_EVENT) == TK_RESIZED)
+  if (TerminalWasResized())
     this->Init(game);
   // if none of menus are showing
   if (!paused && !map_menu.GetShow()) {
-    switch (game->key) {
-      case TK_KP_8:
-      case TK_UP:
-        game->world->entities[0].Move(0,-1,0,game->world); break;
-      case TK_KP_9:
-        game->world->entities[0].Move(1,-1,0,game->world); break;
-      case TK_KP_6:
-      case TK_RIGHT:
-        game->world->entities[0].Move(1,0,0,game->world); break;
-      case TK_KP_3:
-        game->world->entities[0].Move(1,1,0,game->world); break;
-      case TK_KP_2:
-      case TK_DOWN:
-        game->world->entities[0].Move(0,1,0,game->world); break;
-      case TK_KP_1:
-        game->world->entities[0].Move(-1,1,0,game->world); break;
-      case TK_KP_4:
-      case TK_LEFT:
-        game->world->entities[0].Move(-1,0,0,game->world); break;
-      case TK_KP_7:
-        game->world->entities[0].Move(-1,-1,0,game->world); break;
-      case TK_KP_ENTER: {
-        Entity *plyr = &(game->world->entities[0]);
-        game->world->GetArea(plyr->pos.wx, plyr->pos.wy)->GetBlock(plyr->pos.x, plyr->pos.y, plyr->pos.z)->Activate(plyr, game->world);
-        } break;
-      case TK_M:
+    switch (TerminalGetKey()) {
+      case MTK_M:
         map_menu.SetShow(true);
         break;
-      case TK_ESCAPE:
+      case MTK_ESCAPE:
         paused = true;
         break;
     }
-    int term_width = terminal_state(TK_WIDTH), map_term_width = status_panel.start_x(term_width), term_height = terminal_state(TK_HEIGHT);
-    int startx = min(max(0,game->world->GetArea(0,0)->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
-    int starty = min(max(0,game->world->GetArea(0,0)->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));  
-    if (game->key == (TK_MOUSE_RIGHT|TK_KEY_RELEASED) && terminal_state(TK_MOUSE_X) < map_term_width) {
-      Entity *player = &(game->world->entities[0]);
-      player_path = Pathfinder::GetPath(game->world, player->pos.wx, player->pos.wy, player->pos.z, player->pos.x, player->pos.y, terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
-      game->SetInputBlockMode(false);
+// handle mouse input for moving the player, done here because it is dependent on gui elements
+    Entity *plyr = &(game->world->entities[0]);
+    Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
+    int term_width = GetTermWidth(), map_term_width = status_panel.start_x(term_width), term_height = GetTermHeight();
+    int startx = min(max(0,game->world->GetArea(0,0)->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
+    int starty = min(max(0,game->world->GetArea(0,0)->height-term_height), max(0, plyr_pos.y - term_height/2));  
+    if (TerminalGetKey() == (MTK_MOUSE_RIGHT|MTK_KEY_RELEASED) && TerminalGetMouseX() < map_term_width) {
+      player_path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y, 
+                                        TerminalGetMouseX()+startx, TerminalGetMouseY()+starty);
+      TerminalSetInputBlockMode(false);
     }
-    if (game->key == (TK_MOUSE_LEFT|TK_KEY_RELEASED)) {
-      Entity *player = &(game->world->entities[0]);
-      if (terminal_state(TK_MOUSE_X)+startx == player->pos.x && terminal_state(TK_MOUSE_Y)+starty == player->pos.y) {
-        if (player->pos.x == 0)
-          player->Move(-1,0,0,game->world);
-        else if (player->pos.y == 0)
-          player->Move(0,-1,0,game->world);
-        else if (player->pos.x == game->world->GetArea(0,0)->width - 1)
-          player->Move(1,0,0,game->world);
-        else if (player->pos.y == game->world->GetArea(0,0)->height - 1)
-          player->Move(0,1,0,game->world);
-        else if (game->world->GetArea(player->pos.wx, player->pos.wy)->GetBlock(player->pos.x, player->pos.y, player->pos.z)->enterable)
-          game->world->GetArea(player->pos.wx, player->pos.wy)->GetBlock(player->pos.x, player->pos.y, player->pos.z)->Activate(player, game->world);
+    if (TerminalGetKey() == (MTK_MOUSE_LEFT|MTK_KEY_RELEASED)) {
+      if (TerminalGetMouseX()+startx == plyr_pos.x && TerminalGetMouseY()+starty == plyr_pos.y) {
+        if (game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->enterable)
+          game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetBlock(plyr_pos.x, plyr_pos.y, plyr_pos.z)->Activate(plyr, game->world);
+        else {
+          if (plyr_pos.x == 0)
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(-1,0,0)));
+          else if (plyr_pos.y == 0)
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(0,-1,0)));
+          if (plyr_pos.x == game->world->GetArea(0,0)->width - 1)
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(1,0,0)));
+          else if (plyr_pos.y == game->world->GetArea(0,0)->height - 1)
+            game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0)));
+        }
       }
     }
   }
   else if (paused)
-    switch (game->key) {
-      case TK_KP_8:
-      case TK_UP:
-        menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret; 
+    switch (TerminalGetKey()) {
+      case MTK_KP_8:
+      case MTK_UP:
+        menu_caret = (menu_caret > 0) ? --menu_caret : menu_caret;
         break;
-      case TK_KP_2:
-      case TK_DOWN:
+      case MTK_KP_2:
+      case MTK_DOWN:
         menu_caret = (menu_caret < pmenu_buttons.size() - 1) ? ++menu_caret : menu_caret;
         break;
-      case TK_KP_ENTER:
-      case TK_ENTER:
+      case MTK_KP_ENTER:
+      case MTK_ENTER:
         pmenu_buttons[menu_caret].Activate(game);
-        game->key = 0;
+        TerminalClearKey();
         break;
-      case TK_ESCAPE:
+      case MTK_ESCAPE:
         paused = false;
         break;
     }
   else if (map_menu.GetShow())
-    switch (game->key) {
-      case TK_ESCAPE:
-      case TK_M:
+    switch (TerminalGetKey()) {
+      case MTK_ESCAPE:
+      case MTK_M:
         map_menu.SetShow(false);
         break;
     }
@@ -142,48 +122,69 @@ void PlayState::Update(Game *game)
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Update(game);
   else {
+    Entity *plyr = &(game->world->entities[0]);
+    Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
     if (player_path.size() > 0) {
-      game->world->entities[0].Move(player_path.back().x - game->world->entities[0].pos.x, player_path.back().y - game->world->entities[0].pos.y, 0, game->world);
+      plyr->actions.clear();
+      plyr->actions.push_back(std::shared_ptr<EntityAction>(new Move(player_path.back().x - plyr_pos.x,
+                                                                     player_path.back().y - plyr_pos.y,0)));
       player_path.pop_back();
       if (player_path.size() == 0)
-        game->SetInputBlockMode(true);
+        TerminalSetInputBlockMode(true);
     }
-    game->world->entities[0].Update(game, true);
-    for (int e = game->world->entities.size() - 1; e >= 1; --e)
-      game->world->entities[e].Update(game, false);
+// tick pre-action components
+    for (int e = 0; e < game->world->entities.size(); ++e) {
+      Position pos = (dynamic_pointer_cast<EntPosition>(game->world->entities[e].GetComponent(EC_POSITION_ID)))->position;
+      if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
+      &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
+        game->world->entities[e].Tick(game, EC_PRIO_PRE);
+    }
+// act, only allowing other entities to act if the player does
+    if (game->world->entities[0].Act(game->world))
+      for (int e = 1; e < game->world->entities.size(); ++e)
+        game->world->entities[e].Act(game->world);
+// tick post-action components
+    for (int e = 0; e < game->world->entities.size(); ++e) {
+      Position pos = (dynamic_pointer_cast<EntPosition>(game->world->entities[e].GetComponent(EC_POSITION_ID)))->position;
+      if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
+      &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
+        game->world->entities[e].Tick(game, EC_PRIO_POST);
+    }
   }
   map_menu.Update(game);
 }
 
 void PlayState::Draw(Game *game)
 {
-// set values
-  int curwx = game->world->entities[0].pos.wx, 
-      curwy = game->world->entities[0].pos.wy;
-  Area *area = game->world->GetArea(curwx, curwy);
   Entity *plyr = &(game->world->entities[0]);
-  int term_width = terminal_state(TK_WIDTH), 
-      map_term_width = status_panel.start_x(term_width), 
-      term_height = terminal_state(TK_HEIGHT);
-  int startx = min(max(0,area->width-map_term_width),max(0, game->world->entities[0].pos.x - map_term_width/2));
-  int starty = min(max(0,area->height-term_height), max(0, game->world->entities[0].pos.y - term_height/2));
+  Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
+// set values
+  int curwx = plyr_pos.wx,
+      curwy = plyr_pos.wy;
+  Area *area = game->world->GetArea(curwx, curwy);
+  int term_width = GetTermWidth(),
+      map_term_width = status_panel.start_x(term_width),
+      term_height = GetTermHeight();
+  int startx = min(max(0,area->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
+  int starty = min(max(0,area->height-term_height), max(0, plyr_pos.y - term_height/2));
 // draw status panel
   status_panel.Draw(game, startx, starty);
 // draw map
   for (int i = startx; i < area->width && i-startx < map_term_width; i++)
     for (int j = starty; j < area->height && j-starty < term_height; j++) {
-      Tile *tile = area->GetTile(i, j, plyr->pos.z);
-      Block *block = area->GetBlock(i, j, plyr->pos.z);
+      Tile *tile = area->GetTile(i, j, plyr_pos.z);
+      Block *block = area->GetBlock(i, j, plyr_pos.z);
       if (tile->explored) {
         if (block->gr.ch != " ")
-          PrintCh(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
+          PrintGraphic(i - startx, j - starty, {block->gr.ch,"darker gray", "black"});
         else
-          PrintCh(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
+          PrintGraphic(i - startx, j - starty, {tile->gr.ch,"darker gray", "black"});
       }
     }
 // draw visible points
-  for (int vp = 0; vp < plyr->visiblepoints.size(); vp++) {
-    Position point = plyr->visiblepoints[vp];
+  std::shared_ptr<Fov> fov_c = dynamic_pointer_cast<Fov>(plyr->GetComponent(EC_FOV_ID));
+  for (int vp = 0; vp < fov_c->visiblepoints.size(); vp++) {
+    Position point = fov_c->visiblepoints[vp];
     if (point.x - startx < map_term_width
     &&  point.y - starty < map_term_width
     &&  point.x - startx >= 0
@@ -192,51 +193,54 @@ void PlayState::Draw(Game *game)
       Block *block = area->GetBlock(point.x, point.y, point.z);
       Entity *entity = area->GetEntity(point.x, point.y, point.z);
       if (entity == nullptr) {
-        if (block->gr.ch != " ")
-          PrintCh(point.x - startx, point.y - starty, {block->gr.ch,block->gr.fgcolor,tile->gr.bgcolor});
-        else
-          PrintCh(point.x - startx, point.y - starty, tile->gr);
+        if (block->gr.ch != " ") {
+	  std::string fg_color = ((tile->isSnowy) ? "white" : block->gr.fgcolor);
+          PrintGraphic(point.x - startx, point.y - starty, { block->gr.ch, fg_color, tile->gr.bgcolor });
+	}
+        else {
+	  std::string fg_color = ((tile->isSnowy) ? "white" : tile->gr.fgcolor);
+          PrintGraphic(point.x - startx, point.y - starty, {tile->gr.ch, fg_color, tile->gr.bgcolor});
+	}
       }
-      else
-        PrintCh(point.x - startx, point.y - starty, entity->gset);
+      else {
+        std::shared_ptr<Renderable> rend_c = dynamic_pointer_cast<Renderable>(entity->GetComponent(EC_RENDERABLE_ID));
+        PrintGraphic(point.x - startx, point.y - starty, rend_c->graphic);
+      }
     }
   }
 // draw player
-  Point plyr_sc_pos = { plyr->pos.x - startx, plyr->pos.y - starty };
-  int plyr_z = plyr->pos.z;
-  PrintCh(plyr_sc_pos.x, plyr_sc_pos.y, plyr->gset);
-// draw path if necessary
-  if (terminal_state(TK_MOUSE_RIGHT) && terminal_state(TK_MOUSE_X) < map_term_width 
-  && terminal_state(TK_MOUSE_X) >= 0 && terminal_state(TK_MOUSE_Y) >= 0 
-  && terminal_state(TK_MOUSE_Y) < term_height) {
-    std::vector<Point> path;
-    path = Pathfinder::GetPath(game->world, plyr->pos.wx, plyr->pos.wy, plyr->pos.z, plyr->pos.x, plyr->pos.y, 
-                               terminal_state(TK_MOUSE_X)+startx, terminal_state(TK_MOUSE_Y)+starty);
-    terminal_bkcolor("blue");
-    for (auto point : path) {
-      int x = point.x - startx, y = point.y - starty;
-      if (x < map_term_width && x >= 0 && y < term_height && y >= 0) {
-        terminal_color(terminal_pick_color(x, y));
-        terminal_put(x, y, terminal_pick(x, y));
-      }
-    }
-    terminal_bkcolor("black");
-  }
-// draw ui overlays related to clickable tiles
-  if (terminal_state(TK_MOUSE_X) == plyr_sc_pos.x && terminal_state(TK_MOUSE_Y) == plyr_sc_pos.y
-  && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
-    terminal_bkcolor("blue");
-      terminal_color(terminal_pick_color(plyr_sc_pos.x, plyr_sc_pos.y));
-      terminal_put(plyr_sc_pos.x, plyr_sc_pos.y, terminal_pick(plyr_sc_pos.x, plyr_sc_pos.y));
-    terminal_bkcolor("black");
-  }
+  Point plyr_sc_pos = { plyr_pos.x - startx, plyr_pos.y - starty };
+  int plyr_z = plyr_pos.z;
+  std::shared_ptr<Renderable> rend_c = dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
+  PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic);
 // draw menu if necessary
   if (paused) {
-    terminal_clear_area(term_width/2-7,term_height/2-2,15,6);
+    ClearTerminalArea(term_width/2-7,term_height/2-2,15,6);
     for (int b=0;b<pmenu_buttons.size();b++)
-      pmenu_buttons[b].Render(game);
+      pmenu_buttons[b].Render();
     DrawBorder({term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4}, "white", "black");
-    PrintCh(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
+    PrintGraphic(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
+  }
+  else {
+  // draw path if necessary
+    if (TerminalRightMouseHeld() && TerminalGetMouseX() < map_term_width
+    && TerminalGetMouseX() >= 0 && TerminalGetMouseY() >= 0
+    && TerminalGetMouseY() < term_height) {
+      std::vector<Point> path;
+      path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y,
+                                 TerminalGetMouseX()+startx, TerminalGetMouseY()+starty);
+      for (auto point : path) {
+        int x = point.x - startx, y = point.y - starty;
+        if (x < map_term_width && x >= 0 && y < term_height && y >= 0) {
+          PrintGraphic(x, y, {"", "", "blue"});
+        }
+      }
+    }
+  // draw ui overlays related to clickable tiles
+    if (TerminalGetMouseX() == plyr_sc_pos.x && TerminalGetMouseY() == plyr_sc_pos.y
+    && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
+      PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, {"", "", "blue"});
+    }
   }
   map_menu.Draw(game);
 }

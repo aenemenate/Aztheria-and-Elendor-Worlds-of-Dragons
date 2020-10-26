@@ -1,20 +1,22 @@
-#include <BearLibTerminal.h>
 #include "button.h"
 #include "../game.h"
+#include "../draw_funcs.h"
+#include "../base.h"
+#include "../input_funcs.h"
 
 void Button::Activate(Game *game) { callback_f(game); }
 
-void Button::Update(Game *game) { if (isclicked(game)) callback_f(game); }
+void Button::Update(Game *game) { if (isclicked()) callback_f(game); }
 
-void Button::Render(Game *game) {
-  std::string t = "[bkcolor=black]" + text;
-    t = (ishovered() ? "[color=green]" : "[color=white]") + t;
-  terminal_print_ext(this->x, this->y, this->text.length(), 1, TK_ALIGN_CENTER, t.c_str());
+void Button::Render() {
+  std::string bkcolor = "black";
+  std::string fgcolor = (ishovered() ? "green" : "white");
+  PrintGraphic(this->x, this->y, {text, fgcolor, bkcolor});
 }
 
-bool Button::isclicked(Game *game) {
+bool Button::isclicked() {
   bool ret_val = false;
-  if (game->key == (TK_MOUSE_LEFT|TK_KEY_RELEASED))
+  if (TerminalGetKey() == (MTK_MOUSE_LEFT|MTK_KEY_RELEASED))
     if (ishovered())
       ret_val = true;
   return ret_val;
@@ -22,8 +24,8 @@ bool Button::isclicked(Game *game) {
 
 bool Button::ishovered() {
   bool ret_val = false;
-  int mouse_x = terminal_state(TK_MOUSE_X);
-  if ((terminal_state(TK_MOUSE_Y) == this->y) && (mouse_x >= this->x) && (mouse_x < this->x + this->text.length()))
+  int mouse_x = TerminalGetMouseX();
+  if ((TerminalGetMouseY() == this->y) && (mouse_x >= this->x) && (mouse_x < this->x + this->text.length()))
     ret_val = true;
   return ret_val;
 }

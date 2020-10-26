@@ -4,6 +4,8 @@
 #include "block_components.h"
 #include <string>
 #include <vector>
+#include <memory>
+#include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/vector.hpp>
@@ -26,9 +28,9 @@ struct Block {
   Graphic gr;
   bool explored, opaque, solid, enterable;
   std::string name;
-  std::vector<BlockComponent*> blockcomponents;
+  std::vector<std::shared_ptr<BlockComponent>> blockcomponents;
   void Activate(void *src, World *world);
   void Update(void *src, World *world);
   bool HasComponent(int component_type) { for (auto c : blockcomponents) if (c->ID == component_type) return true; return false; }
-  BlockComponent* GetComponent(int component_type) { for (auto c : blockcomponents) if (c->ID == component_type) return c; return nullptr; }
+  std::shared_ptr<BlockComponent> GetComponent(int component_type) { for (auto c : blockcomponents) if (c->ID == component_type) return c; return nullptr; }
 };

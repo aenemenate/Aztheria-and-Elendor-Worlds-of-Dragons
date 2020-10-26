@@ -2,7 +2,7 @@
 #include "../world.h"
 #include "../map/area.h"
 #include "../map/map_helper.h"
-#include "../entity/entity.h"
+#include "../ecs/entity.h"
 #include "block.h"
 #include "tile.h"
 
@@ -20,7 +20,7 @@ void UpdatePlants(World* world) {
       Area *area = world->GetArea(wx, wy);
       Block *block = area->GetBlock(x, y, 0);
       if (block->HasComponent(PLANT_ID)) {
-        Plant* pc = (Plant*)(block->GetComponent(PLANT_ID));
+        std::shared_ptr<Plant> pc = std::dynamic_pointer_cast<Plant>(block->GetComponent(PLANT_ID));
         if (pc->Update(&pos, world)) {
           block->gr.ch = pc->GetCurrentStage();
           area->SetBlock(x, y, 0, *block);

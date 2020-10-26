@@ -1,5 +1,5 @@
 #include "area.h"
-#include "../entity/entity.h"
+#include "../ecs/entity.h"
 
 string GetAreaName(BiomeType biome_type, TerrainType terrain_type) {
   switch (biome_type) {
@@ -92,6 +92,14 @@ Graphic GetAreaGraphic(Area *area) {
   return {" ", "black", "black"};
 }
 
+void Area::ClearEnts() {
+  ent_map.clear();
+  ent_map.resize(width * height, nullptr);
+  for (int i = 0; i < dungeon_floors.size(); ++i) {
+    dungeon_floors[i].ClearEnts();
+  }
+}
+
 Tile *Area::GetTile(int x, int y, int z) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
@@ -143,7 +151,7 @@ Entity *Area::GetEntity(int x, int y, int z) {
 void Area::SetEntity(int x, int y, int z, Entity *entity) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
-      ent_map[x*height+y] = entity;
+      ent_map[x*height+y] = (entity != nullptr) ? entity : nullptr;
     else
       dungeon_floors[z-1].SetEntity(x, y, entity);
   }

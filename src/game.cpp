@@ -1,8 +1,9 @@
-#include <BearLibTerminal.h>
 #include "game.h"
 #include "world.h"
-#include "entity/entity.h"
+#include "ecs/entity.h"
 #include "map/area.h"
+#include "draw_funcs.h"
+#include "input_funcs.h"
 
 void Game::CleanupResources() {
   if (this->world != nullptr)
@@ -11,24 +12,20 @@ void Game::CleanupResources() {
 }
 
 void Game::Init() {
-  key = 0;
   running = true;
-  input_block_mode = true;
-  terminal_open();
-  terminal_set("window.size=60x40");
-  terminal_refresh();
+  SetTerminal("window.size=60x40");
 // set values
   world = nullptr;
 }
 
 void Game::CleanupAll() {
-	// cleanup the all states
+// cleanup all the states
   while ( !states.empty() ) {
 	  states.back()->Cleanup();
 	  states.pop_back();
   }
   CleanupResources();
-  terminal_close();
+  CloseTerminal();
 }
 
 void Game::ChangeState(GameState* state) {
@@ -59,13 +56,10 @@ void Game::PopState() {
 }
 
 void Game::HandleEvents() {
-  if (input_block_mode 
-  || terminal_has_input())
-    key = terminal_read();
-  else { key = 0; }
+  TerminalReadKey();
 // let the state handle events
   states.back()->HandleEvents(this);
-  if (key==TK_CLOSE)
+  if (TerminalWasClosed())
     Quit();
 }
 
@@ -76,7 +70,7 @@ void Game::Update() {
 
 void Game::Draw() {
 // let the state draw the screen
-  terminal_clear();
+  ClearTerminal();
   states.back()->Draw(this);
-  terminal_refresh();
+  RefreshTerminal();
 }
