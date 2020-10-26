@@ -2,7 +2,9 @@
 #include "../map/area.h"
 #include "../ecs/entity.h"
 #include "../game.h"
+#include "../map_objects/block_systems.h"
 
+int prevPlantsUpdate = 0;
 
 World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int slot) {
   this->width = width;
@@ -11,6 +13,7 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
   seed = 0;
   this->slot = slot;
   time = Time();
+  prevPlantsUpdate = time.day;
 }
 
 World::~World() { }
@@ -37,8 +40,14 @@ void World::Update(Game *game) {
       entities[e].Tick(game, EC_PRIO_POST);
   }
   std::shared_ptr<ActionTime> plyrActionTime = dynamic_pointer_cast<ActionTime>(plyr->GetComponent(EC_ACTIONTIME_ID));
+// if the player performed an action, jump to their time
   if (time < plyrActionTime->time)
     time = Time(plyrActionTime->time);
+// update plants once per day
+  if (prevPlantsUpdate < time.day) {
+    prevPlantsUpdate = time.day;
+    UpdatePlants(this);
+  }
 }
 
 bool World::PointWithinBounds(int x, int y) {
