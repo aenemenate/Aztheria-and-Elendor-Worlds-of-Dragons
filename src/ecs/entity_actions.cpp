@@ -4,7 +4,8 @@
 #include "../map/area.h"
 #include "entity.h"
 
-void Move::Do(Entity *src, World *world) {
+int Move::Do(Entity *src, World *world) {
+  int cost = 0;
 // clamp sign between -1 and 1
   int xsign = (xdir <= -1) ? -1 : ((xdir >= 1) ? 1 : 0);
   int ysign = (ydir <= -1) ? -1 : ((ydir >= 1) ? 1 : 0);
@@ -69,8 +70,11 @@ void Move::Do(Entity *src, World *world) {
 	new_wy = pos->wy;
       }
     }
-    world->GetArea(pos->wx, pos->wy)->SetEntity(pos->x,pos->y,pos->z,nullptr);
-    world->GetArea(new_wx, new_wy)->SetEntity(new_x,new_y,new_z,src);
+    if (new_x != pos->x || new_y != pos->y || new_z != pos->z || new_wx != pos->wx || new_wy != pos->wy) {
+      world->GetArea(pos->wx, pos->wy)->SetEntity(pos->x,pos->y,pos->z,nullptr);
+      world->GetArea(new_wx, new_wy)->SetEntity(new_x,new_y,new_z,src);
+      cost = 1000;
+    }
 // set the new positions
     pos->x = new_x;
     pos->y = new_y;
@@ -78,12 +82,16 @@ void Move::Do(Entity *src, World *world) {
     pos->wx = new_wx;
     pos->wy = new_wy;
   }
+  return cost;
 }
 
-void ActivateBlock::Do(Entity *src, World *world) {
+int ActivateBlock::Do(Entity *src, World *world) {
+  int cost = 0;
   if (src->HasComponent(EC_POSITION_ID)) {
     Position this_pos = ( dynamic_pointer_cast<EntPosition>( src->GetComponent(EC_POSITION_ID) ) )->position;
     Position block_pos = { this_pos.x + this->xdir, this_pos.y + this->ydir, this_pos.z, this_pos.wx, this_pos.wy };
     world->GetArea(block_pos.wx, block_pos.wy)->GetBlock(block_pos.x, block_pos.y, block_pos.z)->Activate((void*)src, world);
+    cost = 1000;
   }
+  return cost;
 }

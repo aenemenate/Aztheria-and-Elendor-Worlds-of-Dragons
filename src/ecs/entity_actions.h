@@ -11,7 +11,7 @@ public:
   EntityAction() {}
   EntityAction(int ID) : ID(ID) {}
   virtual ~EntityAction() {}
-  virtual void Do(Entity *ent, World *world) = 0;
+  virtual int Do(Entity *ent, World *world) = 0;
 };
 
 #define EA_MOVE_ID		0
@@ -26,7 +26,7 @@ public:
   int xdir, ydir, zdir;
   Move() : EntityAction() {}
   Move(int _xdir, int _ydir, int _zdir) : xdir(_xdir), ydir(_ydir), zdir(_zdir), EntityAction(EA_MOVE_ID) {}
-  void Do(Entity *src, World *world);
+  int Do(Entity *src, World *world);
 };
 
 /* Can activate any block in a radius. */
@@ -35,5 +35,5 @@ public:
   int xdir, ydir;
   ActivateBlock() : EntityAction() {}
   ActivateBlock(int _xdir, int _ydir) : xdir(_xdir), ydir(_ydir), EntityAction(EA_ACTIVATEBLOCK_ID) {}
-  void Do(Entity *src, World *world);
+  int Do(Entity *src, World *world);
 };

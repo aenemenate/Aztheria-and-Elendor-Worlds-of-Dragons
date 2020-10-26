@@ -10,10 +10,10 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
   areas.resize(width*height, Area(map_w,map_h));
   seed = 0;
   this->slot = slot;
+  time = Time();
 }
 
-World::~World() {
-}
+World::~World() { }
 
 void World::Update(Game *game) {
   Entity *plyr = &(entities[0]);
@@ -36,6 +36,9 @@ void World::Update(Game *game) {
     &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
       entities[e].Tick(game, EC_PRIO_POST);
   }
+  std::shared_ptr<ActionTime> plyrActionTime = dynamic_pointer_cast<ActionTime>(plyr->GetComponent(EC_ACTIONTIME_ID));
+  if (time < plyrActionTime->time)
+    time = Time(plyrActionTime->time);
 }
 
 bool World::PointWithinBounds(int x, int y) {

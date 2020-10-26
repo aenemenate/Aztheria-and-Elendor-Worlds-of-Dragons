@@ -17,10 +17,15 @@ void Entity::Tick(Game *game, int prio) {
 }
 
 bool Entity::Act(World *world) {
-  if (actions.size() > 0) {
-    actions[0]->Do(this, world);
-    actions.erase(actions.begin());
-    return true;
+  if (HasComponent(EC_ACTIONTIME_ID)) {
+    std::shared_ptr<ActionTime> actionTime = dynamic_pointer_cast<ActionTime>(GetComponent(EC_ACTIONTIME_ID));
+    while (actions.size() > 0
+    &&  actionTime->time <= world->time) {
+      int cost = actions[0]->Do(this, world);
+      actionTime->time.IncrMs(cost);
+      actions.erase(actions.begin());
+      return true;
+    }
   }
   return false;
 }

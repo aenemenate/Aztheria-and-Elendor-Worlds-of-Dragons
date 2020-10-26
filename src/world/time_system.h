@@ -1,4 +1,5 @@
-#pragma once
+#ifndef H_TIME_SYSTEM
+#define H_TIME_SYSTEM
 
 #include <boost/serialization/access.hpp>
 
@@ -20,10 +21,33 @@ struct Time {
 
 // constructors, either choose a time or start from 0
   Time() { ms = 0; second = 0; minute = 0; hour = 0; day = 0; month = 0; year = 0; }
+  Time(const Time& time) { ms = time.ms; second = time.second; minute = time.minute; hour = time.hour; day = time.day; month = time.month; year = time.year; }
   Time(int ms, int second, int minute, int hour, int day, int month, int year) : ms(ms), second(second), hour(hour), day(day), month(month), year(year) {}
 
+  friend bool operator== (const Time &t1, const Time &t2) {
+    return t1.ms == t2.ms && t1.second == t2.second && t1.minute == t2.minute && t1.hour == t2.hour
+	&& t1.day == t2.day && t1.month == t2.month && t1.year == t2.year;
+  }
+  friend bool operator!= (const Time &t1, const Time &t2) {
+    return !(t1 == t2);
+  }
+  friend bool operator>  (const Time &t1, const Time &t2) {
+    return t1.ms > t2.ms || t1.second > t2.second || t1.minute > t2.minute || t1.hour > t2.hour
+	|| t1.day > t2.day || t1.month > t2.month || t1.year > t2.year;
+  }
+  friend bool operator>= (const Time &t1, const Time &t2) {
+    return t1 > t2 || t1 == t2 ;
+  }
+  friend bool operator<  (const Time &t1, const Time &t2) {
+    return t1.ms < t2.ms || t1.second < t2.second || t1.minute < t2.minute || t1.hour < t2.hour
+	|| t1.day < t2.day || t1.month < t2.month || t1.year < t2.year;
+  }
+  friend bool operator<= (const Time &t1, const Time &t2) {
+    return t1 < t2 || t1 == t2;
+  }
+
 // incr the time by a certain amount at a certain scale
-  inline void IncrMs(int _ms) {
+  void IncrMs(int _ms) {
     ms += _ms;
     while (ms >= 1000) {
       ms -= 1000;
@@ -31,7 +55,7 @@ struct Time {
     }
   }
 
-  inline void IncrSec(int _sec) {
+  void IncrSec(int _sec) {
     second += _sec;
     while (second >= 60) {
       second -= 60;
@@ -39,7 +63,7 @@ struct Time {
     }
   }
 
-  inline void IncrMin(int _min) {
+  void IncrMin(int _min) {
     minute += _min;
     while (minute >= 60) {
       minute -= 60;
@@ -47,7 +71,7 @@ struct Time {
     }
   }
 
-  inline void IncrHour(int _hour) {
+  void IncrHour(int _hour) {
     hour += _hour;
     while (hour >= 24) {
       hour -= 24;
@@ -55,7 +79,7 @@ struct Time {
     }
   }
 
-  inline void IncrDay(int _day) {
+  void IncrDay(int _day) {
     day += _day;
     while (day >= 30) {
       day -= 30;
@@ -63,7 +87,7 @@ struct Time {
     }
   }
 
-  inline void IncrMonth(int _month) {
+  void IncrMonth(int _month) {
     month += _month;
     while (month >= 12) {
       month -= 12;
@@ -71,7 +95,9 @@ struct Time {
     }
   }
 
-  inline void IncrYear(int _year) {
+  void IncrYear(int _year) {
     year += _year;
   }
 };
+
+#endif

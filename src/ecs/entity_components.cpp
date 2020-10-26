@@ -64,7 +64,6 @@ void AnimalAi::Tick(Entity *src, Game *game) {
       Entity *ent;
       if ((ent = fov->ClosestVisibleEnemy(game->world, pos)) != nullptr) {
 	// move away from entity
-	
       }
       else {
 	// random move
