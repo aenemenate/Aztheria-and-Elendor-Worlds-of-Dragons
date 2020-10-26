@@ -213,25 +213,6 @@ void PlayState::Draw(Game *game)
   int plyr_z = plyr_pos.z;
   std::shared_ptr<Renderable> rend_c = dynamic_pointer_cast<Renderable>(plyr->GetComponent(EC_RENDERABLE_ID));
   PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, rend_c->graphic);
-// draw path if necessary
-  if (TerminalRightMouseHeld() && TerminalGetMouseX() < map_term_width
-  && TerminalGetMouseX() >= 0 && TerminalGetMouseY() >= 0
-  && TerminalGetMouseY() < term_height) {
-    std::vector<Point> path;
-    path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y,
-                               TerminalGetMouseX()+startx, TerminalGetMouseY()+starty);
-    for (auto point : path) {
-      int x = point.x - startx, y = point.y - starty;
-      if (x < map_term_width && x >= 0 && y < term_height && y >= 0) {
-        PrintGraphic(x, y, {"", "", "blue"});
-      }
-    }
-  }
-// draw ui overlays related to clickable tiles
-  if (TerminalGetMouseX() == plyr_sc_pos.x && TerminalGetMouseY() == plyr_sc_pos.y
-  && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
-    PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, {"", "", "blue"});
-  }
 // draw menu if necessary
   if (paused) {
     ClearTerminalArea(term_width/2-7,term_height/2-2,15,6);
@@ -239,6 +220,27 @@ void PlayState::Draw(Game *game)
       pmenu_buttons[b].Render();
     DrawBorder({term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4}, "white", "black");
     PrintGraphic(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
+  }
+  else {
+  // draw path if necessary
+    if (TerminalRightMouseHeld() && TerminalGetMouseX() < map_term_width
+    && TerminalGetMouseX() >= 0 && TerminalGetMouseY() >= 0
+    && TerminalGetMouseY() < term_height) {
+      std::vector<Point> path;
+      path = Pathfinder::GetPath(game->world, plyr_pos.wx, plyr_pos.wy, plyr_pos.z, plyr_pos.x, plyr_pos.y,
+                                 TerminalGetMouseX()+startx, TerminalGetMouseY()+starty);
+      for (auto point : path) {
+        int x = point.x - startx, y = point.y - starty;
+        if (x < map_term_width && x >= 0 && y < term_height && y >= 0) {
+          PrintGraphic(x, y, {"", "", "blue"});
+        }
+      }
+    }
+  // draw ui overlays related to clickable tiles
+    if (TerminalGetMouseX() == plyr_sc_pos.x && TerminalGetMouseY() == plyr_sc_pos.y
+    && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
+      PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, {"", "", "blue"});
+    }
   }
   map_menu.Draw(game);
 }

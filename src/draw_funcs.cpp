@@ -19,6 +19,7 @@ void ClearTerminal() {
 }
 
 void ClearTerminalArea(int left, int top, int width, int height) {
+  terminal_bkcolor(term_bkcolor = color_from_name("black"));
   terminal_clear_area(left, top, width, height);
 }
 
