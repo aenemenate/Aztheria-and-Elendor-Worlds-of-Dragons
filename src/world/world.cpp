@@ -15,8 +15,6 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
   prevDayUpdate = time.day;
 }
 
-World::~World() { }
-
 void World::Update(Game *game) {
   Entity *plyr = &(entities[0]);
   Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;

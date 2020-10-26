@@ -40,7 +40,7 @@ public:
 
   World() { }
   World(uint8_t,uint8_t,uint16_t,uint16_t,int);
-  ~World();  
+  ~World() { }
 
   /* Update the world */
   void Update(Game *game);
