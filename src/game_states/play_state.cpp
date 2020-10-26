@@ -4,7 +4,7 @@
 #include "../base.h"
 #include "../input_funcs.h"
 #include "../ecs/entity.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../game_fio.h"
 #include "../pathfinder.h"
@@ -132,24 +132,7 @@ void PlayState::Update(Game *game)
       if (player_path.size() == 0)
         TerminalSetInputBlockMode(true);
     }
-// tick pre-action components
-    for (int e = 0; e < game->world->entities.size(); ++e) {
-      Position pos = (dynamic_pointer_cast<EntPosition>(game->world->entities[e].GetComponent(EC_POSITION_ID)))->position;
-      if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
-      &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
-        game->world->entities[e].Tick(game, EC_PRIO_PRE);
-    }
-// act, only allowing other entities to act if the player does
-    if (game->world->entities[0].Act(game->world))
-      for (int e = 1; e < game->world->entities.size(); ++e)
-        game->world->entities[e].Act(game->world);
-// tick post-action components
-    for (int e = 0; e < game->world->entities.size(); ++e) {
-      Position pos = (dynamic_pointer_cast<EntPosition>(game->world->entities[e].GetComponent(EC_POSITION_ID)))->position;
-      if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
-      &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
-        game->world->entities[e].Tick(game, EC_PRIO_POST);
-    }
+    game->world->Update(game);
   }
   map_menu.Update(game);
 }

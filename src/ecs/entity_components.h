@@ -8,6 +8,7 @@
 
 #include "../base.h"
 #include "../map/area.h"
+#include "../world/time_system.h"
 
 class World;
 class Game;
@@ -43,6 +44,7 @@ public:
 #define EC_FOV_ID		3
 #define EC_PLAYER_ID		4
 #define EC_ANIMALAI_ID		5
+#define EC_ACTIONTIME_ID	6
 
 class Renderable : public EntityComponent {
   friend class boost::serialization::access;
@@ -135,6 +137,22 @@ public:
   void Tick(Entity *src, Game *game);
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<AnimalAi>(AnimalAi(biome)); }
 };
+
+class ActionTime : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & time;
+  }
+public:
+  Time time;
+  ActionTime() : EntityComponent() {}
+  ActionTime(Time time) : time(time), EntityComponent(EC_ACTIONTIME_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<ActionTime>(ActionTime(time)); }
+};
+
 
 // Functions
 

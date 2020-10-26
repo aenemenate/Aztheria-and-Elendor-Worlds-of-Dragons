@@ -3,7 +3,7 @@
 #include "perlin_generator.h"
 
 #include "../game.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../map/map_helper.h"
 #include "../ecs/entity.h"
@@ -110,6 +110,7 @@ void WorldGen::PlaceEntities(World* world) {
   player.AddComponent(std::make_shared<Name>(Name("player")));
   player.AddComponent(std::make_shared<Fov>(Fov(28)));
   player.AddComponent(std::make_shared<Player>(Player(true)));
+  player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
   world->AddEntity(player);
 // add animals from xml
   std::vector<Entity> entities;
@@ -132,7 +133,8 @@ void WorldGen::PlaceEntities(World* world) {
       for (auto component : ent_orig->components)
         ent.AddComponent(component->GetCopy());
       Point ent_pos = walkable_positions[rand()%walkable_positions.size()];
-      ent.AddComponent(std::shared_ptr<EntityComponent>(new EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
+      ent.AddComponent(std::make_shared<EntPosition>(EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
+      ent.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
       world->AddEntity(ent);
     }
   }

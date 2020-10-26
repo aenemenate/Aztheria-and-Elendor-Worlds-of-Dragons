@@ -1,6 +1,6 @@
 #include "dung_gen.h"
 
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../ecs/entity.h"
 #include "../map_objects/block_builders.h"

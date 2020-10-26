@@ -1,7 +1,7 @@
 #include "entity.h"
 #include "entity_components.h"
 #include "../game.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../input_funcs.h"
 
@@ -64,7 +64,6 @@ void AnimalAi::Tick(Entity *src, Game *game) {
       Entity *ent;
       if ((ent = fov->ClosestVisibleEnemy(game->world, pos)) != nullptr) {
 	// move away from entity
-	
       }
       else {
 	// random move
