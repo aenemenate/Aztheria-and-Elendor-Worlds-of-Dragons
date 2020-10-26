@@ -1,7 +1,7 @@
 #include "biome_gen.h"
 
 #include "perlin_generator.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../ecs/entity.h"
 

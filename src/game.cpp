@@ -1,5 +1,5 @@
 #include "game.h"
-#include "world.h"
+#include "world/world.h"
 #include "ecs/entity.h"
 #include "map/area.h"
 #include "draw_funcs.h"

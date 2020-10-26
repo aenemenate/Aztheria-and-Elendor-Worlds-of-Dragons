@@ -3,7 +3,7 @@
 #include "perlin_generator.h"
 
 #include "../game.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../map/map_helper.h"
 #include "../ecs/entity.h"

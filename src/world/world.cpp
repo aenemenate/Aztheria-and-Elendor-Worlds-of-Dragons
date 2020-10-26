@@ -1,7 +1,7 @@
 #include "world.h"
-#include "map/area.h"
-#include "ecs/entity.h"
-#include "game.h"
+#include "../map/area.h"
+#include "../ecs/entity.h"
+#include "../game.h"
 
 
 World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int slot) {
@@ -13,6 +13,29 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
 }
 
 World::~World() {
+}
+
+void World::Update(Game *game) {
+  Entity *plyr = &(entities[0]);
+  Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
+// tick pre-action components
+  for (int e = 0; e < entities.size(); ++e) {
+    Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
+    if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
+    &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
+      entities[e].Tick(game, EC_PRIO_PRE);
+  }
+// act, only allowing other entities to act if the player does
+  if (entities[0].Act(this))
+    for (int e = 1; e < entities.size(); ++e)
+      entities[e].Act(this);
+// tick post-action components
+  for (int e = 0; e < entities.size(); ++e) {
+    Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
+    if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
+    &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
+      entities[e].Tick(game, EC_PRIO_POST);
+  }
 }
 
 bool World::PointWithinBounds(int x, int y) {

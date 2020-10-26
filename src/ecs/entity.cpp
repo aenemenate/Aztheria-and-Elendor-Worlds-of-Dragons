@@ -1,6 +1,6 @@
 #include "entity.h"
 #include "../game.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 
 void Entity::RemoveComponent(int component_type) {

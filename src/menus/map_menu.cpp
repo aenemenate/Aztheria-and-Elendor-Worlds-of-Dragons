@@ -1,7 +1,7 @@
 #include "map_menu.h"
 #include "../game.h"
 #include "../draw_funcs.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../ecs/entity.h"
 

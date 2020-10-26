@@ -1,6 +1,6 @@
 #include "entity_actions.h"
 #include "../game.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "entity.h"
 
