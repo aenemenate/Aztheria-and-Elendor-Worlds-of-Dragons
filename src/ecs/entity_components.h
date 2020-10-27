@@ -164,4 +164,5 @@ inline void RegisterEntityComponentTypes(Archive &ar) {
     ar.template register_type<Fov>();
     ar.template register_type<Player>();
     ar.template register_type<AnimalAi>();
+    ar.template register_type<ActionTime>();
 }
