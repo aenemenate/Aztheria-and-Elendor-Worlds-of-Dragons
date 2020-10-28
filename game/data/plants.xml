@@ -1,0 +1,188 @@
+<plants>
+
+  <!-- desert plants -->
+
+  <cactus ch="." fgcolor="96,128,56" bkcolor="" opaque="1" solid="1" enterable="0" name="cactus">
+    <plantComponent>
+      <spawn_chance 	val="1"		/>
+      <biome 		val="0"		/>
+      <seed_tile	val="sand"	/>
+      <tickspergrowth	val="12"	/>
+      <seedradius	val="20"	/>
+      <required_space	val="3"		/>
+      <stages>
+        <stage0 	val="."		/>
+        <stage1 	val="o"		/>
+        <stage2 	val="0"		/>
+      </stages>
+    </plantComponent>
+  </cactus>
+
+  <!-- taiga plants -->
+
+  <evergreen ch="o" fgcolor="dark 176,146,122" bkcolor="" opaque="1" solid="1" enterable="0" name="evergreen tree">
+    <plantComponent>
+      <spawn_chance 	val="1"		/>
+      <biome 		val="2"		/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="6"		/>
+      <seedradius	val="70"	/>
+      <required_space	val="2"		/>
+      <stages>
+        <stage0 	val="o"		/>
+        <stage1 	val="o"		/>
+        <stage2 	val="0"		/>
+        <stage3 	val="0"		/>
+        <stage4 	val="O"		/>
+        <stage5 	val="O"		/>
+      </stages>
+    </plantComponent>
+  </evergreen>
+
+  <!-- deciduous forest plants -->
+
+  <mapletree ch="o" fgcolor="176,146,122" bkcolor="" opaque="1" solid="1" enterable="0" name="maple tree">
+    <plantComponent>
+      <spawn_chance 	val="1"		/>
+      <biome 		val="4"		/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="8"		/>
+      <seedradius	val="25"	/>
+      <required_space	val="2"		/>
+      <stages>
+        <stage0 	val="o"		/>
+        <stage1 	val="o"		/>
+        <stage2 	val="0"		/>
+        <stage3 	val="0"		/>
+        <stage4 	val="O"		/>
+        <stage5 	val="O"		/>
+      </stages>
+    </plantComponent>
+  </mapletree>
+
+  <fern ch="," fgcolor="96,128,56" bkcolor="" opaque="1" solid="0" enterable="0" name="fern">
+    <plantComponent>
+      <spawn_chance 	val="2"		/>
+      <biome 		val="4"		/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="6"		/>
+      <seedradius	val="40"	/>
+      <required_space	val="3"		/>
+      <stages>
+        <stage0 	val=","		/>
+        <stage1 	val="*"		/>
+        <stage2 	val="%"		/>
+      </stages>
+    </plantComponent>
+  </fern>
+
+  <grass ch="," fgcolor="96,128,56" bkcolor="" opaque="0" solid="0" enterable="0" name="grass">
+    <plantComponent>
+      <spawn_chance 	val="8"		/>
+      <biome 		val="4"		/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="4"		/>
+      <seedradius	val="25"	/>
+      <required_space	val="0"		/>
+      <stages>
+        <stage0 	val=","		/>
+        <stage1 	val="'"		/>
+        <stage2 	val="&quot;"	/>
+      </stages>
+    </plantComponent>
+  </grass>
+
+  <!-- plains plants -->
+
+  <grass ch="," fgcolor="96,128,56" bkcolor="" opaque="0" solid="0" enterable="0" name="grass">
+    <plantComponent>
+      <spawn_chance 	val="8"		/>
+      <biome 		val="5"		/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="4"		/>
+      <seedradius	val="25"	/>
+      <required_space	val="0"		/>
+      <stages>
+        <stage0 	val=","		/>
+        <stage1 	val="'"		/>
+        <stage2 	val="&quot;"	/>
+      </stages>
+    </plantComponent>
+  </grass>
+
+  <!-- snowy plains plants -->
+
+  <crabgrass ch="," fgcolor="dark 96,128,56" bkcolor="" opaque="0" solid="0" enterable="0" name="crabgrass">
+    <plantComponent>
+      <spawn_chance 	val="6"		/>
+      <biome 		val="10"		/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="5"		/>
+      <seedradius	val="35"	/>
+      <required_space	val="0"		/>
+      <stages>
+        <stage0 	val=","		/>
+        <stage1 	val="'"		/>
+        <stage2 	val="&quot;"	/>
+      </stages>
+    </plantComponent>
+  </crabgrass>
+
+  <!-- tropical forest plants -->
+
+  <palmtree ch="o" fgcolor="176,146,122" bkcolor="" opaque="1" solid="1" enterable="0" name="palm tree">
+    <plantComponent>
+      <spawn_chance 	val="2"		/>
+      <biome 		val="10"	/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="4"		/>
+      <seedradius	val="18"	/>
+      <required_space	val="2"		/>
+      <stages>
+        <stage0 	val="o"		/>
+        <stage1 	val="o"		/>
+        <stage2 	val="0"		/>
+        <stage3 	val="0"		/>
+        <stage4 	val="O"		/>
+        <stage5 	val="O"		/>
+      </stages>
+    </plantComponent>
+  </palmtree>
+
+  <rubbertree ch="o" fgcolor="176,146,122" bkcolor="" opaque="1" solid="1" enterable="0" name="rubber tree">
+    <plantComponent>
+      <spawn_chance 	val="3"		/>
+      <biome 		val="10"	/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="4"		/>
+      <seedradius	val="24"	/>
+      <required_space	val="2"		/>
+      <stages>
+        <stage0 	val="o"		/>
+        <stage1 	val="0"		/>
+        <stage2 	val="0"		/>
+        <stage3 	val="O"		/>
+        <stage4 	val="O"		/>
+      </stages>
+    </plantComponent>
+  </rubbertree>
+
+  <!-- barren plants (mountains, beaches) -->
+
+  <hlgrass ch="," fgcolor="156,146,122" bkcolor="" opaque="0" solid="0" enterable="0" name="highland grass">
+    <plantComponent>
+      <spawn_chance 	val="6"		/>
+      <biome 		val="14"	/>
+      <seed_tile	val="dirt"	/>
+      <tickspergrowth	val="4"		/>
+      <seedradius	val="25"	/>
+      <required_space	val="0"		/>
+      <stages>
+        <stage0 	val=","		/>
+        <stage1 	val="'"		/>
+        <stage2 	val="&quot;"	/>
+      </stages>
+    </plantComponent>
+  </hlgrass>
+
+</plants>

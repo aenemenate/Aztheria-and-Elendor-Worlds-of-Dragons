@@ -33,4 +33,16 @@ struct Block {
   void Update(void *src, World *world);
   bool HasComponent(int component_type) { for (auto c : blockcomponents) if (c->ID == component_type) return true; return false; }
   std::shared_ptr<BlockComponent> GetComponent(int component_type) { for (auto c : blockcomponents) if (c->ID == component_type) return c; return nullptr; }
+  inline Block GetCopy() {
+    Block block;
+    block.gr 		= gr;
+    block.explored 	= explored;
+    block.opaque	= opaque;
+    block.solid		= solid;
+    block.enterable	= enterable;
+    block.name		= name;
+    for (int i = 0; i < blockcomponents.size(); ++i)
+      block.blockcomponents.push_back(blockcomponents[i]->GetCopy());
+    return block;
+  }
 };

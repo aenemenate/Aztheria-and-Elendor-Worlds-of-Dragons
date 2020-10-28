@@ -27,11 +27,11 @@ class World {
     ar & areas;
     ar & entities;
     ar & time;
-    ar & prevDayUpdate;
+    ar & lastUpdateHour;
   }
   vector<Area> areas;
 public:
-  int prevDayUpdate;
+  int lastUpdateHour;
   Time time;
   vector<Entity> entities;
   uint8_t width, height;

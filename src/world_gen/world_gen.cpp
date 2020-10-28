@@ -60,28 +60,34 @@ void WorldGen::GeneratePlants(World* world) {
   srand(time(0));
   int areawidth = world->GetArea(0,0)->width,
       areaheight = world->GetArea(0,0)->height;
-  for (int i = 0; i < world->width * areawidth; i++)
-    for (int j = 0; j < world->height * areaheight; j++) {
-      Area* area = world->GetArea(i / areawidth, j / areaheight);
-      Block *block = area->GetBlock(i % areawidth, j % areaheight, 0);
-      Tile *tile = area->GetTile(i % areawidth, j % areaheight, 0);
-      bool cur_point_adjacent_to_water = MapHelper::PointAdjacentToTileOfType(area, {i % areawidth, j % areaheight}, 0, "water");
-      bool cur_point_adjacent_to_stone = MapHelper::PointAdjacentToBlockOfType(area, {i % areawidth, j % areaheight}, 0, "stone");
-      bool tile_is_dirt = (tile->name == "dirt");
-      bool block_is_air = (block->name == "air");
-      if (rand() % 10 < 6 && tile_is_dirt && block_is_air) {
-        if (cur_point_adjacent_to_water) {
-          if (rand() % 10 < 1)
-            area->SetBlock(i % areawidth, j % areaheight, 0, BuildTree());
-          else
-            area->SetBlock(i % areawidth, j % areaheight, 0, BuildGrassBlock());
+  std::vector<Block> plants;
+  plants = XmlParser::GetBlocksFromXml("./data/plants.xml");
+  for (int i = 0; i < world->width; ++i) {
+    for (int j = 0; j < world->height; ++j) {
+      Area* area = world->GetArea(i, j);
+    /* set the plant list for this biome */
+      std::vector<int> plants_of_biome;
+      for (int t = 0; t < plants.size(); ++t) 
+        if (plants[t].HasComponent(PLANT_ID)) {
+	  std::shared_ptr<Plant> plant_c = dynamic_pointer_cast<Plant>(plants[t].GetComponent(PLANT_ID));
+          if (plant_c->biome == area->biome_type)
+            plants_of_biome.push_back(t);
         }
-        else if (cur_point_adjacent_to_stone) {
-          // build highland grass block
-          area->SetBlock(i % areawidth, j % areaheight, 0, BuildHlGrassBlock());
-        }
-      }
+    /* iterate every plant in list, then every point and check rand at each point vs the spawn chance */
+      for (int p = 0; p < plants_of_biome.size(); ++p)
+        for (int ix = 0; ix < area->width; ++ix)
+	  for (int jx = 0; jx < area->height; ++jx) {
+          // if rand() % 100 is less then spawn chance and this is the correct biome
+	    std::shared_ptr<Plant> plant_c = dynamic_pointer_cast<Plant>(plants[plants_of_biome[p]].GetComponent(PLANT_ID));
+            Block *block = area->GetBlock(ix, jx, 0);
+            Tile *tile = area->GetTile(ix, jx, 0);
+            bool tile_is_seed_tile = (tile->name == plant_c->seed_tile);
+            bool block_is_air = (block->name == "air");
+            if (rand() % 100 < plant_c->spawn_chance && tile_is_seed_tile && block_is_air)
+	      area->SetBlock(ix, jx, 0, plants[plants_of_biome[p]].GetCopy());
+          }
     }
+  }
   for (int g = 0; g < 30; g++)
     UpdatePlants(world);
 }

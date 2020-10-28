@@ -8,7 +8,7 @@ bool Stair::Activate(void *src, World *world) {
 }
 
 bool Plant::Update(void *src, World *world) {
-  if (stage == numstages - 1)
+  if (stage == stages.size() - 1)
     return true;
   stage++;
   return false;
