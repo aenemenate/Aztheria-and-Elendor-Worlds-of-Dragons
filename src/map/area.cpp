@@ -11,8 +11,8 @@ string GetAreaName(BiomeType biome_type, TerrainType terrain_type) {
       return "taiga";
     case Tundra:
       return "tundra";
-    case BorealForest:
-      return "boreal forest";
+    case DeciduousForest:
+      return "deciduous forest";
     case GrassyPlain:
       return "grassy plain";
     case SnowyPlain:
@@ -59,7 +59,7 @@ Graphic GetAreaGraphic(Area *area) {
       return {"↑", "darker green", "black"};
     case BiomeType::Tundra:
       return {"▒", "white", "blue"};
-    case BiomeType::BorealForest:
+    case BiomeType::DeciduousForest:
       return {"♠", "dark green", "black"};
     case BiomeType::GrassyPlain:
       return {"\"", "green", "black"};

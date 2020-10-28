@@ -1,4 +1,5 @@
 #include "block_builders.h"
+#include "../map/area.h"
 
 Block BuildAirBlock() {
   Block block;
@@ -30,7 +31,7 @@ Block BuildStoneDownStair() {
   block.solid = false;
   block.enterable = true;
   block.name = "stone down stairs";
-  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Stair(ZDirection::down)));
+  block.blockcomponents.push_back(std::make_shared<Stair>(Stair(ZDirection::down)));
   return block;
 }
 
@@ -42,7 +43,7 @@ Block BuildStoneUpStair() {
   block.solid = false;
   block.enterable = true;
   block.name = "stone up stairs";
-  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Stair(ZDirection::up)));
+  block.blockcomponents.push_back(std::make_shared<Stair>(Stair(ZDirection::up)));
   return block;
 }
 
@@ -54,41 +55,5 @@ Block BuildSandstoneBlock() {
   block.solid = true;
   block.enterable = false;
   block.name = "sandstone";
-  return block;
-}
-
-Block BuildGrassBlock() {
-  Block block;
-  block.gr = {",", "96,128,56", ""};
-  block.explored = false;
-  block.opaque = false;
-  block.solid = false;
-  block.enterable = false;
-  block.name = "grass";
-  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Plant(3,4,25,0,{',','\'','\"'})));
-  return block;
-}
-
-Block BuildHlGrassBlock() {
-  Block block;
-  block.gr = {",", "156,146,122", ""};
-  block.explored = false;
-  block.opaque = false;
-  block.solid = false;
-  block.enterable = false;
-  block.name = "highland grass";
-  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Plant(3,4,25,0,{',','\'','`'})));
-  return block;
-}
-
-Block BuildTree() {
-  Block block;
-  block.gr = {",", "176,146,122", ""};
-  block.explored = false;
-  block.opaque = true;
-  block.solid = true;
-  block.enterable = false;
-  block.name = "tree";
-  block.blockcomponents.push_back(std::shared_ptr<BlockComponent>(new Plant(6,4,50,2,{'.',',',':',';','o','O'})));
   return block;
 }

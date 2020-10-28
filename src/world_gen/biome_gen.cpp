@@ -112,7 +112,7 @@ void BiomeGen::DetermineBiomes(World* world) {
           }
           else if (area->temperature > 16) {
             if (area->humidity > .3)
-              area->biome_type = BiomeType::BorealForest;
+              area->biome_type = BiomeType::DeciduousForest;
             else if (area->humidity > .05)
               area->biome_type = BiomeType::GrassyPlain;
             else

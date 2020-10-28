@@ -4,7 +4,6 @@
 #include "../game.h"
 #include "../map_objects/block_systems.h"
 
-
 World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int slot) {
   this->width = width;
   this->height = height;
@@ -12,7 +11,7 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
   seed = 0;
   this->slot = slot;
   time = Time();
-  prevDayUpdate = time.day;
+  lastUpdateHour = 0;
 }
 
 void World::Update(Game *game) {
@@ -40,10 +39,10 @@ void World::Update(Game *game) {
 // if the player performed an action, jump to their time
   if (time < plyrActionTime->time)
     time = Time(plyrActionTime->time);
-// update plants once per day
-  if (prevDayUpdate < time.day) {
-    prevDayUpdate = time.day;
+// update world once per 3 hours
+  if (time.hour % 3 == 0 && lastUpdateHour != time.hour) {
     UpdatePlants(this);
+    lastUpdateHour = time.hour;
   }
 }
 
