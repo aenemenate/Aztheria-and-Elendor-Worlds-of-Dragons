@@ -38,22 +38,24 @@ void UpdatePlants(World* world) {
 	      seed.y -= tileheight;
             if (seed.y < 0) 
 	      seed.y += tileheight;
-            if (area2->GetTile(seed.x, seed.y, 0)->name == "dirt" 
+            if (area2->GetTile(seed.x, seed.y, 0)->name == pc->seed_tile
             &&  (area2->GetBlock(seed.x, seed.y, 0)->name == "air"
                 || area2->GetBlock(seed.x, seed.y, 0)->HasComponent(PLANT_ID)
 		)
             &&  MapHelper::SpaceIsClear(area2, {seed.x, seed.y}, 0, pc->required_space)
-	       ) {
+	    && rand()%10 < pc->spawn_chance ) {
               pc->ResetGrowth();
               block->gr.ch = pc->GetCurrentStage();
               area2->SetBlock(seed.x, seed.y, 0, block->GetCopy());
             }
             continue;
           }
-          if (area->GetTile(seed.x, seed.y, 0)->name == "dirt" 
-          &&  (area->GetBlock(seed.x, seed.y, 0)->name == "air"
-          ||  area->GetBlock(seed.x, seed.y, 0)->HasComponent(PLANT_ID))
-          &&  MapHelper::SpaceIsClear(area, {seed.x, seed.y}, 0, pc->required_space)) {
+          if (area->GetTile(seed.x, seed.y, 0)->name == pc->seed_tile 
+          && (area->GetBlock(seed.x, seed.y, 0)->name == "air"
+             || area->GetBlock(seed.x, seed.y, 0)->HasComponent(PLANT_ID)
+	     )
+          &&  MapHelper::SpaceIsClear(area, {seed.x, seed.y}, 0, pc->required_space)
+	  &&  rand()%10 < pc->spawn_chance) {
             pc->ResetGrowth();
             block->gr.ch = pc->GetCurrentStage();
             area->SetBlock(seed.x, seed.y, 0, block->GetCopy());
