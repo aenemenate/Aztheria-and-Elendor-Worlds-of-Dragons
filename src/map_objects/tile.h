@@ -11,6 +11,7 @@ struct Tile {
     ar & gr;
     ar & explored;
     ar & walkable;
+    ar & isSnowy;
     ar & name;
   }
   Graphic gr;
