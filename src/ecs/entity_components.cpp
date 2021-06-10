@@ -52,6 +52,7 @@ void Player::Tick(Entity *src, Game *game) {
     case MTK_KP_7:
       src->actions.push_back(std::make_shared<Move>(Move(-1,-1,0))); break;
     case MTK_KP_ENTER:
+    case MTK_ENTER:
       src->actions.push_back(std::make_shared<ActivateBlock>(ActivateBlock(0, 0))); break;
   }
 }

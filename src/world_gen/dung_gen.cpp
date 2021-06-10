@@ -34,7 +34,17 @@ std::vector<Point> getPotentialStairPoints(Area *area, int z_level) {
   return p_spots;
 }
 
-void generateDungeonFloor(Area* area, Point downstair_pos) {
+std::vector<Point> GetDownStairPoints(Map *map) {
+  std::vector<Point> walkable_points;
+  for (int i = 0; i < map->width; i++)
+    for (int j = 0; j < map->height; j++) {
+      if (map->GetTile(i,j)->walkable && map->GetEntity(i,j) == nullptr)
+        walkable_points.push_back({i, j});
+    }
+  return walkable_points;
+}
+
+void generateDungeonFloor(Area* area, Point downstair_pos, int levels = 1) {
   area->GetDungeonFloors()->push_back(Dungeon(area->width, area->height));
   Dungeon *dungeon = &(area->GetDungeonFloors()->back());
   int z_level = area->GetDungeonFloors()->size();
@@ -50,6 +60,13 @@ void generateDungeonFloor(Area* area, Point downstair_pos) {
       }
     }
   area->SetBlock(downstair_pos.x, downstair_pos.y, z_level, BuildStoneUpStair());
+  // place down stairs
+  if (levels > z_level) {
+    std::vector<Point> walkable_points = GetDownStairPoints(dungeon);   
+    Point stair_point = walkable_points[rand()%walkable_points.size()];
+    dungeon->SetBlock(stair_point.x, stair_point.y, BuildStoneDownStair());
+    generateDungeonFloor(area, stair_point, levels);
+  }
 }
 
 void DungeonGen::PlaceDungeons(World* world) {
@@ -66,13 +83,14 @@ void DungeonGen::PlaceDungeons(World* world) {
     int vec_ind = rand()%potential_dungeons.size();
     Point area_pos = potential_dungeons[vec_ind];
     Area *area = world->GetArea(area_pos.x, area_pos.y);
+    int levels = 3;
 // put stairs
     std::vector<Point> stair_points = getPotentialStairPoints(area, 0);
     if (stair_points.size() == 0)
     { i--; continue; }
     Point stair_point = stair_points[rand()%stair_points.size()];
     area->SetBlock(stair_point.x, stair_point.y, 0, BuildStoneDownStair());
-    generateDungeonFloor(area, stair_point);
+    generateDungeonFloor(area, stair_point, levels);
     potential_dungeons.erase(potential_dungeons.begin() + vec_ind);
   }
 }

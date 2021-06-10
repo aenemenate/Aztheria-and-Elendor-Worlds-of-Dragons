@@ -36,13 +36,3 @@ bool MapHelper::SpaceIsClear(Area *area, Point pos, int z, int space) {
         }
     return true;
 }
-
-std::vector<Point> MapHelper::GetWalkablePoints(Map *map) {
-  std::vector<Point> walkable_points;
-  for (int i = 0; i < map->width; i++)
-    for (int j = 0; j < map->height; j++) {
-      if (map->GetTile(i,j)->walkable && map->GetEntity(i,j) == nullptr)
-        walkable_points.push_back({i, j});
-    }
-  return walkable_points;
-}

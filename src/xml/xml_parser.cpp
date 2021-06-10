@@ -1,9 +1,7 @@
 #include "xml_parser.h"
+
 #include <memory>
-
-#include <bits/stdc++.h>
 #include <iostream>
-
 #include <rapidxml_print.hpp>
 
 std::shared_ptr<Renderable> renderableFromNode(xml_node<> *node) {

@@ -7,3 +7,5 @@
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
 link_directories("3rdparty/bearlibterminal/lib/windows")
 
+set(BOOST_ROOT "C:/Program Files/boost/boost_1_76_0")
+

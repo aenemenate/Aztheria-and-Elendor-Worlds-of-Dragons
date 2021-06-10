@@ -23,6 +23,16 @@
 
 #include <iostream>
 
+std::vector<Point> GetWalkablePoints(Map *map) {
+  std::vector<Point> walkable_points;
+  for (int i = 0; i < map->width; i++)
+    for (int j = 0; j < map->height; j++) {
+      if (map->GetTile(i,j)->walkable && map->GetEntity(i,j) == nullptr)
+        walkable_points.push_back({i, j});
+    }
+  return walkable_points;
+}
+
 void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int depth, int seed) {
   PerlinGenerator perlinGenerator = PerlinGenerator(seed);
   int map_w = area->width, map_h = area->height;
@@ -106,13 +116,13 @@ void WorldGen::PlaceEntities(World* world) {
     }
   int wp_index = rand()%walkable_areas.size();
   uint16_t world_x = walkable_areas[wp_index].x, world_y = walkable_areas[wp_index].y;
-  std::vector<Point> walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
+  std::vector<Point> walkable_positions = GetWalkablePoints(world->GetArea(world_x, world_y));
   srand(time(0));
   Point pos = walkable_positions[rand()%walkable_positions.size()];
 // add player
   Entity player;
   player.AddComponent(std::make_shared<Renderable>(Renderable({"@", "yellow", "black"})));
-  player.AddComponent(std::make_shared<EntPosition>(EntPosition({ pos.x, pos.y, 0, world_x, world_y })));
+  player.AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(pos.x), (uint16_t)(pos.y), 0, world_x, world_y })));
   player.AddComponent(std::make_shared<Name>(Name("player")));
   player.AddComponent(std::make_shared<Fov>(Fov(28)));
   player.AddComponent(std::make_shared<Player>(Player(true)));
@@ -133,13 +143,13 @@ void WorldGen::PlaceEntities(World* world) {
           ents_of_biome.push_back(i);
       }
     if (ents_of_biome.size() > 0) {
-      walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
+      walkable_positions = GetWalkablePoints(world->GetArea(world_x, world_y));
       Entity *ent_orig = &(entities[ents_of_biome[rand()%ents_of_biome.size()]]);
       Entity ent;
       for (auto component : ent_orig->components)
         ent.AddComponent(component->GetCopy());
       Point ent_pos = walkable_positions[rand()%walkable_positions.size()];
-      ent.AddComponent(std::make_shared<EntPosition>(EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
+      ent.AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(ent_pos.x), (uint16_t)(ent_pos.y), 0, world_x, world_y })));
       ent.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
       world->AddEntity(ent);
     }
