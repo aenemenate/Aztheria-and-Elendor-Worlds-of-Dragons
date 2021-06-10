@@ -83,7 +83,7 @@ void DungeonGen::PlaceDungeons(World* world) {
     int vec_ind = rand()%potential_dungeons.size();
     Point area_pos = potential_dungeons[vec_ind];
     Area *area = world->GetArea(area_pos.x, area_pos.y);
-    int levels = 3;
+    int levels = rand()%26;
 // put stairs
     std::vector<Point> stair_points = getPotentialStairPoints(area, 0);
     if (stair_points.size() == 0)
