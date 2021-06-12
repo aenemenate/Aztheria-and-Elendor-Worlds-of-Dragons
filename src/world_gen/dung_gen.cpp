@@ -4,6 +4,7 @@
 #include "../map/area.h"
 #include "../ecs/entity.h"
 #include "../map_objects/block_builders.h"
+#include "../pathfinder.h"
 
 #include <cmath>
 #include <chrono>
@@ -91,8 +92,6 @@ void generateDungeonFloor(Area* area, Point downstair_pos, int levels = 1) {
           area->SetBlock(i, j, z_level, BuildStoneBlock());
           area->SetTile(i,j, z_level, TILE_DIRT);
 	}
-	area->GetTile(i, j, z_level)->explored = true;
-        area->GetBlock(i, j, z_level)->explored = true;
       }
     }
   for (int i = 0; i < 2; ++i)
@@ -100,8 +99,11 @@ void generateDungeonFloor(Area* area, Point downstair_pos, int levels = 1) {
   area->SetBlock(downstair_pos.x, downstair_pos.y, z_level, BuildStoneUpStair());
   // place down stairs
   if (levels > z_level) {
-    std::vector<Point> walkable_points = GetDownStairPoints(dungeon);   
+    std::vector<Point> walkable_points = GetDownStairPoints(dungeon);
     Point stair_point = walkable_points[rand()%walkable_points.size()];
+    while (Pathfinder::GetPath(area, z_level, stair_point.x, stair_point.y, 
+                                        downstair_pos.x, downstair_pos.y).size() <= 1)
+      stair_point = walkable_points[rand()%walkable_points.size()];
     dungeon->SetBlock(stair_point.x, stair_point.y, BuildStoneDownStair());
     generateDungeonFloor(area, stair_point, levels);
   }

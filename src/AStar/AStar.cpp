@@ -41,7 +41,7 @@ vector<Node> AStar::search(Node start, Node goal)
 	//nodes in closed will have the total cost in nodes
 	
 	/* Normally the closed set would be empty but this makes the code bit simpler. */
-	start.setCost(0); //you're already at start so no cost of movement.
+	start.setCost(0); //youre already at start so no cost of movement.
 	start.setPriority(0);
 	open.push(start);
 	closed[start] = start;
@@ -52,13 +52,13 @@ vector<Node> AStar::search(Node start, Node goal)
 	/*
 	/!((*top) == (*goal))
 	* while top of the priority queue is not the goal node:
-	* if the open list is empty and we haven't found the node, 
+	* if the open list is empty and we havent found the node, 
 	* then we traversed every accessable node and there is no accessable path from star to end 
 	*/
     int count = 0;
 	while (!open.empty() && count < m_grid->getWidth() * m_grid->getHeight()) {
 		++count;
-		//get the top element then REMOVE it from the queue (since we're about to inspect it)
+		//get the top element then REMOVE it from the queue (since were about to inspect it)
 		auto current = open.top();
 		open.pop();
 		int curx = current.getX(), cury = current.getY();
@@ -97,9 +97,14 @@ void AStar::reconstructPath(unordered_map<Node, Node> closed, Node start, Node g
 {
 	//vector<Node> path;
 	Node current = goal;
-	m_path.push_back(current); //incase if start and goal are the same.
+	m_path.push_back(current); //in case if start and goal are the same.
 	while (current != start) {
-		current = closed.at(current);
-		m_path.push_back(current);
+	  try {
+	    current = closed.at(current);
+	  }
+	  catch  (...) {
+	    break;
+	  }
+	  m_path.push_back(current);
 	}
 }
