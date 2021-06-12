@@ -5,18 +5,31 @@
 #include "../ecs/entity.h"
 #include "../map_objects/block_builders.h"
 
+#include <cmath>
 #include <chrono>
 #include <random>
 
 int getNumAdjacentOpenPositions(Area* area, Point pos, int z_level) {
   int num = 0;
-  for (int i = -1; i < 1; i++)
-    for (int j = -1; j < 1; j++) {
+  for (int i = -1; i <= 1; i++)
+    for (int j = -1; j <= 1; j++) {
       Point cur_pos = {pos.x + i, pos.y + j};
-      if (!(cur_pos.x == 0 && cur_pos.y == 0) 
+      if (!(i == 0 && j == 0) 
       && area->PointWithinBounds(cur_pos.x, cur_pos.y)
       && area->GetBlock(cur_pos.x, cur_pos.y, z_level)->solid == false
       && area->GetTile(cur_pos.x, cur_pos.y, z_level)->walkable == true) {
+        num++;
+      }
+    }
+  return num;
+}
+
+int getNumAdjacentWalls(Dungeon *dungeon, Point pos) {
+  int num = 0;
+  for (int i = -1; i <= 1; i++)
+    for (int j = -1; j <= 1; j++) {
+      Point cur_pos = {pos.x + i, pos.y + j};
+      if (dungeon->GetBlock(cur_pos.x, cur_pos.y)->solid) {
         num++;
       }
     }
@@ -44,6 +57,20 @@ std::vector<Point> GetDownStairPoints(Map *map) {
   return walkable_points;
 }
 
+void applyCellularAutomata(Dungeon *dungeon) {
+  for (int i = 1; i < dungeon->width - 1; i++)
+    for (int j = 1; j < dungeon->height - 1; j++) {
+      if (dungeon->GetBlock(i, j)->solid) {
+        if (getNumAdjacentWalls(dungeon, {i, j}) >= 4)
+          ;
+	else
+	  dungeon->SetBlock(i, j, BuildAirBlock());
+      }
+      else if (getNumAdjacentWalls(dungeon, {i, j}) >= 5)
+        dungeon->SetBlock(i, j, BuildStoneBlock());\
+    }
+}
+
 void generateDungeonFloor(Area* area, Point downstair_pos, int levels = 1) {
   area->GetDungeonFloors()->push_back(Dungeon(area->width, area->height));
   Dungeon *dungeon = &(area->GetDungeonFloors()->back());
@@ -55,10 +82,21 @@ void generateDungeonFloor(Area* area, Point downstair_pos, int levels = 1) {
         area->SetTile(i,j, z_level, TILE_DIRT);
       }
       else {
-        area->SetBlock(i, j, z_level, BuildAirBlock());
-        area->SetTile(i,j, z_level, TILE_DIRT);
+	if (rand()%5>1 || (abs(downstair_pos.x - i) +
+				abs(downstair_pos.y - j) < 15)) {
+          area->SetBlock(i, j, z_level, BuildAirBlock());
+          area->SetTile(i,j, z_level, TILE_DIRT);
+	}
+	else {
+          area->SetBlock(i, j, z_level, BuildStoneBlock());
+          area->SetTile(i,j, z_level, TILE_DIRT);
+	}
+	area->GetTile(i, j, z_level)->explored = true;
+        area->GetBlock(i, j, z_level)->explored = true;
       }
     }
+  for (int i = 0; i < 2; ++i)
+    applyCellularAutomata(dungeon);
   area->SetBlock(downstair_pos.x, downstair_pos.y, z_level, BuildStoneUpStair());
   // place down stairs
   if (levels > z_level) {
