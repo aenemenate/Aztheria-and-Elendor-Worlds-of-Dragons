@@ -1,0 +1,10 @@
+<monsters>
+
+  <goblin>
+    <name value="goblin"/>
+    <renderable ch="g" fgcolor="green" bgcolor=""/>
+    <fov viewradius="10"/>
+    <monsterai type="melee"/>
+  </goblin>
+
+</monsters>

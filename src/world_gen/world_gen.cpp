@@ -179,7 +179,7 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
     }
   BiomeGen::DetermineHumidityMap(game->world); // puts humidity for every world tile
   BiomeGen::DetermineBiomes(game->world);      // assigns biomes to every world tile
-  DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
   GeneratePlants(game->world);                 // generates plants
   PlaceEntities(game->world);
+  DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
 }

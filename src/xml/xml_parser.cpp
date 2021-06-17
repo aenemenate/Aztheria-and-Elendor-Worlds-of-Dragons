@@ -26,6 +26,10 @@ std::shared_ptr<AnimalAi> animalAiFromNode(xml_node<> *node) {
   return std::make_shared<AnimalAi>(AnimalAi((BiomeType)std::stoi(std::string(node->first_attribute("biome")->value()))));
 }
 
+std::shared_ptr<MonsterAi> monsterAiFromNode(xml_node<> *node) {
+  return std::make_shared<MonsterAi>(MonsterAi(std::string(node->first_attribute("type")->value())));
+}
+
 std::shared_ptr<EntityComponent> entityComponentFromNode(xml_node<> *node) {
   if (std::string(node->name()) == "renderable") {
     return renderableFromNode(node);
@@ -38,6 +42,9 @@ std::shared_ptr<EntityComponent> entityComponentFromNode(xml_node<> *node) {
   }
   if (std::string(node->name()) == "animalai") {
     return animalAiFromNode(node);
+  }
+  if (std::string(node->name()) == "monsterai") {
+    return monsterAiFromNode(node);
   }
   return nullptr;
 }
