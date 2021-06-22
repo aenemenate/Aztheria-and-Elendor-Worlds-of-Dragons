@@ -127,6 +127,7 @@ void WorldGen::PlaceEntities(World* world) {
   player.AddComponent(std::make_shared<Fov>(Fov(28)));
   player.AddComponent(std::make_shared<Player>(Player(true)));
   player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
+  player.AddComponent(std::make_shared<Body>(Body(10,10,10,10)));
   world->AddEntity(player);
 // add animals from xml
   std::vector<Entity> entities;

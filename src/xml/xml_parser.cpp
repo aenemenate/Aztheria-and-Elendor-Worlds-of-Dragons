@@ -30,6 +30,15 @@ std::shared_ptr<MonsterAi> monsterAiFromNode(xml_node<> *node) {
   return std::make_shared<MonsterAi>(MonsterAi(std::string(node->first_attribute("type")->value())));
 }
 
+std::shared_ptr<Body> bodyFromNode(xml_node<> *node) {
+  int atk, def, spd, hp;
+  atk = std::stoi(std::string(node->first_attribute("atk")->value()));
+  def = std::stoi(std::string(node->first_attribute("def")->value()));
+  spd = std::stoi(std::string(node->first_attribute("spd")->value()));
+  hp = std::stoi(std::string(node->first_attribute("hp")->value()));
+  return std::make_shared<Body>(Body(atk, def, spd, hp));
+}
+
 std::shared_ptr<EntityComponent> entityComponentFromNode(xml_node<> *node) {
   if (std::string(node->name()) == "renderable") {
     return renderableFromNode(node);
@@ -45,6 +54,9 @@ std::shared_ptr<EntityComponent> entityComponentFromNode(xml_node<> *node) {
   }
   if (std::string(node->name()) == "monsterai") {
     return monsterAiFromNode(node);
+  }
+  if (std::string(node->name()) == "body") {
+    return bodyFromNode(node);
   }
   return nullptr;
 }

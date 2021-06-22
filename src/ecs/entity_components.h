@@ -46,6 +46,7 @@ public:
 #define EC_ANIMALAI_ID		5
 #define EC_ACTIONTIME_ID	6
 #define EC_MONSTERAI_ID		7
+#define EC_BODY_ID		8
 
 class Renderable : public EntityComponent {
   friend class boost::serialization::access;
@@ -169,6 +170,27 @@ public:
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<MonsterAi>(MonsterAi(type)); }
 };
 
+class Body : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & atk;
+    ar & def;
+    ar & spd;
+    ar & hp;
+  }
+public:
+  int atk;
+  int def;
+  int spd;
+  int hp;
+  Body() : EntityComponent() {}
+  Body(int atk, int def, int spd, int hp) : atk(atk), def(def), spd(spd), hp(hp), EntityComponent(EC_BODY_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Body>(Body(atk, def, spd, hp)); }
+};
+
 // Functions
 
 template<class Archive>
@@ -181,4 +203,5 @@ inline void RegisterEntityComponentTypes(Archive &ar) {
     ar.template register_type<AnimalAi>();
     ar.template register_type<ActionTime>();
     ar.template register_type<MonsterAi>();
+    ar.template register_type<Body>();
 }
