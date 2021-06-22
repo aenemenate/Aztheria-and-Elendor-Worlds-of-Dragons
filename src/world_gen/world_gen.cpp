@@ -127,6 +127,7 @@ void WorldGen::PlaceEntities(World* world) {
   player.AddComponent(std::make_shared<Fov>(Fov(28)));
   player.AddComponent(std::make_shared<Player>(Player(true)));
   player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
+  player.AddComponent(std::make_shared<Body>(Body(10,10,10,10)));
   world->AddEntity(player);
 // add animals from xml
   std::vector<Entity> entities;
@@ -179,7 +180,7 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
     }
   BiomeGen::DetermineHumidityMap(game->world); // puts humidity for every world tile
   BiomeGen::DetermineBiomes(game->world);      // assigns biomes to every world tile
-  DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
   GeneratePlants(game->world);                 // generates plants
   PlaceEntities(game->world);
+  DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
 }

@@ -20,7 +20,7 @@ int Move::Do(Entity *src, World *world) {
     int new_wx = pos->wx, new_wy = pos->wy;
     Area *curmap = world->GetArea(pos->wx,pos->wy);
 // if new position is not within map bounds
-    if (!curmap->PointWithinBounds(new_x, new_y) && new_z == pos->z) {
+    if (!curmap->PointWithinBounds(new_x, new_y) && new_z == pos->z && pos->z == 0) {
 // check in each direction and set the new_wx, new_wy and new_x and new_y
       new_x = pos->x;
       new_y = pos->y;
@@ -48,14 +48,19 @@ int Move::Do(Entity *src, World *world) {
       }
     }
 // else if it is on the current map, check if the new position is walkable
-    else if (curmap->PointWithinBounds(new_x, new_y)
-         &&  new_z >= 0 && new_z <= curmap->GetDungeonFloors()->size()
-         && !curmap->GetTile(new_x,new_y,new_z)->walkable 
-         ||  curmap->GetEntity(new_x,new_y,new_z) != nullptr
-         || curmap->GetBlock(new_x,new_y,new_z)->solid) {
+    else if (curmap->PointWithinBounds(new_x, new_y)) {
+      if (new_z >= 0 && new_z <= curmap->GetDungeonFloors()->size()
+      && !curmap->GetTile(new_x, new_y, new_z)->walkable
+      || curmap->GetEntity(new_x, new_y, new_z) != nullptr
+      || curmap->GetBlock(new_x, new_y, new_z)->solid) {
+        new_x = pos->x;
+        new_y = pos->y;
+        new_z = pos->z;
+      }
+    }
+    else if (!curmap->PointWithinBounds(new_x, new_y)) {
       new_x = pos->x;
       new_y = pos->y;
-      new_z = pos->z;
     }
 // if we decided to move maps, check if the desired position is actually walkable
     if (new_wx != pos->wx || new_wy != pos->wy || new_z != pos->z) {

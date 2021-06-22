@@ -31,8 +31,9 @@ void World::Update(Game *game) {
 // tick post-action components
   for (int e = 0; e < entities.size(); ++e) {
     Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
-    if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
-    &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
+    if (pos.wx >= plyr_pos.wx - 1 && pos.wx <= plyr_pos.wx + 1
+    &&  pos.wy >= plyr_pos.wy - 1 && pos.wy <= plyr_pos.wy + 1
+    && pos.z >= plyr_pos.z -  1 && pos.z <= plyr_pos.z + 1)
       entities[e].Tick(game, EC_PRIO_POST);
   }
   std::shared_ptr<ActionTime> plyrActionTime = dynamic_pointer_cast<ActionTime>(plyr->GetComponent(EC_ACTIONTIME_ID));
