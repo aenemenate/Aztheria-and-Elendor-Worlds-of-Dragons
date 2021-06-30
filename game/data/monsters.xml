@@ -5,7 +5,7 @@
     <renderable ch="g" fgcolor="green" bgcolor=""/>
     <fov viewradius="10"/>
     <monsterai type="melee"/>
-    <body atk="5" def="3" spd="6" hp="5"/>
+    <stats atk="5" def="3" spd="6" hp="5"/>
   </goblin>
 
 </monsters>
