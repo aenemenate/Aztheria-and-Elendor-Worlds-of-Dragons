@@ -126,3 +126,114 @@ void MonsterAi::Tick(Entity *src, Game *game) {
     }
   }
 }
+
+Attribute AttributeFromName(std::string name) {
+    if (name == "Strength") return Strength;
+    if (name == "Intelligence") return Intelligence;
+    if (name == "Willpower") return Willpower;
+    if (name == "Dexterity") return Dexterity;
+    if (name =="Speed") return Speed;
+    if (name == "Endurance") return Endurance;
+    if (name =="Personality") return Personality;
+    if (name == "Luck") return Luck;
+    return Strength;
+}
+
+Resource ResourceFromName(std::string name) {
+    if (name == "Health") return Health;
+    if (name == "MaxHealth") return MaxHealth;
+    if (name == "Hunger") return Hunger;
+    if (name == "MaxHunger") return MaxHunger;
+    if (name == "Magicka") return Magicka;
+    if (name == "MaxMagicka") return MaxMagicka;
+    if (name == "Stamina") return Stamina;
+    if (name == "MaxStamina") return MaxStamina;
+    return Health;
+}
+
+Skill SkillFromName(std::string name) {
+    if (name == "HeavyArmor") return HeavyArmor;
+    if (name == "Spear") return Spear;
+    if (name == "Blocking") return Blocking;
+    if (name == "Brawling") return Brawling;
+    if (name == "Forging") return Forging;
+    if (name == "HeavyWeapons") return HeavyWeapons;
+    if (name == "LongBlades") return LongBlades;
+    if (name == "LightArmor") return LightArmor;
+    if (name == "Marksmanship") return Marksmanship;
+    if (name == "Sneaking") return Sneaking;
+    if (name == "Acrobatics") return Acrobatics;
+    if (name == "Swimming") return Swimming;
+    if (name == "ShortBlade") return ShortBlade;
+    if (name == "Unarmored") return Unarmored;
+    if (name == "Illusion") return Illusion;
+    if (name == "Mercantile") return Mercantile;
+    if (name == "Speech") return Speech;
+    if (name == "Alchemy") return Alchemy;
+    if (name == "Conjuration") return Conjuration;
+    if (name == "Enchant") return Enchant;
+    if (name == "Lockpick") return Lockpick;
+    if (name == "Destruction") return Destruction;
+    if (name == "Restoration") return Restoration;
+    if (name == "Crafting") return Crafting;
+    return HeavyArmor;
+}
+
+
+void Stats::SetAttributes(std::shared_ptr<Class> uClass) {
+  attributes[Strength] = 40;
+  attributes[Intelligence] = 40;
+  attributes[Willpower] = 40;
+  attributes[Dexterity] = 40;
+  attributes[Speed] = 40;
+  attributes[Endurance] = 40;
+  attributes[Personality] = 40;
+  attributes[Luck] = 40;
+  for (int i = 0; i < uClass->majorAttributes.size(); ++i)
+    attributes[uClass->majorAttributes[i]] += 10;
+}
+
+void Stats::SetResources() {
+  int hp = (attributes[Strength] + attributes[Endurance]) / 2;
+  int mp = attributes[Intelligence];
+  int sp = attributes[Strength] + attributes[Willpower] + attributes[Speed] + attributes[Endurance];
+  resources[Health] = hp;
+  resources[MaxHealth] = hp;
+  resources[Hunger] = hp + sp;
+  resources[MaxHunger] = hp + sp;
+  resources[Magicka] = mp;
+  resources[MaxMagicka] = mp;
+  resources[Stamina] = sp;
+  resources[MaxStamina] = sp;
+}
+
+void Stats::SetSkills(std::shared_ptr<Class> uClass) {
+  skills[HeavyArmor] = 5;
+  skills[Spear] = 5;
+  skills[Blocking] = 5;
+  skills[Brawling] = 5;
+  skills[Forging] = 5;
+  skills[HeavyWeapons] = 5;
+  skills[LongBlades] = 5;
+  skills[LightArmor] = 5;
+  skills[Marksmanship] = 5;
+  skills[Sneaking] = 5;
+  skills[Acrobatics] = 5;
+  skills[Swimming] = 5;
+  skills[ShortBlade] = 5;
+  skills[Unarmored] = 5;
+  skills[Illusion] = 5;
+  skills[Mercantile] = 5;
+  skills[Speech] = 5;
+  skills[Alchemy] = 5;
+  skills[Conjuration] = 5;
+  skills[Enchant] = 5;
+  skills[Lockpick] = 5;
+  skills[Destruction] = 5;
+  skills[Restoration] = 5;
+  skills[Crafting] = 5;
+  for (int i = 0; i < uClass->majorSkills.size(); ++i)
+    skills[uClass->majorSkills[i]] += 25;
+  for (int i = 0; i < uClass->minorSkills.size(); ++i)
+    skills[uClass->minorSkills[i]] += 10;
+}

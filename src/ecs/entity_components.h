@@ -3,8 +3,10 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/string.hpp>
+#include <boost/serialization/map.hpp>
 #include <boost/serialization/base_object.hpp>
 #include <memory>
+#include <map>
 
 #include "../base.h"
 #include "../map/area.h"
@@ -46,7 +48,8 @@ public:
 #define EC_ANIMALAI_ID		5
 #define EC_ACTIONTIME_ID	6
 #define EC_MONSTERAI_ID		7
-#define EC_STATS_ID		8
+#define EC_CLASS_ID             8
+#define EC_STATS_ID		9
 
 class Renderable : public EntityComponent {
   friend class boost::serialization::access;
@@ -170,27 +173,112 @@ public:
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<MonsterAi>(MonsterAi(type)); }
 };
 
+enum Attribute {
+  Strength,
+  Intelligence,
+  Willpower,
+  Dexterity,
+  Speed,
+  Endurance,
+  Personality,
+  Luck
+};
+
+enum Resource {
+  Health,
+  MaxHealth,
+  Hunger,
+  MaxHunger,
+  Magicka,
+  MaxMagicka,
+  Stamina,
+  MaxStamina
+};
+
+enum Skill {
+  HeavyArmor,
+  Spear,
+  Blocking,
+  Brawling,
+  Forging,
+  HeavyWeapons,
+  LongBlades,
+  LightArmor,
+  Marksmanship,
+  Sneaking,
+  Acrobatics,
+  Swimming,
+  ShortBlade,
+  Unarmored,
+  Illusion,
+  Mercantile,
+  Speech,
+  Alchemy,
+  Conjuration,
+  Enchant,
+  Lockpick,
+  Destruction,
+  Restoration,
+  Crafting
+};
+
+Attribute AttributeFromName(std::string name);
+
+Resource ResourceFromName(std::string name);
+
+Skill SkillFromName(std::string name);
+
+class Class : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & majorAttributes;
+    ar & majorSkills;
+    ar & minorSkills;
+  }
+public:
+  std::vector<Attribute> majorAttributes;
+  std::vector<Skill> majorSkills;
+  std::vector<Skill> minorSkills;
+  Class() : EntityComponent() {}
+  Class(std::vector<Attribute> majorAttributes, std::vector<Skill> majorSkills, 
+	std::vector<Skill> minorSkills) : majorAttributes(majorAttributes), 
+	majorSkills(majorSkills), minorSkills(minorSkills), 
+	EntityComponent(EC_CLASS_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { 
+    return std::make_shared<Class>(Class(majorAttributes, majorSkills, minorSkills)); 
+  }
+};
+
 class Stats : public EntityComponent {
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version) {
     ar & boost::serialization::base_object<EntityComponent>(*this);
-    ar & atk;
-    ar & def;
-    ar & spd;
-    ar & hp;
-    ar & maxhp;
+    ar & attributes;
+    ar & resources;
+    ar & skills;
   }
 public:
-  int atk;
-  int def;
-  int spd;
-  int hp;
-  int maxhp;
+  std::map<Attribute, int> attributes;
+  std::map<Resource, int> resources;
+  std::map<Skill, int> skills;
   Stats() : EntityComponent() {}
-  Stats(int atk, int def, int spd, int hp) : atk(atk), def(def), spd(spd), hp(hp), maxhp(hp), EntityComponent(EC_STATS_ID, EC_PRIO_NULL) {}
+  Stats(std::shared_ptr<Class> uClass) : EntityComponent(EC_STATS_ID, EC_PRIO_NULL) {
+    SetAttributes(uClass);
+    SetResources();
+    SetSkills(uClass);
+  }
+  Stats(std::map<Attribute, int> attributes, std::map<Resource, int> resources, std::map<Skill, int> skills) : 
+	attributes(attributes), resources(resources), skills(skills), EntityComponent(EC_STATS_ID, EC_PRIO_NULL) {}
   void Tick(Entity *src, Game *game) { }
-  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Stats>(Stats(atk, def, spd, hp)); }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Stats>(Stats(attributes, resources, skills)); }
+private:
+  void SetAttributes(std::shared_ptr<Class> uClass);
+  void SetResources();
+  void SetSkills(std::shared_ptr<Class> uClass);
 };
 
 // Functions
@@ -205,5 +293,6 @@ inline void RegisterEntityComponentTypes(Archive &ar) {
     ar.template register_type<AnimalAi>();
     ar.template register_type<ActionTime>();
     ar.template register_type<MonsterAi>();
+    ar.template register_type<Class>();
     ar.template register_type<Stats>();
 }

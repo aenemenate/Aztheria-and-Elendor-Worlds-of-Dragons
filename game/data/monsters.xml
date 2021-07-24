@@ -5,7 +5,21 @@
     <renderable ch="g" fgcolor="green" bgcolor=""/>
     <fov viewradius="10"/>
     <monsterai type="melee"/>
-    <stats atk="5" def="3" spd="6" hp="5"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Agility"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="ShortBlade"/>
+        <skill val="LightArmor"/>
+        <skill val="Sneaking"/>
+      </majorSkills>
+      <minorSkills>
+        <skill val="Lockpick"/>
+      </minorSkills>
+    </class>
   </goblin>
 
 </monsters>

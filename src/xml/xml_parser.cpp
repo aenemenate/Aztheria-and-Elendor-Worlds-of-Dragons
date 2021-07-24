@@ -30,13 +30,26 @@ std::shared_ptr<MonsterAi> monsterAiFromNode(xml_node<> *node) {
   return std::make_shared<MonsterAi>(MonsterAi(std::string(node->first_attribute("type")->value())));
 }
 
-std::shared_ptr<Stats> bodyFromNode(xml_node<> *node) {
-  int atk, def, spd, hp;
-  atk = std::stoi(std::string(node->first_attribute("atk")->value()));
-  def = std::stoi(std::string(node->first_attribute("def")->value()));
-  spd = std::stoi(std::string(node->first_attribute("spd")->value()));
-  hp = std::stoi(std::string(node->first_attribute("hp")->value()));
-  return std::make_shared<Stats>(Stats(atk, def, spd, hp));
+std::shared_ptr<Class> classFromNode(xml_node<> *node) {
+  std::vector<Attribute> majorAttributes;
+  std::vector<Skill> majorSkills;
+  std::vector<Skill> minorSkills;
+  xml_node<> *att_node = node->first_node("majorAttributes");
+  for (xml_node<> *t_node = att_node->first_node();
+       t_node; t_node = t_node->next_sibling()) {
+    majorAttributes.push_back(AttributeFromName(t_node->first_attribute("val")->value()));
+  }
+  xml_node<> *maj_node = node->first_node("majorSkills");
+  for (xml_node<> *t_node = maj_node->first_node();
+       t_node; t_node = t_node->next_sibling()) {
+    majorSkills.push_back(SkillFromName(t_node->first_attribute("val")->value()));
+  }
+  xml_node<> *min_node = node->first_node("minorSkills");
+  for (xml_node<> *t_node = min_node->first_node();
+       t_node; t_node = t_node->next_sibling()) {
+    minorSkills.push_back(SkillFromName(t_node->first_attribute("val")->value()));
+  }
+  return std::make_shared<Class>(Class(majorAttributes, majorSkills, minorSkills));
 }
 
 std::shared_ptr<EntityComponent> entityComponentFromNode(xml_node<> *node) {
@@ -55,8 +68,8 @@ std::shared_ptr<EntityComponent> entityComponentFromNode(xml_node<> *node) {
   if (std::string(node->name()) == "monsterai") {
     return monsterAiFromNode(node);
   }
-  if (std::string(node->name()) == "stats") {
-    return bodyFromNode(node);
+  if (std::string(node->name()) == "class") {
+    return classFromNode(node);
   }
   return nullptr;
 }
@@ -66,6 +79,10 @@ Entity entityFromNode(xml_node<> *node) {
   for (xml_node<> *t_node = node->first_node();
        t_node; t_node = t_node->next_sibling()) {
     entity.components.push_back(entityComponentFromNode(t_node));
+  }
+  if (entity.HasComponent(EC_CLASS_ID)) {
+    std::shared_ptr<Class> class_c = dynamic_pointer_cast<Class>(entity.GetComponent(EC_CLASS_ID));
+    entity.components.push_back(std::make_shared<Stats>(Stats(class_c)));
   }
   return entity;
 }

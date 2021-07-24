@@ -127,7 +127,22 @@ void WorldGen::PlaceEntities(World* world) {
   player.AddComponent(std::make_shared<Fov>(Fov(28)));
   player.AddComponent(std::make_shared<Player>(Player(true)));
   player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
-  player.AddComponent(std::make_shared<Stats>(Stats(10,10,10,10)));
+  std::vector<Attribute> majorAttributes;
+  majorAttributes.push_back(Strength);
+  majorAttributes.push_back(Dexterity);
+  majorAttributes.push_back(Endurance);
+  std::vector<Skill> majorSkills;
+  majorSkills.push_back(HeavyWeapons);
+  majorSkills.push_back(HeavyArmor);
+  majorSkills.push_back(Blocking);
+  majorSkills.push_back(Marksmanship);
+  std::vector<Skill> minorSkills;
+  minorSkills.push_back(Mercantile);
+  minorSkills.push_back(Speech);
+  minorSkills.push_back(Lockpick);
+  minorSkills.push_back(Crafting);
+  std::shared_ptr<Class> uClass = std::make_shared<Class>(Class(majorAttributes, majorSkills, minorSkills));
+  player.AddComponent(std::make_shared<Stats>(Stats(uClass)));
   world->AddEntity(player);
 // add animals from xml
   std::vector<Entity> entities;
