@@ -169,7 +169,7 @@ void PlayState::Draw(Game *game)
   for (int vp = 0; vp < fov_c->visiblepoints.size(); vp++) {
     Position point = fov_c->visiblepoints[vp];
     if (point.x - startx < map_term_width
-    &&  point.y - starty < map_term_width
+    &&  point.y - starty < term_height
     &&  point.x - startx >= 0
     &&  point.y - starty >= 0) {
       Tile *tile = area->GetTile(point.x, point.y, point.z);

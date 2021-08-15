@@ -7,7 +7,7 @@
     <monsterai type="melee"/>
     <class>
       <majorAttributes>
-        <attribute val="Agility"/>
+        <attribute val="Speed"/>
         <attribute val="Dexterity"/>
         <attribute val="Luck"/>
       </majorAttributes>

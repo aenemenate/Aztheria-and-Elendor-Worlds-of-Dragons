@@ -60,6 +60,11 @@ void Player::Tick(Entity *src, Game *game) {
 void AnimalAi::Tick(Entity *src, Game *game) {
   if (src->HasComponent(EC_POSITION_ID) && src->actions.size() == 0) {
     Position pos = (dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID)))->position;
+    if (src->HasComponent(EC_STATS_ID)) {
+      std::shared_ptr<Stats> = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
+      if (stats->resources[Health] <= 0)
+        return;
+    }
     if (src->HasComponent(EC_FOV_ID)) {
       std::shared_ptr<Fov> fov = dynamic_pointer_cast<Fov>(src->GetComponent(EC_FOV_ID));
       Entity *ent;
@@ -95,6 +100,11 @@ void AnimalAi::Tick(Entity *src, Game *game) {
 void MonsterAi::Tick(Entity *src, Game *game) {
   if (src->HasComponent(EC_POSITION_ID) && src->actions.size() == 0) {
     Position pos = (dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID)))->position;
+    if (src->HasComponent(EC_STATS_ID)) {
+      std::shared_ptr<Stats> = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
+      if (stats->resources[Health] <= 0)
+        return;
+    }
     if (src->HasComponent(EC_FOV_ID)) {
       std::shared_ptr<Fov> fov = dynamic_pointer_cast<Fov>(src->GetComponent(EC_FOV_ID));
       Entity *ent;

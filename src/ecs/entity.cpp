@@ -18,11 +18,17 @@ void Entity::Tick(Game *game, int prio) {
 
 bool Entity::Act(World *world) {
   if (HasComponent(EC_ACTIONTIME_ID)) {
+    double speedMult = 1;
+    if (HasComponent(EC_STATS_ID)) {
+      std::shared_ptr<Stats> stats = dynamic_pointer_cast<Stats>(GetComponent(EC_STATS_ID));
+      int speed = stats->attributes[Speed];
+      speedMult = speed / 100.0;
+    }
     std::shared_ptr<ActionTime> actionTime = dynamic_pointer_cast<ActionTime>(GetComponent(EC_ACTIONTIME_ID));
     while (actions.size() > 0
     &&  actionTime->time <= world->time) {
       int cost = actions[0]->Do(this, world);
-      actionTime->time.IncrMs(cost);
+      actionTime->time.IncrMs(cost * speedMult);
       actions.erase(actions.begin());
       return true;
     }

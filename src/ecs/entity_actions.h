@@ -17,6 +17,7 @@ public:
 #define EA_MOVE_ID		0
 #define EA_ACTIVATEBLOCK_ID	1
 
+int Attack(Entity *src, Entity *def, World *world);
 
 /* All-purpose move, takes a direction (x, y, and z), and tries to move that
  * direction. It will move maps if necessary.
