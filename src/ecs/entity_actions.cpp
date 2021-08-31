@@ -32,14 +32,14 @@ int Attack(Entity *src, Entity *def, World *world) {
         }
       }
       else {
-        message = def_name->name + "evaded " + src_name->name + "\'s attack.";
+        message = def_name->name + " evaded " + src_name->name + "\'s attack.";
       }
     }
     else {
       message = src_name->name + " attacked " + def_name->name + " and missed.";
     }
     if (src->HasComponent(EC_PLAYER_ID) || def->HasComponent(EC_PLAYER_ID)) {
-      std::cout << message << std::endl;
+      world->msgConsole.PushLine(message);
     }
     return 1000;
   }

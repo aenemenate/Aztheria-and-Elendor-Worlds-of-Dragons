@@ -17,6 +17,7 @@ void CloseTerminal();
 
 bool TerminalWasResized();
 
+void ChangeLayer(int);
 void PrintGraphic(int,int,Graphic);
 void DrawBorder(Rectangle, string, string);
 

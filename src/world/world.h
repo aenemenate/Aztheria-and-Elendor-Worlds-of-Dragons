@@ -1,6 +1,7 @@
 #pragma once
 
 #include "time_system.h"
+#include "../msg_console.h"
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
@@ -33,6 +34,7 @@ class World {
 public:
   int lastUpdateHour;
   Time time;
+  MsgConsole msgConsole;
   vector<Entity> entities;
   uint8_t width, height;
   int seed;

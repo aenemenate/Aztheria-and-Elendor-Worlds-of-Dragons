@@ -15,7 +15,6 @@
 
 MapMenu map_menu;
 StatusPanel status_panel;
-// TODO: Make a pause menu (like map menu)
 vector<Button> pmenu_buttons;
 int menu_caret = 0;
 bool paused = false;
@@ -35,7 +34,7 @@ void PlayState::Init(Game *game) {
   pmenu_buttons.push_back(Button(term_width/2-4,term_height/2, "save & quit", SaveGame));
   pmenu_buttons.push_back(Button(term_width/2-3,term_height/2+2, "just quit", StopPlaying));
   menu_caret = 0;
-  map_menu = MapMenu(std::max(0, term_width/2 - game->world->width/2), std::max(0, term_height/2 - (game->world->height/2+1)), game->world->width, game->world->height);
+  map_menu = MapMenu(max(0, term_width/2 - game->world->width/2), max(0, term_height/2 - (game->world->height/2+1)), game->world->width, game->world->height);
   map_menu.SetShow(false);
 }
 
@@ -150,7 +149,7 @@ void PlayState::Draw(Game *game)
       term_height = GetTermHeight();
   int startx = min(max(0,area->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
   int starty = min(max(0,area->height-term_height), max(0, plyr_pos.y - term_height/2));
-// draw status panel
+// draw status panel, msg console
   status_panel.Draw(game, startx, starty);
 // draw map
   for (int i = startx; i < area->width && i-startx < map_term_width; i++)
@@ -226,4 +225,5 @@ void PlayState::Draw(Game *game)
     }
   }
   map_menu.Draw(game);
+  game->world->msgConsole.PrintLines();
 }
