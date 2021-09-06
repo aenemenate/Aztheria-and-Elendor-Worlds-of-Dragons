@@ -47,3 +47,11 @@ int TerminalGetMouseX() {
 int TerminalGetMouseY() {
   return terminal_state(TK_MOUSE_Y);
 }
+
+std::string TerminalReadString(int x, int y) {
+  wchar_t s[20] = L"";
+  if (terminal_read_wstr(x, y, s, sizeof(s) - 1) >= 0){
+    std::wstring ws(s);
+    return std::string(ws.begin(), ws.end());
+  }
+}

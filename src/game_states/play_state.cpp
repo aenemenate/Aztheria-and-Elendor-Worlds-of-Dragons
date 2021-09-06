@@ -44,6 +44,10 @@ void PlayState::Cleanup() {
   pmenu_buttons.clear();
 }
 
+void PlayState::Resize(Game *game) {
+  Init(game);
+}
+
 void PlayState::HandleEvents(Game *game) {
   int xsign = 0, ysign = 0;
   if (TerminalWasResized())

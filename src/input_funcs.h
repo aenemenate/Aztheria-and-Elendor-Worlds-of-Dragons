@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #define MTK_A                0x04
 #define MTK_B                0x05
 #define MTK_C                0x06
@@ -134,3 +136,5 @@ bool TerminalRightMouseHeld();
 int TerminalGetKey();
 int TerminalGetMouseX();
 int TerminalGetMouseY();
+
+std::string TerminalReadString(int, int);

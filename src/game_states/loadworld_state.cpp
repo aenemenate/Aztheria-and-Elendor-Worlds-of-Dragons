@@ -58,6 +58,10 @@ void LoadWorldState::Cleanup() {
   buttons.clear();
 }
 
+void LoadWorldState::Resize(Game *game) {
+  Init(game);
+}
+
 void LoadWorldState::HandleEvents(Game *game) {
 // re-init if resized
   if (TerminalWasResized())

@@ -119,31 +119,7 @@ void WorldGen::PlaceEntities(World* world) {
   std::vector<Point> walkable_positions = GetWalkablePoints(world->GetArea(world_x, world_y));
   srand(time(0));
   Point pos = walkable_positions[rand()%walkable_positions.size()];
-// add player
-  Entity player;
-  player.AddComponent(std::make_shared<Renderable>(Renderable({"@", "yellow", "black"})));
-  player.AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(pos.x), (uint16_t)(pos.y), 0, world_x, world_y })));
-  player.AddComponent(std::make_shared<Name>(Name("player")));
-  player.AddComponent(std::make_shared<Fov>(Fov(28)));
-  player.AddComponent(std::make_shared<Player>(Player(true)));
-  player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
-  std::vector<Attribute> majorAttributes;
-  majorAttributes.push_back(Strength);
-  majorAttributes.push_back(Dexterity);
-  majorAttributes.push_back(Endurance);
-  std::vector<Skill> majorSkills;
-  majorSkills.push_back(HeavyWeapons);
-  majorSkills.push_back(HeavyArmor);
-  majorSkills.push_back(Blocking);
-  majorSkills.push_back(Marksmanship);
-  std::vector<Skill> minorSkills;
-  minorSkills.push_back(Mercantile);
-  minorSkills.push_back(Speech);
-  minorSkills.push_back(Lockpick);
-  minorSkills.push_back(Crafting);
-  std::shared_ptr<Class> uClass = std::make_shared<Class>(Class(majorAttributes, majorSkills, minorSkills));
-  player.AddComponent(std::make_shared<Stats>(Stats(uClass)));
-  world->AddEntity(player);
+  world->entities[0].AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(pos.x), (uint16_t)(pos.y), 0, world_x, world_y })));
 // add animals from xml
   std::vector<Entity> entities;
   entities = XmlParser::GetEntitiesFromXml("./data/animals.xml");
@@ -180,8 +156,10 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
   binomial_distribution<int> distribution(INT_MAX - 1,.5);
   int dice_roll = distribution(generator);
 // initialize the world with the seed
+  Entity player = game->world->entities[0];
   game->CleanupResources();
   game->world = new World(size,size,156,156,slot);
+  game->world->AddEntity(player);
   game->world->seed = dice_roll;
 // generate terrain and determine temperature
   for (int i = 0; i < game->world->width; i++)

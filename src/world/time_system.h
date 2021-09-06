@@ -20,7 +20,7 @@ struct Time {
   int ms, second, minute, hour, day, month, year;
 
 // constructors, either choose a time or start from 0
-  Time() { ms = 0; second = 0; minute = 0; hour = 0; day = 0; month = 0; year = 0; }
+  Time() { ms = 0; second = 0; minute = 0; hour = 8; day = 0; month = 0; year = 0; }
   Time(const Time& time) { ms = time.ms; second = time.second; minute = time.minute; hour = time.hour; day = time.day; month = time.month; year = time.year; }
   Time(int ms, int second, int minute, int hour, int day, int month, int year) : ms(ms), second(second), hour(hour), day(day), month(month), year(year) {}
 

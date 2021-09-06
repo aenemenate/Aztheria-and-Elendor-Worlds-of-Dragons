@@ -51,8 +51,7 @@ void Game::PopState() {
 	  states.back()->Cleanup();
 	  states.pop_back();
   }
-  states.back()->Cleanup();
-  states.back()->Init(this);
+  states.back()->Resize(this);
 }
 
 void Game::HandleEvents() {

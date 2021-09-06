@@ -2,6 +2,7 @@
 
 #include "time_system.h"
 #include "../msg_console.h"
+#include "../ecs/entity.h"
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>

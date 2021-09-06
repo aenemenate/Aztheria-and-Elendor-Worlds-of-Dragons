@@ -11,7 +11,7 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
   seed = 0;
   this->slot = slot;
   time = Time();
-  lastUpdateHour = 0;
+  lastUpdateHour = 8;
 }
 
 void World::Update(Game *game) {

@@ -17,6 +17,7 @@ public:
   void Init(Game *game);
   void Cleanup();
 
+  void Resize(Game* game);
   void HandleEvents(Game* game);
   void Update(Game* game);
   void Draw(Game* game);

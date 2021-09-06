@@ -174,14 +174,14 @@ public:
 };
 
 enum Attribute {
-  Strength,
-  Intelligence,
-  Willpower,
-  Dexterity,
-  Speed,
-  Endurance,
-  Personality,
-  Luck
+  Strength = 0,
+  Intelligence = 1,
+  Willpower = 2,
+  Dexterity = 3,
+  Speed = 4,
+  Endurance = 5,
+  Personality = 6,
+  Luck = 7
 };
 
 enum Resource {
@@ -196,30 +196,36 @@ enum Resource {
 };
 
 enum Skill {
-  HeavyArmor,
-  Spear,
-  Blocking,
-  Brawling,
-  Forging,
+  Forging = 0,
   HeavyWeapons,
   LongBlades,
-  LightArmor,
-  Marksmanship,
-  Sneaking,
-  Acrobatics,
-  Swimming,
-  ShortBlade,
-  Unarmored,
-  Illusion,
-  Mercantile,
-  Speech,
+  Blocking,
+
   Alchemy,
   Conjuration,
   Enchant,
   Lockpick,
+
   Destruction,
   Restoration,
-  Crafting
+  Illusion,
+
+  LightArmor,
+  Marksmanship,
+  Sneaking,
+  Crafting,
+
+  Acrobatics,
+  Brawling,
+  ShortBlade,
+  Unarmored,
+
+  HeavyArmor,
+  Spear,
+  Swimming,
+
+  Mercantile,
+  Speech
 };
 
 Attribute AttributeFromName(std::string name);

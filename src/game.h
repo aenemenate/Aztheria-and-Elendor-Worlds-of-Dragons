@@ -2,10 +2,9 @@
 
 #include "gamestate.h"
 #include "settings.h"
+#include "world/world.h"
 #include <vector>
 using namespace std;
-
-class World;
 
 class Game {
   vector<GameState*> states;
