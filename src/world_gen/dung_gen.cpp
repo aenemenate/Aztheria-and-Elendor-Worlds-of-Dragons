@@ -131,6 +131,31 @@ void placeEntities(int world_x, int world_y, World *world) {
   }
 }
 
+void placeItems(int world_x, int world_y, World *world) {
+  Area *area = world->GetArea(world_x, world_y);
+  std::vector<Entity> entities;
+  entities.push_back(Entity());
+  entities[entities.size() - 1].AddComponent(std::make_shared<Renderable>(Renderable({"&", "red", "black"})));
+  entities[entities.size() - 1].AddComponent(std::make_shared<Name>(Name(std::string{"minor health potion"})));
+  entities[entities.size() - 1].AddComponent(std::make_shared<Potion>(Potion(15, 0, 0)));
+  entities[entities.size() - 1].AddComponent(std::make_shared<NotSolid>(NotSolid()));
+  entities[entities.size() - 1].AddComponent(std::make_shared<Pickable>(Pickable()));
+  for (int i = 0; i < area->GetDungeonFloors()->size(); ++i) {
+    Dungeon *dungeon = &(area->GetDungeonFloors()[0][i]);
+    std::vector<Point> walkable_points = GetDownStairPoints(dungeon);
+    for (int j = 0; j < walkable_points.size() / 250; ++j) {
+      Entity *ent_orig = &(entities[rand()%entities.size()]);
+      Entity ent;
+      for (auto component : ent_orig->components)
+        ent.AddComponent(component->GetCopy());
+      Point ent_pos = walkable_points[rand()%walkable_points.size()];
+      ent.AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(ent_pos.x), (uint16_t)(ent_pos.y), 
+							(uint16_t)(i+1), (uint16_t)(world_x), (uint16_t)(world_y) })));
+      world->AddEntity(ent);
+    }
+  }
+}
+
 void DungeonGen::PlaceDungeons(World* world) {
   int num_of_dungeons = world->width / 3;
   vector<Point> potential_dungeons;
@@ -154,6 +179,7 @@ void DungeonGen::PlaceDungeons(World* world) {
     area->SetBlock(stair_point.x, stair_point.y, 0, BuildStoneDownStair());
     generateDungeonFloor(area, stair_point, levels);
     placeEntities(area_pos.x, area_pos.y, world);
+    placeItems(area_pos.x, area_pos.y, world);
     potential_dungeons.erase(potential_dungeons.begin() + vec_ind);
   }
 }

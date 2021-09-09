@@ -29,7 +29,11 @@ static void init_fov(fov_settings_type* fov_settings) {
 static bool is_opaque(void* area, int x, int y, int z) {
   Area* area_ptr = static_cast <Area*>(area);
   if (area_ptr->PointWithinBounds(x, y))
-    return (area_ptr->GetBlock(x, y, z)->opaque || area_ptr->GetEntity(x, y, z) != nullptr);
+    if (area_ptr->GetBlock(x, y, z)->opaque)
+      return true;
+    else if (area_ptr->GetEntity(x, y, z) != nullptr)
+      if (!area_ptr->GetEntity(x,y,z)->HasComponent(EC_NOTSOLID_ID))
+	return true;
   else
     return false;
 }

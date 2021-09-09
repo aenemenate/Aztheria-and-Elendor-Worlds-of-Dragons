@@ -138,7 +138,7 @@ static unsigned height(fov_settings_type *settings, int x,
         newheights = (unsigned **)calloc((size_t)maxdist, sizeof(unsigned*));
         if (newheights != NULL) {
             if (settings->heights != NULL && settings->numheights > 0) {
-                /* Copy the pointers to the heights arrays we've already
+                /* Copy the pointers to the heights arrays weve already
                  * calculated. Once copied out, we can free the old
                  * array of pointers. */
                 memcpy(newheights, settings->heights,
@@ -218,7 +218,7 @@ static float fov_slope(float dx, float dy) {
         ry = data->source_##ry signy dy0;                                                       \
                                                                                                 \
         if (!apply_diag && dy1 == dx) {                                                         \
-            /* We do diagonal lines on every second octant, so they don't get done twice. */    \
+            /* We do diagonal lines on every second octant, so they dont get done twice. */    \
             --dy1;                                                                              \
         }                                                                                       \
                                                                                                 \

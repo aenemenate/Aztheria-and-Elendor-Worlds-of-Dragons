@@ -16,6 +16,7 @@ public:
 
 #define EA_MOVE_ID		0
 #define EA_ACTIVATEBLOCK_ID	1
+#define EA_USEITEM_ID		2
 
 int Attack(Entity *src, Entity *def, World *world);
 
@@ -36,5 +37,13 @@ public:
   int xdir, ydir;
   ActivateBlock() : EntityAction() {}
   ActivateBlock(int _xdir, int _ydir) : xdir(_xdir), ydir(_ydir), EntityAction(EA_ACTIVATEBLOCK_ID) {}
+  int Do(Entity *src, World *world);
+};
+
+class UseItem : public EntityAction {
+public:
+  int itemIndex;
+  UseItem() : EntityAction() {}
+  UseItem(int itemIndex) : itemIndex(itemIndex), EntityAction(EA_USEITEM_ID) {}
   int Do(Entity *src, World *world);
 };

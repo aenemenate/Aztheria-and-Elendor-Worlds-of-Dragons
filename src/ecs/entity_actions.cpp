@@ -16,13 +16,15 @@ int Attack(Entity *src, Entity *def, World *world) {
     std::shared_ptr<Stats> def_stats = dynamic_pointer_cast<Stats>(def->GetComponent(EC_STATS_ID));
     std::shared_ptr<Name> src_name = dynamic_pointer_cast<Name>(src->GetComponent(EC_NAME_ID));
     std::shared_ptr<Name> def_name = dynamic_pointer_cast<Name>(def->GetComponent(EC_NAME_ID));
+    if (def_stats->resources[Health] <= 0)
+      return 0;
     bool attackLanded = rand()%100 <= (src_stats->skills[Brawling] + src_stats->attributes[Speed] / 5 + src_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * src_stats->resources[Stamina] / src_stats->resources[MaxStamina]);
     if (attackLanded) {
       bool attackEvaded = rand()%100 <= (src_stats->attributes[Speed] / 5 + def_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * def_stats->resources[Stamina] / def_stats->resources[MaxStamina]);
       if (!attackEvaded) {
-        int damage = impactYields[Bone] * ((src_stats->attributes[Strength] + 50) / 100);
+        int damage = impactYields[Bone] * ((double)(src_stats->attributes[Strength] + 50) / 100.0);
         message = src_name->name + " attacked " + def_name->name + " for " + std::to_string(damage) + " points.";
 	def_stats->resources[Health] -= damage;
         if (def_stats->resources[Health] <= 0) {
@@ -47,6 +49,22 @@ int Attack(Entity *src, Entity *def, World *world) {
     return 0;
 }
 
+int GetItem(Entity *src, Position position, Entity *item, World *world) {
+  std::string message;
+  if (src->HasComponent(EC_INVENTORY_ID)) {
+    std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
+    inventory->inventory.push_back(item);
+    Area *curmap = world->GetArea(position.wx,position.wy);
+    curmap->SetEntity(position.x, position.y, position.z, nullptr);
+    std::shared_ptr<Name> src_name = dynamic_pointer_cast<Name>(src->GetComponent(EC_NAME_ID));
+    std::shared_ptr<Name> item_name = dynamic_pointer_cast<Name>(item->GetComponent(EC_NAME_ID));
+    message = src_name->name + " picked up " + item_name->name + ".";
+    world->msgConsole.PushLine(message);
+    return 1000;
+  }
+  return 0;
+}
+
 int Move::Do(Entity *src, World *world) {
   int cost = 0;
 // clamp sign between -1 and 1
@@ -57,10 +75,10 @@ int Move::Do(Entity *src, World *world) {
   if (src->HasComponent(EC_POSITION_ID)) {
     std::shared_ptr<EntPosition> pos_c = dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID));
     Position *pos = &(pos_c->position);
-    int new_x = pos->x + xsign, 
+    uint16_t new_x = pos->x + xsign, 
         new_y = pos->y + ysign,
         new_z = pos->z + zsign;
-    int new_wx = pos->wx, new_wy = pos->wy;
+    uint16_t new_wx = pos->wx, new_wy = pos->wy;
     Area *curmap = world->GetArea(pos->wx,pos->wy);
 // if new position is not within map bounds
     if (!curmap->PointWithinBounds(new_x, new_y) && new_z == pos->z && pos->z == 0) {
@@ -96,8 +114,12 @@ int Move::Do(Entity *src, World *world) {
       && !curmap->GetTile(new_x, new_y, new_z)->walkable
       || curmap->GetBlock(new_x, new_y, new_z)->solid
       || curmap->GetEntity(new_x, new_y, new_z) != nullptr) {
-        if (curmap->GetEntity(new_x, new_y, new_z) != nullptr)
-          cost = Attack(src, curmap->GetEntity(new_x, new_y, new_z), world);
+        if (curmap->GetEntity(new_x, new_y, new_z) != nullptr) {
+          if (curmap->GetEntity(new_x, new_y, new_z)->HasComponent(EC_PICKABLE_ID))
+	    cost = GetItem(src, {new_x, new_y, new_z, new_wx, new_wy}, curmap->GetEntity(new_x, new_y, new_z), world);
+	  else
+            cost = Attack(src, curmap->GetEntity(new_x, new_y, new_z), world);
+        }
         new_x = pos->x;
         new_y = pos->y;
         new_z = pos->z;
@@ -113,8 +135,12 @@ int Move::Do(Entity *src, World *world) {
       if (!newmap->GetTile(new_x,new_y,new_z)->walkable
       ||  newmap->GetBlock(new_x,new_y,new_z)->solid
       ||  newmap->GetEntity(new_x, new_y, new_z) != nullptr) {
-        if (newmap->GetEntity(new_x, new_y, new_z) != nullptr)
-          cost = Attack(src, newmap->GetEntity(new_x, new_y, new_z), world);
+        if (newmap->GetEntity(new_x, new_y, new_z) != nullptr) {
+          if (newmap->GetEntity(new_x, new_y, new_z)->HasComponent(EC_PICKABLE_ID))
+	    cost = GetItem(src, {new_x, new_y, new_z, new_wx, new_wy}, newmap->GetEntity(new_x, new_y, new_z), world);
+	  else
+            cost = Attack(src, newmap->GetEntity(new_x, new_y, new_z), world);
+        }
 	new_x = pos->x;
 	new_y = pos->y;
 	new_z = pos->z;
@@ -146,4 +172,24 @@ int ActivateBlock::Do(Entity *src, World *world) {
     cost = 1000;
   }
   return cost;
+}
+
+int UseItem::Do(Entity *src, World *world) {
+  std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
+  if (inventory->inventory[itemIndex]->HasComponent(EC_POTION_ID)) {
+    std::shared_ptr<Potion> potion_c = dynamic_pointer_cast<Potion>(inventory->inventory[itemIndex]->GetComponent(EC_POTION_ID));
+    std::shared_ptr<Stats> src_stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
+    src_stats->resources[Health]  += potion_c->healthValue;
+    src_stats->resources[Magicka] += potion_c->magickaValue;
+    src_stats->resources[Stamina] += potion_c->staminaValue;
+    if (src_stats->resources[Health] > src_stats->resources[MaxHealth])
+      src_stats->resources[Health] = src_stats->resources[MaxHealth];
+    if (src_stats->resources[Magicka] > src_stats->resources[MaxMagicka])
+      src_stats->resources[Magicka] = src_stats->resources[MaxMagicka];
+    if (src_stats->resources[Stamina] > src_stats->resources[MaxStamina])
+      src_stats->resources[Stamina] = src_stats->resources[MaxStamina];
+    inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
+    return 2000;
+  }
+  return 0;
 }

@@ -81,7 +81,7 @@ struct Time {
 
   void IncrDay(int _day) {
     day += _day;
-    while (day >= 30) {
+    while (day >= 31) {
       day -= 30;
       IncrMonth(1);
     }
@@ -89,7 +89,7 @@ struct Time {
 
   void IncrMonth(int _month) {
     month += _month;
-    while (month >= 12) {
+    while (month >= 13) {
       month -= 12;
       IncrYear(1);
     }

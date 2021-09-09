@@ -176,6 +176,7 @@ void CreateCharacter(Game* game) {
   player.AddComponent(std::make_shared<Fov>(Fov(28)));
   player.AddComponent(std::make_shared<Player>(Player(true)));
   player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time())));
+  player.AddComponent(std::make_shared<Inventory>(Inventory()));
   std::vector<Attribute> majorAttributes;
   for (int i = 0; i <= 7; ++i) {
     if (std::string{CreateCharacterState::Instance()->buttons[i].GetBgColor()} == "gray")

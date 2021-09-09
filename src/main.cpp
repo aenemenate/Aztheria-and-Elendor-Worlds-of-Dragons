@@ -10,10 +10,11 @@ int MAIN() {
   Game game;
   game.Init();
   game.ChangeState(MainMenuState::Instance());
+  game.Draw();
   while (game.Running()) {
-    game.Draw();
     game.HandleEvents();
     game.Update();
+    game.Draw();
   }
   game.CleanupAll();
 

@@ -1,4 +1,3 @@
-#include "entity.h"
 #include "entity_components.h"
 #include "../game.h"
 #include "../world/world.h"
@@ -7,23 +6,24 @@
 
 #include <iostream>
 
-Entity *Fov::ClosestVisibleEnemy(World *world, Position pos) {
-  return nullptr;
-}
-
 void Fov::Tick(Entity *src, Game *game) {
   visiblepoints.clear();
+  visibleEntities.clear();
   if (src->HasComponent(EC_POSITION_ID)) {
     World *world = game->world;
     std::shared_ptr<EntPosition> pos_c = dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID));
     Position *pos = &(pos_c->position);
     Area* map_ptr = world->GetArea(pos->wx, pos->wy);
     fov_circle(game->settings.get_fov_settings(), map_ptr, &visiblepoints, pos->x, pos->y, pos->z, viewradius);
-    if (src->HasComponent(EC_PLAYER_ID))
       for (int vp = 0; vp < visiblepoints.size(); vp++) {
         Position *temp_pos = &(visiblepoints[vp]);
-        map_ptr->GetTile(temp_pos->x, temp_pos->y, temp_pos->z)->explored = true;
-        map_ptr->GetBlock(temp_pos->x, temp_pos->y, temp_pos->z)->explored = true;
+	if (src->HasComponent(EC_PLAYER_ID)) {
+          map_ptr->GetTile(temp_pos->x, temp_pos->y, temp_pos->z)->explored = true;
+          map_ptr->GetBlock(temp_pos->x, temp_pos->y, temp_pos->z)->explored = true;
+	}
+        if (map_ptr->GetEntity(temp_pos->x,temp_pos->y, pos->z) != nullptr) {
+	  visibleEntities.push_back(*(map_ptr->GetEntity(temp_pos->x,temp_pos->y, pos->z)));
+	} 
       }
   }
 }
@@ -68,30 +68,25 @@ void AnimalAi::Tick(Entity *src, Game *game) {
     if (src->HasComponent(EC_FOV_ID)) {
       std::shared_ptr<Fov> fov = dynamic_pointer_cast<Fov>(src->GetComponent(EC_FOV_ID));
       Entity *ent;
-      if ((ent = fov->ClosestVisibleEnemy(game->world, pos)) != nullptr) {
-	// move away from entity
-      }
-      else {
-	// random move
-	int dir = rand()%8;
-	switch (dir) {
-	  case (0):
-            src->actions.push_back(std::make_shared<Move>(Move(-1,0,0))); break;
-	  case (1): 
-	    src->actions.push_back(std::make_shared<Move>(Move(1,0,0))); break;
-	  case (2):
-	    src->actions.push_back(std::make_shared<Move>(Move(0,1,0))); break;
-	  case (3):
-	    src->actions.push_back(std::make_shared<Move>(Move(0,-1,0))); break;
-	  case (4):
-            src->actions.push_back(std::make_shared<Move>(Move(1,1,0))); break;
-	  case (5): 
-	    src->actions.push_back(std::make_shared<Move>(Move(1,-1,0))); break;
-	  case (6):
-	    src->actions.push_back(std::make_shared<Move>(Move(-1,1,0))); break;
-	  case (7):
-	    src->actions.push_back(std::make_shared<Move>(Move(-1,-1,0))); break;
-	}
+// random move
+      int dir = rand()%8;
+      switch (dir) {
+	case (0):
+          src->actions.push_back(std::make_shared<Move>(Move(-1,0,0))); break;
+	case (1): 
+	  src->actions.push_back(std::make_shared<Move>(Move(1,0,0))); break;
+	case (2):
+	  src->actions.push_back(std::make_shared<Move>(Move(0,1,0))); break;
+	case (3):
+	  src->actions.push_back(std::make_shared<Move>(Move(0,-1,0))); break;
+	case (4):
+          src->actions.push_back(std::make_shared<Move>(Move(1,1,0))); break;
+	case (5): 
+	  src->actions.push_back(std::make_shared<Move>(Move(1,-1,0))); break;
+	case (6):
+	  src->actions.push_back(std::make_shared<Move>(Move(-1,1,0))); break;
+	case (7):
+	  src->actions.push_back(std::make_shared<Move>(Move(-1,-1,0))); break;
       }
     }
   }
@@ -106,15 +101,32 @@ void MonsterAi::Tick(Entity *src, Game *game) {
         return;
     }
     if (src->HasComponent(EC_FOV_ID)) {
-      std::shared_ptr<Fov> fov = dynamic_pointer_cast<Fov>(src->GetComponent(EC_FOV_ID));
-      Entity *ent;
-      if ((ent = fov->ClosestVisibleEnemy(game->world, pos)) != nullptr) {
-	// move away from entity
+      std::shared_ptr<Fov> fov_c = dynamic_pointer_cast<Fov>(src->GetComponent(EC_FOV_ID));
+      bool found_player = false;
+      Position player_pos;
+      for (int i = 0; i < fov_c->visibleEntities.size(); ++i) {
+        if (fov_c->visibleEntities[i].HasComponent(EC_PLAYER_ID)) {
+          std::shared_ptr<EntPosition> player_pos_c = dynamic_pointer_cast<EntPosition>(fov_c->visibleEntities[i].GetComponent(EC_POSITION_ID));
+          player_pos = player_pos_c->position;
+	  found_player = true;
+      break;
+        }
       }
+      if (found_player) {
+          Position closest_pos = { pos.x, pos.y, pos.z, pos.wx, pos.wy };
+        for (uint16_t i = pos.x - 1; i <= pos.x + 1; ++i)
+	  for (uint16_t j = pos.y - 1; j <= pos.y + 1; ++j) {
+	    int prev_dist = ManhattanDistance(closest_pos.x, closest_pos.y, player_pos.x,  player_pos.y);
+	    int cur_dist = ManhattanDistance(i, j, player_pos.x, player_pos.y);
+	    if (prev_dist >= cur_dist) {
+              closest_pos = {i, j, closest_pos.z, closest_pos.wx, closest_pos.wy};
+            }
+          }
+	src->actions.push_back(std::make_shared<Move>(Move(closest_pos.x - pos.x, closest_pos.y - pos.y, 0)));
+      }	// random move
       else {
-	// random move
-	int dir = rand()%8;
-	switch (dir) {
+        int dir = rand()%8;
+        switch (dir) {
 	  case (0):
             src->actions.push_back(std::make_shared<Move>(Move(-1,0,0))); break;
 	  case (1): 
@@ -131,7 +143,7 @@ void MonsterAi::Tick(Entity *src, Game *game) {
 	    src->actions.push_back(std::make_shared<Move>(Move(-1,1,0))); break;
 	  case (7):
 	    src->actions.push_back(std::make_shared<Move>(Move(-1,-1,0))); break;
-	}
+        }
       }
     }
   }
