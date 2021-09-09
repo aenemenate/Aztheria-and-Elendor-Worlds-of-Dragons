@@ -3,11 +3,14 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/string.hpp>
+#include <boost/serialization/map.hpp>
 #include <boost/serialization/base_object.hpp>
 #include <memory>
+#include <map>
 
 #include "../base.h"
 #include "../map/area.h"
+#include "../world/time_system.h"
 
 class World;
 class Game;
@@ -43,6 +46,14 @@ public:
 #define EC_FOV_ID		3
 #define EC_PLAYER_ID		4
 #define EC_ANIMALAI_ID		5
+#define EC_ACTIONTIME_ID	6
+#define EC_MONSTERAI_ID		7
+#define EC_CLASS_ID		8
+#define EC_STATS_ID		9
+#define EC_NOTSOLID_ID		10
+#define EC_INVENTORY_ID		11
+#define EC_PICKABLE_ID		12
+#define EC_POTION_ID		13
 
 class Renderable : public EntityComponent {
   friend class boost::serialization::access;
@@ -99,10 +110,9 @@ class Fov : public EntityComponent {
 public:
   int viewradius;
   std::vector<Position> visiblepoints;
+  std::vector<Entity> visibleEntities;
   Fov() : EntityComponent() {}
   Fov(int _viewradius) : viewradius(_viewradius), EntityComponent(EC_FOV_ID, EC_PRIO_POST) {}
-  /* Fov helper functions */
-  Entity *ClosestVisibleEnemy(World *world, Position pos);
   /* Update fov and update the map if this entity has EC_PLAYER */
   void Tick(Entity *src, Game *game);
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Fov>(Fov(viewradius)); }
@@ -136,6 +146,209 @@ public:
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<AnimalAi>(AnimalAi(biome)); }
 };
 
+class ActionTime : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & time;
+  }
+public:
+  Time time;
+  ActionTime() : EntityComponent() {}
+  ActionTime(Time time) : time(time), EntityComponent(EC_ACTIONTIME_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<ActionTime>(ActionTime(time)); }
+};
+
+class MonsterAi : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & type;
+  }
+public:
+  std::string type;
+  MonsterAi() : EntityComponent() {}
+  MonsterAi(std::string type) : type(type), EntityComponent(EC_MONSTERAI_ID, EC_PRIO_PRE) {}
+  void Tick(Entity *src, Game *game);
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<MonsterAi>(MonsterAi(type)); }
+};
+
+enum Attribute {
+  Strength = 0,
+  Intelligence = 1,
+  Willpower = 2,
+  Dexterity = 3,
+  Speed = 4,
+  Endurance = 5,
+  Personality = 6,
+  Luck = 7
+};
+
+enum Resource {
+  Health,
+  MaxHealth,
+  Hunger,
+  MaxHunger,
+  Magicka,
+  MaxMagicka,
+  Stamina,
+  MaxStamina
+};
+
+enum Skill {
+  Forging = 0,
+  HeavyWeapons,
+  LongBlades,
+  Blocking,
+
+  Alchemy,
+  Conjuration,
+  Enchant,
+  Lockpick,
+
+  Destruction,
+  Restoration,
+  Illusion,
+
+  LightArmor,
+  Marksmanship,
+  Sneaking,
+  Crafting,
+
+  Acrobatics,
+  Brawling,
+  ShortBlade,
+  Unarmored,
+
+  HeavyArmor,
+  Spear,
+  Swimming,
+
+  Mercantile,
+  Speech
+};
+
+Attribute AttributeFromName(std::string name);
+
+Resource ResourceFromName(std::string name);
+
+Skill SkillFromName(std::string name);
+
+class Class : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & majorAttributes;
+    ar & majorSkills;
+    ar & minorSkills;
+  }
+public:
+  std::vector<Attribute> majorAttributes;
+  std::vector<Skill> majorSkills;
+  std::vector<Skill> minorSkills;
+  Class() : EntityComponent() {}
+  Class(std::vector<Attribute> majorAttributes, std::vector<Skill> majorSkills, 
+	std::vector<Skill> minorSkills) : majorAttributes(majorAttributes), 
+	majorSkills(majorSkills), minorSkills(minorSkills), 
+	EntityComponent(EC_CLASS_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { 
+    return std::make_shared<Class>(Class(majorAttributes, majorSkills, minorSkills)); 
+  }
+};
+
+class Stats : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & attributes;
+    ar & resources;
+    ar & skills;
+  }
+public:
+  std::map<Attribute, int> attributes;
+  std::map<Resource, int> resources;
+  std::map<Skill, int> skills;
+  Stats() : EntityComponent() {}
+  Stats(std::shared_ptr<Class> uClass) : EntityComponent(EC_STATS_ID, EC_PRIO_NULL) {
+    SetAttributes(uClass);
+    SetResources();
+    SetSkills(uClass);
+  }
+  Stats(std::map<Attribute, int> attributes, std::map<Resource, int> resources, std::map<Skill, int> skills) : 
+	attributes(attributes), resources(resources), skills(skills), EntityComponent(EC_STATS_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Stats>(Stats(attributes, resources, skills)); }
+private:
+  void SetAttributes(std::shared_ptr<Class> uClass);
+  void SetResources();
+  void SetSkills(std::shared_ptr<Class> uClass);
+};
+
+class NotSolid : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+  }
+public:
+  NotSolid() : EntityComponent(EC_NOTSOLID_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<NotSolid>(NotSolid()); }
+};
+
+class Inventory : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & inventory;
+  }
+public:
+  std::vector<Entity*> inventory;
+  Inventory() : EntityComponent(EC_INVENTORY_ID, EC_PRIO_NULL) {}
+  Inventory(std::vector<Entity*> _inventory) : inventory(_inventory), EntityComponent(EC_INVENTORY_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Inventory>(Inventory(inventory)); }
+};
+
+class Pickable : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+  }
+public:
+  Pickable() : EntityComponent(EC_PICKABLE_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Pickable>(Pickable()); }
+};
+
+class Potion : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & healthValue;
+    ar & magickaValue;
+    ar & staminaValue;
+  }
+public:
+  int healthValue;
+  int magickaValue;
+  int staminaValue;
+  Potion() : EntityComponent() {}
+  Potion(int healthValue, int magickaValue, int staminaValue) : healthValue(healthValue), 
+	magickaValue(magickaValue), staminaValue(staminaValue), EntityComponent(EC_POTION_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Potion>(Potion(healthValue, magickaValue, staminaValue)); }
+};
+
 // Functions
 
 template<class Archive>
@@ -146,4 +359,12 @@ inline void RegisterEntityComponentTypes(Archive &ar) {
     ar.template register_type<Fov>();
     ar.template register_type<Player>();
     ar.template register_type<AnimalAi>();
+    ar.template register_type<ActionTime>();
+    ar.template register_type<MonsterAi>();
+    ar.template register_type<Class>();
+    ar.template register_type<Stats>();
+    ar.template register_type<NotSolid>();
+    ar.template register_type<Inventory>();
+    ar.template register_type<Pickable>();
+    ar.template register_type<Potion>();
 }

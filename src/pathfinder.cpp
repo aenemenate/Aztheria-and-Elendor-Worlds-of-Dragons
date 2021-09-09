@@ -1,6 +1,6 @@
 #include "pathfinder.h"
 
-#include "world.h"
+#include "world/world.h"
 #include "map/area.h"
 #include "ecs/entity.h"
 
@@ -27,6 +27,18 @@ void InitializeGrid(Area *area, int z) {
 
 std::vector<Point> Pathfinder::GetPath(World *world, int wx, int wy, int z, int startx, int starty, int endx, int endy) {
   InitializeGrid(world->GetArea(wx, wy), z);
+  Node start = Node(startx, starty);
+  Node goal = Node(endx, endy);
+  AStar astar(grid);
+  vector<Node> nodepath = astar.search(start, goal);
+  vector<Point> path;
+  for (Node node : nodepath)
+    path.push_back({node.getX(), node.getY()});
+  return path;
+}
+
+std::vector<Point> Pathfinder::GetPath(Area *area, int z, int startx, int starty, int endx, int endy) {
+  InitializeGrid(area, z);
   Node start = Node(startx, starty);
   Node goal = Node(endx, endy);
   AStar astar(grid);

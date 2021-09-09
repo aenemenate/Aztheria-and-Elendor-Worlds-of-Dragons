@@ -41,3 +41,5 @@ struct Rectangle {
 
 enum Direction { north, east, south, west, northeast, northwest, southeast, southwest };
 enum ZDirection { up = -1, down = 1 };
+
+int ManhattanDistance(int x1, int y1, int x2, int y2);

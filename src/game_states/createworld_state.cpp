@@ -16,7 +16,7 @@ int worldsize;
 
 void IncrementWorldSize(Game* game) { worldsize = std::min(worldsize + 4, 40); }
 
-void DecrementWorldSize(Game* game) { worldsize = std::max(worldsize - 4, 0); }
+void DecrementWorldSize(Game* game) { worldsize = std::max(worldsize - 4, 4); }
 
 void CreateWorld(Game* game) {
   int slot = 1;
@@ -35,6 +35,7 @@ void CreateWorld(Game* game) {
             slot = temp + 1;
         }
   WorldGen::GenerateWorld(game, worldsize, slot);
+  game->PopState();
   game->ChangeState(PlayState::Instance());
   game->Update();
 }
@@ -42,13 +43,13 @@ void CreateWorld(Game* game) {
 
 CreateWorldState CreateWorldState::create_world_state;
 
-void CreateWorldState::Init(Game *game) {
+void CreateWorldState::Init(Game* game) {
   buttons.clear();
   int term_width  = GetTermWidth(), 
       term_height = GetTermHeight();
 // change world size buttons
-  buttons.push_back(Button(1,1, "<->", DecrementWorldSize));
-  buttons.push_back(Button(8,1, "<+>", IncrementWorldSize));
+  buttons.push_back(Button(1,2, "<->", DecrementWorldSize));
+  buttons.push_back(Button(8,2, "<+>", IncrementWorldSize));
 // create world button
   buttons.push_back(Button(term_width - 2 - 14,term_height-2, "[[c]]reate world", CreateWorld));
 // go back button
@@ -60,7 +61,11 @@ void CreateWorldState::Cleanup() {
   buttons.clear();
 }
 
-void CreateWorldState::HandleEvents(Game *game) {
+void CreateWorldState::Resize(Game* game) {
+  Init(game);
+}
+
+void CreateWorldState::HandleEvents(Game* game) {
 // reset our graphical elements if terminal is resized
   if (TerminalWasResized())
     this->Init(game);
@@ -84,20 +89,21 @@ void CreateWorldState::HandleEvents(Game *game) {
   }
 }
 
-void CreateWorldState::Update(Game *game) {
+void CreateWorldState::Update(Game* game) {
 // update buttons
   for (int b=0;b<buttons.size();b++)
     buttons[b].Update(game);
 }
 
-void CreateWorldState::Draw(Game *game) {
+void CreateWorldState::Draw(Game* game) {
   int term_width  = GetTermWidth(), 
       term_height = GetTermHeight();
+  PrintGraphic(1, 1, {"World Size:", "white", "black"});
 // draw buttons
   for (int b=0;b<buttons.size();b++)
     buttons[b].Render();
 // print world size
   std::stringstream sstream;
   sstream << worldsize;
-  PrintGraphic(5, 1, {sstream.str(), "white", "black"});
+  PrintGraphic(5, 2, {sstream.str(), "white", "black"});
 }

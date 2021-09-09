@@ -3,7 +3,7 @@
 #include "perlin_generator.h"
 
 #include "../game.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../map/map_helper.h"
 #include "../ecs/entity.h"
@@ -22,6 +22,16 @@
 #include <algorithm>
 
 #include <iostream>
+
+std::vector<Point> GetWalkablePoints(Map *map) {
+  std::vector<Point> walkable_points;
+  for (int i = 0; i < map->width; i++)
+    for (int j = 0; j < map->height; j++) {
+      if (map->GetTile(i,j)->walkable && map->GetEntity(i,j) == nullptr)
+        walkable_points.push_back({i, j});
+    }
+  return walkable_points;
+}
 
 void WorldGen::GeneratePerlinMap(Area *area, int wx, int wy, float freq, int depth, int seed) {
   PerlinGenerator perlinGenerator = PerlinGenerator(seed);
@@ -60,28 +70,34 @@ void WorldGen::GeneratePlants(World* world) {
   srand(time(0));
   int areawidth = world->GetArea(0,0)->width,
       areaheight = world->GetArea(0,0)->height;
-  for (int i = 0; i < world->width * areawidth; i++)
-    for (int j = 0; j < world->height * areaheight; j++) {
-      Area* area = world->GetArea(i / areawidth, j / areaheight);
-      Block *block = area->GetBlock(i % areawidth, j % areaheight, 0);
-      Tile *tile = area->GetTile(i % areawidth, j % areaheight, 0);
-      bool cur_point_adjacent_to_water = MapHelper::PointAdjacentToTileOfType(area, {i % areawidth, j % areaheight}, 0, "water");
-      bool cur_point_adjacent_to_stone = MapHelper::PointAdjacentToBlockOfType(area, {i % areawidth, j % areaheight}, 0, "stone");
-      bool tile_is_dirt = (tile->name == "dirt");
-      bool block_is_air = (block->name == "air");
-      if (rand() % 10 < 6 && tile_is_dirt && block_is_air) {
-        if (cur_point_adjacent_to_water) {
-          if (rand() % 10 < 1)
-            area->SetBlock(i % areawidth, j % areaheight, 0, BuildTree());
-          else
-            area->SetBlock(i % areawidth, j % areaheight, 0, BuildGrassBlock());
+  std::vector<Block> plants;
+  plants = XmlParser::GetBlocksFromXml("./data/plants.xml");
+  for (int i = 0; i < world->width; ++i) {
+    for (int j = 0; j < world->height; ++j) {
+      Area* area = world->GetArea(i, j);
+    /* set the plant list for this biome */
+      std::vector<int> plants_of_biome;
+      for (int t = 0; t < plants.size(); ++t) 
+        if (plants[t].HasComponent(PLANT_ID)) {
+	  std::shared_ptr<Plant> plant_c = dynamic_pointer_cast<Plant>(plants[t].GetComponent(PLANT_ID));
+          if (plant_c->biome == area->biome_type)
+            plants_of_biome.push_back(t);
         }
-        else if (cur_point_adjacent_to_stone) {
-          // build highland grass block
-          area->SetBlock(i % areawidth, j % areaheight, 0, BuildHlGrassBlock());
-        }
-      }
+    /* iterate every plant in list, then every point and check rand at each point vs the spawn chance */
+      for (int p = 0; p < plants_of_biome.size(); ++p)
+        for (int ix = 0; ix < area->width; ++ix)
+	  for (int jx = 0; jx < area->height; ++jx) {
+          // if rand() % 100 is less then spawn chance and this is the correct biome
+	    std::shared_ptr<Plant> plant_c = dynamic_pointer_cast<Plant>(plants[plants_of_biome[p]].GetComponent(PLANT_ID));
+            Block *block = area->GetBlock(ix, jx, 0);
+            Tile *tile = area->GetTile(ix, jx, 0);
+            bool tile_is_seed_tile = (tile->name == plant_c->seed_tile);
+            bool block_is_air = (block->name == "air");
+            if (rand() % 100 < plant_c->spawn_chance && tile_is_seed_tile && block_is_air)
+	      area->SetBlock(ix, jx, 0, plants[plants_of_biome[p]].GetCopy());
+          }
     }
+  }
   for (int g = 0; g < 30; g++)
     UpdatePlants(world);
 }
@@ -100,17 +116,10 @@ void WorldGen::PlaceEntities(World* world) {
     }
   int wp_index = rand()%walkable_areas.size();
   uint16_t world_x = walkable_areas[wp_index].x, world_y = walkable_areas[wp_index].y;
-  std::vector<Point> walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
+  std::vector<Point> walkable_positions = GetWalkablePoints(world->GetArea(world_x, world_y));
   srand(time(0));
   Point pos = walkable_positions[rand()%walkable_positions.size()];
-// add player
-  Entity player;
-  player.AddComponent(std::make_shared<Renderable>(Renderable({"@", "yellow", "black"})));
-  player.AddComponent(std::make_shared<EntPosition>(EntPosition({ pos.x, pos.y, 0, world_x, world_y })));
-  player.AddComponent(std::make_shared<Name>(Name("player")));
-  player.AddComponent(std::make_shared<Fov>(Fov(28)));
-  player.AddComponent(std::make_shared<Player>(Player(true)));
-  world->AddEntity(player);
+  world->entities[0].AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(pos.x), (uint16_t)(pos.y), 0, world_x, world_y })));
 // add animals from xml
   std::vector<Entity> entities;
   entities = XmlParser::GetEntitiesFromXml("./data/animals.xml");
@@ -126,13 +135,14 @@ void WorldGen::PlaceEntities(World* world) {
           ents_of_biome.push_back(i);
       }
     if (ents_of_biome.size() > 0) {
-      walkable_positions = MapHelper::GetWalkablePoints(world->GetArea(world_x, world_y));
+      walkable_positions = GetWalkablePoints(world->GetArea(world_x, world_y));
       Entity *ent_orig = &(entities[ents_of_biome[rand()%ents_of_biome.size()]]);
       Entity ent;
       for (auto component : ent_orig->components)
         ent.AddComponent(component->GetCopy());
       Point ent_pos = walkable_positions[rand()%walkable_positions.size()];
-      ent.AddComponent(std::shared_ptr<EntityComponent>(new EntPosition({ ent_pos.x, ent_pos.y, 0, world_x, world_y })));
+      ent.AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(ent_pos.x), (uint16_t)(ent_pos.y), 0, world_x, world_y })));
+      ent.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
       world->AddEntity(ent);
     }
   }
@@ -146,8 +156,10 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
   binomial_distribution<int> distribution(INT_MAX - 1,.5);
   int dice_roll = distribution(generator);
 // initialize the world with the seed
+  Entity player = game->world->entities[0];
   game->CleanupResources();
   game->world = new World(size,size,156,156,slot);
+  game->world->AddEntity(player);
   game->world->seed = dice_roll;
 // generate terrain and determine temperature
   for (int i = 0; i < game->world->width; i++)
@@ -161,7 +173,7 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
     }
   BiomeGen::DetermineHumidityMap(game->world); // puts humidity for every world tile
   BiomeGen::DetermineBiomes(game->world);      // assigns biomes to every world tile
-  DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
   GeneratePlants(game->world);                 // generates plants
   PlaceEntities(game->world);
+  DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
 }

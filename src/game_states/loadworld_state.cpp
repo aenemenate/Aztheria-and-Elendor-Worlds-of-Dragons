@@ -14,6 +14,11 @@
 
 std::string filepath;
 
+#if defined(_WIN32) || defined(_WIN64)
+  char file_delim = '\\';
+#elif defined(__APPLE__) || defined(linux)
+  char file_delim = '/';
+#endif
 
 void LoadWorld(Game* game) {
   int slot;
@@ -38,7 +43,7 @@ void LoadWorldState::Init(Game *game) {
       term_height = GetTermHeight();
 // push buttons (based on available save files)
   int y_offset = 0;
-  for(const auto& entry : fs::directory_iterator("./saves"))
+  for(const auto& entry : fs::directory_iterator("." + std::string{file_delim} + "saves"))
     if (entry.path().extension() == ".bin") {
       buttons.push_back(Button(term_width/2 - 10,term_height/2-15+y_offset*2, entry.path().string(), LoadWorld));
       y_offset++;
@@ -51,6 +56,10 @@ void LoadWorldState::Init(Game *game) {
 
 void LoadWorldState::Cleanup() {
   buttons.clear();
+}
+
+void LoadWorldState::Resize(Game *game) {
+  Init(game);
 }
 
 void LoadWorldState::HandleEvents(Game *game) {

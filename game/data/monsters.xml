@@ -1,0 +1,25 @@
+<monsters>
+
+  <goblin>
+    <name value="goblin"/>
+    <renderable ch="g" fgcolor="green" bgcolor=""/>
+    <fov viewradius="10"/>
+    <monsterai type="melee"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="ShortBlade"/>
+        <skill val="LightArmor"/>
+        <skill val="Sneaking"/>
+      </majorSkills>
+      <minorSkills>
+        <skill val="Lockpick"/>
+      </minorSkills>
+    </class>
+  </goblin>
+
+</monsters>

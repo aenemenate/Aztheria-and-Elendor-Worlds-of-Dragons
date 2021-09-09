@@ -1,6 +1,5 @@
 <animals>
 
-
   <!-- Desert Animals -->
 
   <scorpion>
@@ -8,6 +7,19 @@
     <renderable ch="t" fgcolor="brown" bgcolor=""/>
     <fov viewradius="11"/>
     <animalai biome="0"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </scorpion>
 
   <cactus>
@@ -15,6 +27,19 @@
     <renderable ch="o" fgcolor="green" bgcolor=""/>
     <fov viewradius="8"/>
     <animalai biome="0"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </cactus>
 
   <lizard>
@@ -22,6 +47,19 @@
     <renderable ch="l" fgcolor="dark green" bgcolor=""/>
     <fov viewradius="7"/>
     <animalai biome="0"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </lizard>
 
 
@@ -32,6 +70,19 @@
     <renderable ch="m" fgcolor="brown" bgcolor=""/>
     <fov viewradius="16"/>
     <animalai biome="2"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </moose>
 
   <reindeer>
@@ -39,6 +90,19 @@
     <renderable ch="r" fgcolor="brown" bgcolor=""/>
     <fov viewradius="13"/>
     <animalai biome="2"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </reindeer>
 
   <snowshoehare>
@@ -46,6 +110,19 @@
     <renderable ch="h" fgcolor="white" bgcolor=""/>
     <fov viewradius="10"/>
     <animalai biome="2"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </snowshoehare>
 
   <lynx>
@@ -53,6 +130,19 @@
     <renderable ch="l" fgcolor="orange" bgcolor=""/>
     <fov viewradius="14"/>
     <animalai biome="2"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </lynx>
 
   <fox>
@@ -60,6 +150,19 @@
     <renderable ch="f" fgcolor="white" bgcolor=""/>
     <fov viewradius="9"/>
     <animalai biome="2"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </fox>
 
 
@@ -70,6 +173,19 @@
     <renderable ch="B" fgcolor="white" bgcolor=""/>
     <fov viewradius="14"/>
     <animalai biome="3"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </polarbear>
 
   <seal>
@@ -77,6 +193,19 @@
     <renderable ch="s" fgcolor="light gray" bgcolor=""/>
     <fov viewradius="7"/>
     <animalai biome="3"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </seal>
 
   <penguin>
@@ -84,16 +213,42 @@
     <renderable ch="p" fgcolor="light gray" bgcolor=""/>
     <fov viewradius="8"/>
     <animalai biome="3"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </penguin>
 
 
-  <!-- Boreal Forest Animals -->
+  <!-- Deciduous Forest Animals -->
 
   <deer>
     <name value="deer"/>
     <renderable ch="d" fgcolor="brown" bgcolor=""/>
     <fov viewradius="12"/>
     <animalai biome="4"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </deer>
 
   <porcupine>
@@ -101,6 +256,19 @@
     <renderable ch="p" fgcolor="dark brown" bgcolor=""/>
     <fov viewradius="4"/>
     <animalai biome="4"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </porcupine>
 
   <mink>
@@ -108,6 +276,19 @@
     <renderable ch="m" fgcolor="dark gray" bgcolor=""/>
     <fov viewradius="8"/>
     <animalai biome="4"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </mink>
 
   <frog>
@@ -115,6 +296,19 @@
     <renderable ch="f" fgcolor="green" bgcolor=""/>
     <fov viewradius="7"/>
     <animalai biome="4"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </frog>
 
   <crossbill>
@@ -122,6 +316,19 @@
     <renderable ch="c" fgcolor="orange" bgcolor=""/>
     <fov viewradius="9"/>
     <animalai biome="4"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </crossbill>
 
 
@@ -132,6 +339,19 @@
     <renderable ch="r" fgcolor="gray" bgcolor=""/>
     <fov viewradius="7"/>
     <animalai biome="5"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </ratling>
 
   <prairiedog>
@@ -139,6 +359,19 @@
     <renderable ch="d" fgcolor="brown" bgcolor=""/>
     <fov viewradius="17"/>
     <animalai biome="5"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </prairiedog>
 
   <cattle>
@@ -146,6 +379,19 @@
     <renderable ch="c" fgcolor="brown" bgcolor=""/>
     <fov viewradius="8"/>
     <animalai biome="5"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </cattle>
 
   <fox>
@@ -153,6 +399,19 @@
     <renderable ch="f" fgcolor="gray" bgcolor=""/>
     <fov viewradius="10"/>
     <animalai biome="5"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </fox>
 
   <gopher>
@@ -160,16 +419,42 @@
     <renderable ch="g" fgcolor="gray" bgcolor=""/>
     <fov viewradius="7"/>
     <animalai biome="5"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </gopher>
 
 
   <!-- Snowy Plain Animals -->
 
   <rabbit>
-    <name value="rabbit"/>
+    <name value="white rabbit"/>
     <renderable ch="r" fgcolor="white" bgcolor=""/>
     <fov viewradius="9"/>
     <animalai biome="6"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Willpower"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </rabbit>
 
   <owl>
@@ -177,6 +462,19 @@
     <renderable ch="w" fgcolor="white" bgcolor=""/>
     <fov viewradius="12"/>
     <animalai biome="6"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </owl>
 
   <bison>
@@ -184,6 +482,19 @@
     <renderable ch="p" fgcolor="brown" bgcolor=""/>
     <fov viewradius="16"/>
     <animalai biome="6"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Willpower"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </bison>
 
 
@@ -194,6 +505,19 @@
     <renderable ch="j" fgcolor="red" bgcolor=""/>
     <fov viewradius="18"/>
     <animalai biome="10"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </parrot>
 
   <macaw>
@@ -201,6 +525,19 @@
     <renderable ch="i" fgcolor="orange" bgcolor=""/>
     <fov viewradius="16"/>
     <animalai biome="10"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </macaw>
 
   <toucan>
@@ -208,6 +545,19 @@
     <renderable ch="t" fgcolor="yellow" bgcolor=""/>
     <fov viewradius="14"/>
     <animalai biome="10"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </toucan>
 
   <gorilla>
@@ -215,6 +565,19 @@
     <renderable ch="g" fgcolor="dark gray" bgcolor=""/>
     <fov viewradius="15"/>
     <animalai biome="10"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </gorilla>
 
   <ant>
@@ -222,6 +585,19 @@
     <renderable ch="a" fgcolor="red" bgcolor=""/>
     <fov viewradius="5"/>
     <animalai biome="10"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Intelligence"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </ant>
 
   <sloth>
@@ -229,6 +605,19 @@
     <renderable ch="s" fgcolor="gray" bgcolor=""/>
     <fov viewradius="9"/>
     <animalai biome="10"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Endurance"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </sloth>
 
 
@@ -239,6 +628,19 @@
     <renderable ch="g" fgcolor="green" bgcolor=""/>
     <fov viewradius="6"/>
     <animalai biome="12"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Luck"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </frog>
 
 
@@ -249,6 +651,19 @@
     <renderable ch="w" fgcolor="white" bgcolor=""/>
     <fov viewradius="12"/>
     <animalai biome="18"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </owl>
 
   <eagle>
@@ -256,6 +671,19 @@
     <renderable ch="e" fgcolor="dark white" bgcolor=""/>
     <fov viewradius="12"/>
     <animalai biome="22"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Willpower"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Unarmored"/>
+        <skill val="Brawling"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
   </eagle>
 
 </animals> 

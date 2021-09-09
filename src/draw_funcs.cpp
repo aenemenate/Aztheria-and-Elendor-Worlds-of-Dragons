@@ -35,6 +35,10 @@ bool TerminalWasResized() {
   return terminal_state(TK_EVENT) == TK_RESIZED;
 }
 
+void ChangeLayer(int layer) {
+  terminal_layer(layer);
+}
+
 void PrintGraphic(int x, int y, Graphic gr) {
   std::string text = gr.ch;
   if (gr.fgcolor == "")

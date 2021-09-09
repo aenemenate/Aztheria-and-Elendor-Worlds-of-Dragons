@@ -1,5 +1,5 @@
 #include "game.h"
-#include "world.h"
+#include "world/world.h"
 #include "ecs/entity.h"
 #include "map/area.h"
 #include "draw_funcs.h"
@@ -51,8 +51,7 @@ void Game::PopState() {
 	  states.back()->Cleanup();
 	  states.pop_back();
   }
-  states.back()->Cleanup();
-  states.back()->Init(this);
+  states.back()->Resize(this);
 }
 
 void Game::HandleEvents() {

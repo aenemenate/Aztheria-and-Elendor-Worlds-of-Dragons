@@ -1,5 +1,5 @@
 #include "mainmenu_state.h"
-#include "createworld_state.h"
+#include "createcharacter_state.h"
 #include "loadworld_state.h"
 #include "../draw_funcs.h"
 #include "../base.h"
@@ -9,7 +9,7 @@
 #include <fstream>
 #include <sstream>
 
-void NewWorld(Game* game) { game->PushState(CreateWorldState::Instance()); game->Update(); }
+void NewWorld(Game* game) { game->PushState(CreateCharacterState::Instance()); game->Update(); }
 
 void PlayWorld(Game* game) { game->PushState(LoadWorldState::Instance()); game->Update(); }
 
@@ -46,6 +46,10 @@ void MainMenuState::Init(Game *game) {
 
 void MainMenuState::Cleanup() {
   buttons.clear();
+}
+
+void MainMenuState::Resize(Game *game) {
+  Init(game);
 }
 
 void MainMenuState::HandleEvents(Game *game) {

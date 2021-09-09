@@ -4,18 +4,19 @@
 #include "../base.h"
 #include "../input_funcs.h"
 #include "../ecs/entity.h"
-#include "../world.h"
+#include "../world/world.h"
 #include "../map/area.h"
 #include "../game_fio.h"
 #include "../pathfinder.h"
 
 #include "../menus/map_menu.h"
+#include "../menus/inventory_menu.h"
 
 #include <algorithm>
 
 MapMenu map_menu;
+InventoryMenu inventory_menu;
 StatusPanel status_panel;
-// TODO: Make a pause menu (like map menu)
 vector<Button> pmenu_buttons;
 int menu_caret = 0;
 bool paused = false;
@@ -35,8 +36,14 @@ void PlayState::Init(Game *game) {
   pmenu_buttons.push_back(Button(term_width/2-4,term_height/2, "save & quit", SaveGame));
   pmenu_buttons.push_back(Button(term_width/2-3,term_height/2+2, "just quit", StopPlaying));
   menu_caret = 0;
-  map_menu = MapMenu(std::max(0, term_width/2 - game->world->width/2), std::max(0, term_height/2 - (game->world->height/2+1)), game->world->width, game->world->height);
+  map_menu = MapMenu(max(0, term_width/2 - game->world->width/2),
+			max(0, term_height/2 - (game->world->height/2+1)), 
+			game->world->width, game->world->height);
   map_menu.SetShow(false);
+  inventory_menu = InventoryMenu(max(0, term_width/2 - 20/2),
+			max(0, term_height/2 - (26/2+1)), 
+			20, 26);
+  inventory_menu.SetShow(false);
 }
 
 void PlayState::Cleanup() {
@@ -45,15 +52,22 @@ void PlayState::Cleanup() {
   pmenu_buttons.clear();
 }
 
+void PlayState::Resize(Game *game) {
+  Init(game);
+}
+
 void PlayState::HandleEvents(Game *game) {
   int xsign = 0, ysign = 0;
   if (TerminalWasResized())
     this->Init(game);
   // if none of menus are showing
-  if (!paused && !map_menu.GetShow()) {
+  if (!paused && !map_menu.GetShow() && !inventory_menu.GetShow()) {
     switch (TerminalGetKey()) {
       case MTK_M:
         map_menu.SetShow(true);
+        break;
+      case MTK_I:
+        inventory_menu.SetShow(true);
         break;
       case MTK_ESCAPE:
         paused = true;
@@ -106,17 +120,23 @@ void PlayState::HandleEvents(Game *game) {
         paused = false;
         break;
     }
-  else if (map_menu.GetShow())
+  else if (map_menu.GetShow() || inventory_menu.GetShow()) {
     switch (TerminalGetKey()) {
       case MTK_ESCAPE:
-      case MTK_M:
+        inventory_menu.SetShow(false);
         map_menu.SetShow(false);
         break;
+      case MTK_M:
+        map_menu.SetShow(!map_menu.GetShow());
+	break;
+      case MTK_I:
+        inventory_menu.SetShow(!inventory_menu.GetShow());
+	break;
     }
+  }
 }
 
-void PlayState::Update(Game *game)
-{
+void PlayState::Update(Game *game) {
   status_panel.Update(game);
   if (paused)
     for (int b=0;b<pmenu_buttons.size();b++)
@@ -132,30 +152,13 @@ void PlayState::Update(Game *game)
       if (player_path.size() == 0)
         TerminalSetInputBlockMode(true);
     }
-// tick pre-action components
-    for (int e = 0; e < game->world->entities.size(); ++e) {
-      Position pos = (dynamic_pointer_cast<EntPosition>(game->world->entities[e].GetComponent(EC_POSITION_ID)))->position;
-      if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
-      &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
-        game->world->entities[e].Tick(game, EC_PRIO_PRE);
-    }
-// act, only allowing other entities to act if the player does
-    if (game->world->entities[0].Act(game->world))
-      for (int e = 1; e < game->world->entities.size(); ++e)
-        game->world->entities[e].Act(game->world);
-// tick post-action components
-    for (int e = 0; e < game->world->entities.size(); ++e) {
-      Position pos = (dynamic_pointer_cast<EntPosition>(game->world->entities[e].GetComponent(EC_POSITION_ID)))->position;
-      if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
-      &&  pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
-        game->world->entities[e].Tick(game, EC_PRIO_POST);
-    }
+    game->world->Update(game);
   }
   map_menu.Update(game);
+  inventory_menu.Update(game);
 }
 
-void PlayState::Draw(Game *game)
-{
+void PlayState::Draw(Game *game) {
   Entity *plyr = &(game->world->entities[0]);
   Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
 // set values
@@ -167,7 +170,7 @@ void PlayState::Draw(Game *game)
       term_height = GetTermHeight();
   int startx = min(max(0,area->width-map_term_width),max(0, plyr_pos.x - map_term_width/2));
   int starty = min(max(0,area->height-term_height), max(0, plyr_pos.y - term_height/2));
-// draw status panel
+// draw status panel, msg console
   status_panel.Draw(game, startx, starty);
 // draw map
   for (int i = startx; i < area->width && i-startx < map_term_width; i++)
@@ -186,7 +189,7 @@ void PlayState::Draw(Game *game)
   for (int vp = 0; vp < fov_c->visiblepoints.size(); vp++) {
     Position point = fov_c->visiblepoints[vp];
     if (point.x - startx < map_term_width
-    &&  point.y - starty < map_term_width
+    &&  point.y - starty < term_height
     &&  point.x - startx >= 0
     &&  point.y - starty >= 0) {
       Tile *tile = area->GetTile(point.x, point.y, point.z);
@@ -243,4 +246,6 @@ void PlayState::Draw(Game *game)
     }
   }
   map_menu.Draw(game);
+  inventory_menu.Draw(game);
+  game->world->msgConsole.PrintLines();
 }

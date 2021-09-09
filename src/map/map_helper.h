@@ -18,7 +18,4 @@ namespace MapHelper {
 /* Returns true if there are no solid blocks within a square with the specified 'radius' centered
    at the specified point */
   bool SpaceIsClear(Area *area, Point pos, int z, int space);
-
-/* Returns a list of all the walkable points on the given map */
-  std::vector<Point> GetWalkablePoints(Map *map);
 }

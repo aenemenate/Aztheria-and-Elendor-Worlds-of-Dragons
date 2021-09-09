@@ -9,9 +9,8 @@ void Button::Activate(Game *game) { callback_f(game); }
 void Button::Update(Game *game) { if (isclicked()) callback_f(game); }
 
 void Button::Render() {
-  std::string bkcolor = "black";
   std::string fgcolor = (ishovered() ? "green" : "white");
-  PrintGraphic(this->x, this->y, {text, fgcolor, bkcolor});
+  PrintGraphic(this->x, this->y, {text, fgcolor, bgcolor});
 }
 
 bool Button::isclicked() {
