@@ -24,7 +24,7 @@ int Attack(Entity *src, Entity *def, World *world) {
       bool attackEvaded = rand()%100 <= (src_stats->attributes[Speed] / 5 + def_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * def_stats->resources[Stamina] / def_stats->resources[MaxStamina]);
       if (!attackEvaded) {
-        int damage = impactYields[Bone] * ((double)(src_stats->attributes[Strength] + 50) / 100.0);
+        int damage = GetImpactYields()[Bone] * ((double)(src_stats->attributes[Strength] + 50) / 100.0);
         message = src_name->name + " attacked " + def_name->name + " for " + std::to_string(damage) + " points.";
 	def_stats->resources[Health] -= damage;
         if (def_stats->resources[Health] <= 0) {
@@ -176,20 +176,25 @@ int ActivateBlock::Do(Entity *src, World *world) {
 
 int UseItem::Do(Entity *src, World *world) {
   std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
-  if (inventory->inventory[itemIndex]->HasComponent(EC_POTION_ID)) {
-    std::shared_ptr<Potion> potion_c = dynamic_pointer_cast<Potion>(inventory->inventory[itemIndex]->GetComponent(EC_POTION_ID));
-    std::shared_ptr<Stats> src_stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
-    src_stats->resources[Health]  += potion_c->healthValue;
-    src_stats->resources[Magicka] += potion_c->magickaValue;
-    src_stats->resources[Stamina] += potion_c->staminaValue;
-    if (src_stats->resources[Health] > src_stats->resources[MaxHealth])
-      src_stats->resources[Health] = src_stats->resources[MaxHealth];
-    if (src_stats->resources[Magicka] > src_stats->resources[MaxMagicka])
-      src_stats->resources[Magicka] = src_stats->resources[MaxMagicka];
-    if (src_stats->resources[Stamina] > src_stats->resources[MaxStamina])
-      src_stats->resources[Stamina] = src_stats->resources[MaxStamina];
-    inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
-    return 2000;
+  if (itemIndex < inventory->inventory.size()) {
+    if (inventory->inventory[itemIndex]->HasComponent(EC_MWEAPON_ID)) {
+      // equip weapon
+    }
+    if (inventory->inventory[itemIndex]->HasComponent(EC_POTION_ID)) {
+      std::shared_ptr<Potion> potion_c = dynamic_pointer_cast<Potion>(inventory->inventory[itemIndex]->GetComponent(EC_POTION_ID));
+      std::shared_ptr<Stats> src_stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
+      src_stats->resources[Health]  += potion_c->healthValue;
+      src_stats->resources[Magicka] += potion_c->magickaValue;
+      src_stats->resources[Stamina] += potion_c->staminaValue;
+      if (src_stats->resources[Health] > src_stats->resources[MaxHealth])
+        src_stats->resources[Health] = src_stats->resources[MaxHealth];
+      if (src_stats->resources[Magicka] > src_stats->resources[MaxMagicka])
+        src_stats->resources[Magicka] = src_stats->resources[MaxMagicka];
+      if (src_stats->resources[Stamina] > src_stats->resources[MaxStamina])
+        src_stats->resources[Stamina] = src_stats->resources[MaxStamina];
+      inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
+      return 2000;
+    }
   }
   return 0;
 }

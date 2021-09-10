@@ -177,6 +177,14 @@ void CreateCharacter(Game* game) {
   player.AddComponent(std::make_shared<Player>(Player(true)));
   player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time())));
   player.AddComponent(std::make_shared<Inventory>(Inventory()));
+  std::vector<BodyPart> bodyParts;
+  bodyParts.push_back(BodyPart(PHand, "right hand"));
+  bodyParts.push_back(BodyPart(PHand, "left hand"));
+  bodyParts.push_back(BodyPart(PHead, "head"));
+  bodyParts.push_back(BodyPart(PBody, "body"));
+  bodyParts.push_back(BodyPart(PLegs, "legs"));
+  bodyParts.push_back(BodyPart(PFeet, "feet"));
+  player.AddComponent(std::make_shared<Equipment>(Equipment(bodyParts)));
   std::vector<Attribute> majorAttributes;
   for (int i = 0; i <= 7; ++i) {
     if (std::string{CreateCharacterState::Instance()->buttons[i].GetBgColor()} == "gray")

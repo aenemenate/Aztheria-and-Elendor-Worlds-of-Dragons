@@ -6,6 +6,7 @@
 #include "../map_objects/block_builders.h"
 #include "../pathfinder.h"
 #include "../xml/xml_parser.h"
+#include "../materials.h"
 
 #include <cmath>
 #include <chrono>
@@ -57,6 +58,23 @@ std::vector<Point> GetDownStairPoints(Map *map) {
         walkable_points.push_back({i, j});
     }
   return walkable_points;
+}
+
+std::vector<Entity> GetItems() {
+  std::vector<Entity> items;
+  items.push_back(Entity());
+  items[items.size() - 1].AddComponent(std::make_shared<Renderable>(Renderable({"&", "red", "black"})));
+  items[items.size() - 1].AddComponent(std::make_shared<Name>(Name(std::string{"minor health potion"})));
+  items[items.size() - 1].AddComponent(std::make_shared<Potion>(Potion(15, 0, 0)));
+  items[items.size() - 1].AddComponent(std::make_shared<NotSolid>(NotSolid()));
+  items[items.size() - 1].AddComponent(std::make_shared<Pickable>(Pickable()));
+  items.push_back(Entity());
+  items[items.size() - 1].AddComponent(std::make_shared<Renderable>(Renderable({"/", GetMaterialColors()[Copper], "black"})));
+  items[items.size() - 1].AddComponent(std::make_shared<Name>(Name(std::string{"copper sword"})));
+  items[items.size() - 1].AddComponent(std::make_shared<MeleeWeapon>(MeleeWeapon(Copper, MSword)));
+  items[items.size() - 1].AddComponent(std::make_shared<NotSolid>(NotSolid()));
+  items[items.size() - 1].AddComponent(std::make_shared<Pickable>(Pickable()));
+  return items;
 }
 
 void applyCellularAutomata(Dungeon *dungeon) {
@@ -133,18 +151,12 @@ void placeEntities(int world_x, int world_y, World *world) {
 
 void placeItems(int world_x, int world_y, World *world) {
   Area *area = world->GetArea(world_x, world_y);
-  std::vector<Entity> entities;
-  entities.push_back(Entity());
-  entities[entities.size() - 1].AddComponent(std::make_shared<Renderable>(Renderable({"&", "red", "black"})));
-  entities[entities.size() - 1].AddComponent(std::make_shared<Name>(Name(std::string{"minor health potion"})));
-  entities[entities.size() - 1].AddComponent(std::make_shared<Potion>(Potion(15, 0, 0)));
-  entities[entities.size() - 1].AddComponent(std::make_shared<NotSolid>(NotSolid()));
-  entities[entities.size() - 1].AddComponent(std::make_shared<Pickable>(Pickable()));
+  std::vector<Entity> items = GetItems();
   for (int i = 0; i < area->GetDungeonFloors()->size(); ++i) {
     Dungeon *dungeon = &(area->GetDungeonFloors()[0][i]);
     std::vector<Point> walkable_points = GetDownStairPoints(dungeon);
     for (int j = 0; j < walkable_points.size() / 250; ++j) {
-      Entity *ent_orig = &(entities[rand()%entities.size()]);
+      Entity *ent_orig = &(items[rand()%items.size()]);
       Entity ent;
       for (auto component : ent_orig->components)
         ent.AddComponent(component->GetCopy());

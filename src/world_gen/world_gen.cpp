@@ -114,6 +114,8 @@ void WorldGen::PlaceEntities(World* world) {
           break;
       }
     }
+  if (walkable_areas.size() == 0)
+      return;
   int wp_index = rand()%walkable_areas.size();
   uint16_t world_x = walkable_areas[wp_index].x, world_y = walkable_areas[wp_index].y;
   std::vector<Point> walkable_positions = GetWalkablePoints(world->GetArea(world_x, world_y));

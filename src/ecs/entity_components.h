@@ -11,6 +11,9 @@
 #include "../base.h"
 #include "../map/area.h"
 #include "../world/time_system.h"
+#include "../draw_funcs.h"
+
+enum Material;
 
 class World;
 class Game;
@@ -52,8 +55,10 @@ public:
 #define EC_STATS_ID		9
 #define EC_NOTSOLID_ID		10
 #define EC_INVENTORY_ID		11
-#define EC_PICKABLE_ID		12
-#define EC_POTION_ID		13
+#define EC_EQUIPMENT_ID		12
+#define EC_PICKABLE_ID		13
+#define EC_POTION_ID		14
+#define EC_MWEAPON_ID		15
 
 class Renderable : public EntityComponent {
   friend class boost::serialization::access;
@@ -312,9 +317,53 @@ class Inventory : public EntityComponent {
 public:
   std::vector<Entity*> inventory;
   Inventory() : EntityComponent(EC_INVENTORY_ID, EC_PRIO_NULL) {}
-  Inventory(std::vector<Entity*> _inventory) : inventory(_inventory), EntityComponent(EC_INVENTORY_ID, EC_PRIO_NULL) {}
+  Inventory(std::vector<Entity*> inventory) : inventory(inventory), EntityComponent(EC_INVENTORY_ID, EC_PRIO_NULL) {}
   void Tick(Entity *src, Game *game) { }
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Inventory>(Inventory(inventory)); }
+};
+
+enum BodyPartType {
+  PHead,
+  PBody,
+  PLeg,
+  PHand,
+  PLegs,
+  PFeet
+};
+
+class BodyPart {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & bodyPartType;
+    ar & equippedEntity;
+    ar & name;
+  }
+public:
+  BodyPartType bodyPartType;
+  Entity* equippedEntity;
+  std::string name;
+  BodyPart(BodyPartType _bodyPartType, std::string _name) {
+    bodyPartType = _bodyPartType;
+    equippedEntity = nullptr;
+    name = _name;
+  }
+  BodyPart() {}
+};
+
+class Equipment : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & bodyParts;
+  }
+public:
+  std::vector<BodyPart> bodyParts;
+  Equipment() : EntityComponent(EC_EQUIPMENT_ID, EC_PRIO_NULL) {}
+  Equipment(std::vector<BodyPart> bodyParts) : bodyParts(bodyParts), EntityComponent(EC_EQUIPMENT_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Equipment>(Equipment(bodyParts)); }
 };
 
 class Pickable : public EntityComponent {
@@ -349,6 +398,32 @@ public:
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Potion>(Potion(healthValue, magickaValue, staminaValue)); }
 };
 
+enum MWeaponType {
+  MAxe,
+  MMace,
+  MSword,
+  MDagger,
+  MSpear
+};
+
+class MeleeWeapon : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & material;
+    ar & weaponType;
+  }
+public:
+  Material material;
+  MWeaponType weaponType;
+  MeleeWeapon() : EntityComponent() {}
+  MeleeWeapon(Material material, MWeaponType weaponType) : material(material), 
+	weaponType(weaponType), EntityComponent(EC_MWEAPON_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<MeleeWeapon>(MeleeWeapon(material, weaponType)); }
+};
+
 // Functions
 
 template<class Archive>
@@ -365,6 +440,8 @@ inline void RegisterEntityComponentTypes(Archive &ar) {
     ar.template register_type<Stats>();
     ar.template register_type<NotSolid>();
     ar.template register_type<Inventory>();
+    ar.template register_type<Equipment>();
     ar.template register_type<Pickable>();
     ar.template register_type<Potion>();
+    ar.template register_type<MeleeWeapon>();
 }
