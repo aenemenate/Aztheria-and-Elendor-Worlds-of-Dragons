@@ -108,6 +108,15 @@ void PlayState::HandleEvents(Game *game) {
             game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(0,1,0)));
         }
       }
+      else if (TerminalGetMouseX()+startx == plyr_pos.x + 1 || TerminalGetMouseX()+startx == plyr_pos.x - 1
+              || TerminalGetMouseY()+starty == plyr_pos.y + 1 || TerminalGetMouseY()+starty == plyr_pos.y - 1) {
+	if (game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetEntity(
+		TerminalGetMouseX()+startx, TerminalGetMouseY()+starty, plyr_pos.z) != nullptr) {
+          game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(TerminalGetMouseX()+startx - plyr_pos.x,
+											    TerminalGetMouseY()+starty - plyr_pos.y,
+											    0)));
+	}
+      }
     }
   }
   else if (paused)
@@ -257,6 +266,11 @@ void PlayState::Draw(Game *game) {
     if (TerminalGetMouseX() == plyr_sc_pos.x && TerminalGetMouseY() == plyr_sc_pos.y
     && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
       PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, {"", "", "blue"});
+    }
+    if ((TerminalGetMouseX() == plyr_sc_pos.x - 1 || TerminalGetMouseX() == plyr_sc_pos.x + 1
+    || TerminalGetMouseY() == plyr_sc_pos.y - 1 || TerminalGetMouseY() == plyr_sc_pos.y + 1)
+    && area->GetEntity(TerminalGetMouseX()+startx, TerminalGetMouseY()+starty,plyr_z) != nullptr) {
+      PrintGraphic(TerminalGetMouseX(), TerminalGetMouseY(), {"", "", "blue"});
     }
   }
   map_menu.Draw(game);

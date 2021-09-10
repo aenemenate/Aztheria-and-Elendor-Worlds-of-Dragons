@@ -23,6 +23,8 @@ bool Entity::Act(World *world) {
       std::shared_ptr<Stats> stats = dynamic_pointer_cast<Stats>(GetComponent(EC_STATS_ID));
       int speed = stats->attributes[Speed];
       speedMult = speed / 100.0;
+      if (stats->resources[Health] <= 0)
+        return false;
     }
     std::shared_ptr<ActionTime> actionTime = dynamic_pointer_cast<ActionTime>(GetComponent(EC_ACTIONTIME_ID));
     while (actions.size() > 0
