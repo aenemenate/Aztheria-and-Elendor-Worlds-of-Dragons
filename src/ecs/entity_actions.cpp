@@ -9,6 +9,58 @@
 #include <string>
 #include <iostream>
 
+std::shared_ptr<MeleeWeapon> GetWeapon(Entity *src) {
+  if (src->HasComponent(EC_EQUIPMENT_ID)) {
+    std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
+    std::vector<std::shared_ptr<MeleeWeapon>> weapons;
+    for (int i = 0; i < equipment->bodyParts.size(); ++i) {
+      if (equipment->bodyParts[i].equippedEntity != nullptr) {
+	if (equipment->bodyParts[i].equippedEntity->HasComponent(EC_MWEAPON_ID)) {
+          weapons.push_back(dynamic_pointer_cast<MeleeWeapon>(equipment->bodyParts[i].equippedEntity->GetComponent(EC_MWEAPON_ID)));
+        }
+      }
+    }
+    if (weapons.size() > 0) {
+      int weapon = rand()%weapons.size();
+      return weapons[weapon];
+    }
+  }
+  return nullptr;
+}
+
+int GetWeaponDamage(std::shared_ptr<MeleeWeapon> weapon) {
+  if (weapon != nullptr) {
+    switch (weapon->weaponType) {
+      case(MAxe):
+      case(MSword):
+      case(MDagger):
+      case(MSpear):
+        return GetShearYields()[weapon->material];
+      case(MMace):
+        return GetImpactYields()[weapon->material];
+    }
+  }
+  return GetImpactYields()[Bone];
+}
+
+int GetWeaponSkill(Entity *src, std::shared_ptr<MeleeWeapon> weapon) {
+  std::shared_ptr<Stats> src_stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
+  if (weapon != nullptr) {
+    switch (weapon->weaponType) {
+      case(MMace):
+      case(MAxe):
+        return src_stats->skills[HeavyWeapons];
+      case(MSword):
+        return src_stats->skills[LongBlades];
+      case(MDagger):
+        return src_stats->skills[ShortBlade];
+      case(MSpear):
+        return src_stats->skills[Spear];
+    }
+  }
+  return src_stats->skills[Brawling];
+}
+
 int Attack(Entity *src, Entity *def, World *world) {
   std::string message;
   if (src->HasComponent(EC_STATS_ID) && def->HasComponent(EC_STATS_ID)) {
@@ -18,13 +70,15 @@ int Attack(Entity *src, Entity *def, World *world) {
     std::shared_ptr<Name> def_name = dynamic_pointer_cast<Name>(def->GetComponent(EC_NAME_ID));
     if (def_stats->resources[Health] <= 0)
       return 0;
-    bool attackLanded = rand()%100 <= (src_stats->skills[Brawling] + src_stats->attributes[Speed] / 5 + src_stats->attributes[Luck] / 10) 
+    std::shared_ptr<MeleeWeapon> weapon = GetWeapon(src);
+    bool attackLanded = rand()%100 <= (GetWeaponSkill(src, weapon) + src_stats->attributes[Speed] / 5 + src_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * src_stats->resources[Stamina] / src_stats->resources[MaxStamina]);
     if (attackLanded) {
       bool attackEvaded = rand()%100 <= (src_stats->attributes[Speed] / 5 + def_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * def_stats->resources[Stamina] / def_stats->resources[MaxStamina]);
       if (!attackEvaded) {
-        int damage = GetImpactYields()[Bone] * ((double)(src_stats->attributes[Strength] + 50) / 100.0);
+        int weaponDamage = GetWeaponDamage(weapon);
+        int damage = weaponDamage * ((double)(src_stats->attributes[Strength] + 50) / 100.0);
         message = src_name->name + " attacked " + def_name->name + " for " + std::to_string(damage) + " points.";
 	def_stats->resources[Health] -= damage;
         if (def_stats->resources[Health] <= 0) {
