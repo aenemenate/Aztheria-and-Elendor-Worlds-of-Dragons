@@ -24,7 +24,6 @@ void InventoryMenu::CustomDraw(Game* game) {
 }
 
 void InventoryMenu::CustomUpdate(Game* game) {
-  std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(game->world->entities[0].GetComponent(EC_INVENTORY_ID));
   if (TerminalGetKey() == MTK_MOUSE_LEFT)
     if (selectedIndex != -1)
       game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new UseItem(selectedIndex)));      

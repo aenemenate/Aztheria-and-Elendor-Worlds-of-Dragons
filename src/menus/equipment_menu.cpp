@@ -6,13 +6,18 @@
 #include "../map/area.h"
 #include "../ecs/entity.h"
 
+int selectedEquipmentIndex = -1;
+
 void EquipmentMenu::CustomDraw(Game* game) {
 // draw items
   std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(game->world->entities[0].GetComponent(EC_EQUIPMENT_ID));
+  selectedEquipmentIndex = -1;
   for (int i = 0; i < equipment->bodyParts.size(); ++i) {
     std::string fg_color = "white";
-    if (TerminalGetMouseX() >= xpos && TerminalGetMouseX() < xpos + width && TerminalGetMouseY() == ypos + 1 + i * 2) {
+    if (TerminalGetMouseX() >= xpos && TerminalGetMouseX() < xpos + width
+    && TerminalGetMouseY() == ypos + 1 + i * 2 || TerminalGetMouseY() == ypos + 1 + i * 2 + 1) {
         fg_color = "green";
+        selectedEquipmentIndex = i;
     }
     BodyPart bodyPart = equipment->bodyParts[i];
     std::string equipmentName;
@@ -26,5 +31,8 @@ void EquipmentMenu::CustomDraw(Game* game) {
   }
 }
 
-void EquipmentMenu::CustomUpdate(Game* game) {     
+void EquipmentMenu::CustomUpdate(Game* game) {
+  if (TerminalGetKey() == MTK_MOUSE_LEFT)
+    if (selectedEquipmentIndex != -1)
+      game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Unequip(selectedEquipmentIndex))); 
 }

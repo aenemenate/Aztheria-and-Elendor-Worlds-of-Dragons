@@ -179,6 +179,20 @@ int UseItem::Do(Entity *src, World *world) {
   if (itemIndex < inventory->inventory.size()) {
     if (inventory->inventory[itemIndex]->HasComponent(EC_MWEAPON_ID)) {
       // equip weapon
+      std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
+      std::vector<BodyPart*> hands;
+      for (int i = 0; i < equipment->bodyParts.size(); ++i) {
+	if (equipment->bodyParts[i].bodyPartType == PHand) {
+	  hands.push_back(&(equipment->bodyParts[i]));
+        }
+      }
+      for (int i = 0; i < hands.size(); ++i) {
+	if (hands[i]->equippedEntity == nullptr) {
+          hands[i]->equippedEntity = inventory->inventory[itemIndex];
+          inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
+	  break;
+	}
+      }
     }
     if (inventory->inventory[itemIndex]->HasComponent(EC_POTION_ID)) {
       std::shared_ptr<Potion> potion_c = dynamic_pointer_cast<Potion>(inventory->inventory[itemIndex]->GetComponent(EC_POTION_ID));
@@ -195,6 +209,16 @@ int UseItem::Do(Entity *src, World *world) {
       inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
       return 2000;
     }
+  }
+  return 0;
+}
+
+int Unequip::Do(Entity *src, World *world) {
+  std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
+  std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
+  if (equipment->bodyParts[itemIndex].equippedEntity != nullptr) {
+    inventory->inventory.push_back(equipment->bodyParts[itemIndex].equippedEntity);
+    equipment->bodyParts[itemIndex].equippedEntity = nullptr;
   }
   return 0;
 }
