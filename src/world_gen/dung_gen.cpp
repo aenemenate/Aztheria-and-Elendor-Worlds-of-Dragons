@@ -60,7 +60,27 @@ std::vector<Point> GetDownStairPoints(Map *map) {
   return walkable_points;
 }
 
-std::vector<Entity> GetItems() {
+Entity MakeWeaponOfType(MWeaponType weaponType, Material material) {
+  Entity entity = Entity();
+  entity.AddComponent(std::make_shared<Renderable>(Renderable({"/", GetMaterialColors()[material], "black"})));
+  entity.AddComponent(std::make_shared<Name>(Name(std::string{GetMaterialNames()[material] + " " + NameFromWeaponType(weaponType)})));
+  entity.AddComponent(std::make_shared<MeleeWeapon>(MeleeWeapon(material, weaponType)));
+  entity.AddComponent(std::make_shared<NotSolid>(NotSolid()));
+  entity.AddComponent(std::make_shared<Pickable>(Pickable()));
+  return entity;
+}
+
+Entity MakeArmorOfType(BodyPartType bodyPartType, Material material) {
+  Entity entity = Entity();
+  entity.AddComponent(std::make_shared<Renderable>(Renderable({"$", GetMaterialColors()[material], "black"})));
+  entity.AddComponent(std::make_shared<Name>(Name(std::string{GetMaterialNames()[material] + " " + ArmorNameFromInfo(bodyPartType, material)})));
+  entity.AddComponent(std::make_shared<Armor>(Armor(material, bodyPartType)));
+  entity.AddComponent(std::make_shared<NotSolid>(NotSolid()));
+  entity.AddComponent(std::make_shared<Pickable>(Pickable()));
+  return entity;
+}
+
+std::vector<Entity> GetPotions() {
   std::vector<Entity> items;
   items.push_back(Entity());
   items[items.size() - 1].AddComponent(std::make_shared<Renderable>(Renderable({"&", "red", "black"})));
@@ -68,12 +88,22 @@ std::vector<Entity> GetItems() {
   items[items.size() - 1].AddComponent(std::make_shared<Potion>(Potion(15, 0, 0)));
   items[items.size() - 1].AddComponent(std::make_shared<NotSolid>(NotSolid()));
   items[items.size() - 1].AddComponent(std::make_shared<Pickable>(Pickable()));
-  items.push_back(Entity());
-  items[items.size() - 1].AddComponent(std::make_shared<Renderable>(Renderable({"/", GetMaterialColors()[Copper], "black"})));
-  items[items.size() - 1].AddComponent(std::make_shared<Name>(Name(std::string{"copper sword"})));
-  items[items.size() - 1].AddComponent(std::make_shared<MeleeWeapon>(MeleeWeapon(Copper, MSword)));
-  items[items.size() - 1].AddComponent(std::make_shared<NotSolid>(NotSolid()));
-  items[items.size() - 1].AddComponent(std::make_shared<Pickable>(Pickable()));
+  return items;
+}
+
+std::vector<Entity> GetArmorAndWeapons() {
+  std::vector<Entity> items;
+  for (int i = 0; i < 5; ++i) {
+    for (int j = 5; j < 11; ++j) {
+      items.push_back(MakeWeaponOfType((MWeaponType)i, (Material)j));
+    }
+  }
+  for (int i = 0; i < 5; ++i) {
+    if (i == 2) continue;
+    for (int j = 5; j < 16; ++j) {
+      items.push_back(MakeArmorOfType((BodyPartType)i, (Material)j));
+    }
+  }
   return items;
 }
 
@@ -151,12 +181,18 @@ void placeEntities(int world_x, int world_y, World *world) {
 
 void placeItems(int world_x, int world_y, World *world) {
   Area *area = world->GetArea(world_x, world_y);
-  std::vector<Entity> items = GetItems();
+  std::vector<Entity> potions = GetPotions();
+  std::vector<Entity> armorAndWeapons = GetArmorAndWeapons();
   for (int i = 0; i < area->GetDungeonFloors()->size(); ++i) {
     Dungeon *dungeon = &(area->GetDungeonFloors()[0][i]);
     std::vector<Point> walkable_points = GetDownStairPoints(dungeon);
     for (int j = 0; j < walkable_points.size() / 250; ++j) {
-      Entity *ent_orig = &(items[rand()%items.size()]);
+      Entity *ent_orig;
+      if (rand() % 2 < 1) {
+        ent_orig = &(potions[rand()%potions.size()]);
+      }
+      else
+        ent_orig = &(armorAndWeapons[rand()%armorAndWeapons.size()]);
       Entity ent;
       for (auto component : ent_orig->components)
         ent.AddComponent(component->GetCopy());

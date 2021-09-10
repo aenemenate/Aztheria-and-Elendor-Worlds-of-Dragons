@@ -3,6 +3,7 @@
 #include "../world/world.h"
 #include "../map/area.h"
 #include "../input_funcs.h"
+#include "../materials.h"
 
 #include <iostream>
 
@@ -258,4 +259,58 @@ void Stats::SetSkills(std::shared_ptr<Class> uClass) {
     skills[uClass->majorSkills[i]] += 25;
   for (int i = 0; i < uClass->minorSkills.size(); ++i)
     skills[uClass->minorSkills[i]] += 10;
+}
+
+std::string NameFromWeaponType(MWeaponType weaponType) {
+  switch (weaponType) {
+    case (MAxe):
+      return "axe";
+    case (MMace):
+      return "mace";
+    case (MSword):
+      return "sword";
+    case (MDagger):
+      return "dagger";
+    case (MSpear):
+      return "spear";
+  }
+}
+
+std::string ArmorNameFromInfo(BodyPartType bodyPartType, Material material) {
+  switch (material) {
+    case (Copper):
+    case (Bronze):
+    case (Brass):
+    case (Iron):
+    case (Steel):
+    case (Platinum):
+      switch (bodyPartType) {
+        case (PHead):
+          return "helmet";
+        case (PBody):
+          return "chestpiece";
+        case (PLegs):
+          return "chausses";
+        case (PFeet):
+          return "grieves";
+      }
+    break;
+    case (Glass):
+    case (Leather):
+    case (Cloth):
+    case (Silk):
+    case (Bone):
+      switch (bodyPartType) {
+        case (PHead):
+          return "hat";
+        case (PBody):
+          return "shirt";
+        case (PLegs):
+          return "pants";
+        case (PFeet):
+          return "shoes";
+      }
+    break;
+  }
+  return "";
 }

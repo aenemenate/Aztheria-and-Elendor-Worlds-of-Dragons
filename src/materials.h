@@ -4,7 +4,7 @@
 #include <string>
 
 enum Material {
-  Wood,
+  Wood = 0,
   Dirt, 
   Stone,
   Tin,

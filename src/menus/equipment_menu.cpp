@@ -15,7 +15,7 @@ void EquipmentMenu::CustomDraw(Game* game) {
   for (int i = 0; i < equipment->bodyParts.size(); ++i) {
     std::string fg_color = "white";
     if (TerminalGetMouseX() >= xpos && TerminalGetMouseX() < xpos + width
-    && TerminalGetMouseY() == ypos + 1 + i * 2 || TerminalGetMouseY() == ypos + 1 + i * 2 + 1) {
+    && (TerminalGetMouseY() == ypos + 1 + i * 2 || TerminalGetMouseY() == ypos + 1 + i * 2 + 1)) {
         fg_color = "green";
         selectedEquipmentIndex = i;
     }

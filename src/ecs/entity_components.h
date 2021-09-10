@@ -59,6 +59,7 @@ public:
 #define EC_PICKABLE_ID		13
 #define EC_POTION_ID		14
 #define EC_MWEAPON_ID		15
+#define EC_ARMOR_ID		16
 
 class Renderable : public EntityComponent {
   friend class boost::serialization::access;
@@ -325,7 +326,6 @@ public:
 enum BodyPartType {
   PHead,
   PBody,
-  PLeg,
   PHand,
   PLegs,
   PFeet
@@ -399,12 +399,14 @@ public:
 };
 
 enum MWeaponType {
-  MAxe,
+  MAxe = 0,
   MMace,
   MSword,
   MDagger,
   MSpear
 };
+
+std::string NameFromWeaponType(MWeaponType weaponType);
 
 class MeleeWeapon : public EntityComponent {
   friend class boost::serialization::access;
@@ -423,6 +425,26 @@ public:
   void Tick(Entity *src, Game *game) { }
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<MeleeWeapon>(MeleeWeapon(material, weaponType)); }
 };
+
+class Armor : public EntityComponent {
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & boost::serialization::base_object<EntityComponent>(*this);
+    ar & material;
+    ar & bodyPartType;
+  }
+public:
+  Material material;
+  BodyPartType bodyPartType;
+  Armor() : EntityComponent() {}
+  Armor(Material material, BodyPartType bodyPartType) : material(material), 
+	bodyPartType(bodyPartType), EntityComponent(EC_ARMOR_ID, EC_PRIO_NULL) {}
+  void Tick(Entity *src, Game *game) { }
+  inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Armor>(Armor(material, bodyPartType)); }
+};
+
+std::string ArmorNameFromInfo(BodyPartType bodyPartType, Material material);
 
 // Functions
 
@@ -444,4 +466,5 @@ inline void RegisterEntityComponentTypes(Archive &ar) {
     ar.template register_type<Pickable>();
     ar.template register_type<Potion>();
     ar.template register_type<MeleeWeapon>();
+    ar.template register_type<Armor>();
 }
