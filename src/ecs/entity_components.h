@@ -331,6 +331,8 @@ enum BodyPartType {
   PFeet
 };
 
+BodyPartType BodyPartTypeFromName(std::string name);
+
 class BodyPart {
   friend class boost::serialization::access;
   template<class Archive>

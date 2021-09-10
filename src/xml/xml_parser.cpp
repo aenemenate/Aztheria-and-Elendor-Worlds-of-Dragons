@@ -52,6 +52,16 @@ std::shared_ptr<Class> classFromNode(xml_node<> *node) {
   return std::make_shared<Class>(Class(majorAttributes, majorSkills, minorSkills));
 }
 
+std::shared_ptr<Equipment> equipmentFromNode(xml_node<> *node) {
+  std::vector<BodyPart> bodyParts;
+  for (xml_node<> *t_node = node->first_node();
+       t_node; t_node = t_node->next_sibling()) {
+    bodyParts.push_back(BodyPart(BodyPartTypeFromName(t_node->first_attribute("bodyPartType")->value()), 
+				 t_node->first_attribute("name")->value()));
+  }
+  return std::make_shared<Equipment>(Equipment(bodyParts));
+}
+
 std::shared_ptr<EntityComponent> entityComponentFromNode(xml_node<> *node) {
   if (std::string(node->name()) == "renderable") {
     return renderableFromNode(node);
@@ -70,6 +80,9 @@ std::shared_ptr<EntityComponent> entityComponentFromNode(xml_node<> *node) {
   }
   if (std::string(node->name()) == "class") {
     return classFromNode(node);
+  }
+  if (std::string(node->name()) == "equipment") {
+    return equipmentFromNode(node);
   }
   return nullptr;
 }

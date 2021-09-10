@@ -28,16 +28,60 @@ std::shared_ptr<MeleeWeapon> GetWeapon(Entity *src) {
   return nullptr;
 }
 
+Skill GetArmorSkill(std::shared_ptr<Armor> armorPiece) {
+  if (armorPiece == nullptr)
+    return Unarmored;
+  switch (armorPiece->material) {
+    case (Copper):
+    case (Bronze):
+    case (Brass):
+    case (Iron):
+    case (Steel):
+    case (Platinum):
+      return HeavyArmor;
+  }
+  return LightArmor;
+}
+
+int GetArmorValue(Entity *src) {
+  int armorValue = 0;
+  if (src->HasComponent(EC_EQUIPMENT_ID)) {
+    std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
+    std::shared_ptr<Stats> stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
+    for (int i = 0; i < equipment->bodyParts.size(); ++i) {
+      if (equipment->bodyParts[i].equippedEntity != nullptr) {
+	if (equipment->bodyParts[i].equippedEntity->HasComponent(EC_ARMOR_ID)) {
+          std::shared_ptr<Armor> armorPiece = dynamic_pointer_cast<Armor>(equipment->bodyParts[i].equippedEntity->GetComponent(EC_ARMOR_ID));
+          switch (armorPiece->bodyPartType) {
+	    case (PHead):
+              armorValue += .33 * GetImpactYields()[armorPiece->material] * stats->skills[GetArmorSkill(armorPiece)] / 30;
+	      break;
+	    case (PBody):
+	    case (PLegs):
+	    case (PFeet):
+              armorValue += .22 * GetImpactYields()[armorPiece->material] * stats->skills[GetArmorSkill(armorPiece)] / 30;
+	      break;
+          }
+        }
+      }
+    }
+  }
+  return armorValue;
+}
+
 int GetWeaponDamage(std::shared_ptr<MeleeWeapon> weapon) {
   if (weapon != nullptr) {
     switch (weapon->weaponType) {
       case(MAxe):
+        return GetShearYields()[weapon->material] * 1.5;
       case(MSword):
-      case(MDagger):
-      case(MSpear):
         return GetShearYields()[weapon->material];
+      case(MDagger):
+        return GetShearYields()[weapon->material] * .5;
+      case(MSpear):
+        return GetShearYields()[weapon->material] * 1.25;
       case(MMace):
-        return GetImpactYields()[weapon->material];
+        return GetImpactYields()[weapon->material] * 1.5;
     }
   }
   return GetImpactYields()[Bone];
@@ -61,6 +105,23 @@ int GetWeaponSkill(Entity *src, std::shared_ptr<MeleeWeapon> weapon) {
   return src_stats->skills[Brawling];
 }
 
+int GetWeaponStaminaCost(std::shared_ptr<MeleeWeapon> weapon) {
+  if (weapon != nullptr) {
+    switch (weapon->weaponType) {
+      case(MAxe):
+        return 3 * GetShearYields()[weapon->material] * 1.5;
+      case(MSword):
+        return 3 * GetShearYields()[weapon->material];
+      case(MDagger):
+        return 3 * GetShearYields()[weapon->material] * .5;
+      case(MSpear):
+        return 3 * GetShearYields()[weapon->material] * 1.25;
+      case(MMace):
+        return 3 * GetImpactYields()[weapon->material] * 1.5;
+    }
+  }
+  return 3 * GetImpactYields()[Bone];
+}
 int Attack(Entity *src, Entity *def, World *world) {
   std::string message;
   if (src->HasComponent(EC_STATS_ID) && def->HasComponent(EC_STATS_ID)) {
@@ -79,6 +140,7 @@ int Attack(Entity *src, Entity *def, World *world) {
       if (!attackEvaded) {
         int weaponDamage = GetWeaponDamage(weapon);
         int damage = weaponDamage * ((double)(src_stats->attributes[Strength] + 50) / 100.0);
+        damage /= (1 + GetArmorValue(def) / damage) > 4 ? 4 : 1 + GetArmorValue(def) / damage;
         message = src_name->name + " attacked " + def_name->name + " for " + std::to_string(damage) + " points.";
 	def_stats->resources[Health] -= damage;
         if (def_stats->resources[Health] <= 0) {
@@ -97,6 +159,8 @@ int Attack(Entity *src, Entity *def, World *world) {
     if (src->HasComponent(EC_PLAYER_ID) || def->HasComponent(EC_PLAYER_ID)) {
       world->msgConsole.PushLine(message);
     }
+    src_stats->resources[Stamina] -= GetWeaponStaminaCost(weapon);
+    if (src_stats->resources[Stamina] < 0) src_stats->resources[Stamina] = 0;
     return 1000;
   }
   else
@@ -213,6 +277,10 @@ int Move::Do(Entity *src, World *world) {
     pos->z = new_z;
     pos->wx = new_wx;
     pos->wy = new_wy;
+  }
+  if (cost > 0) {
+    std::shared_ptr<Stats> src_stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
+    src_stats->resources[Stamina] += src_stats->resources[MaxStamina]/20;
   }
   return cost;
 }

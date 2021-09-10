@@ -251,6 +251,20 @@ void Stats::SetSkills(std::shared_ptr<Class> uClass) {
     skills[uClass->minorSkills[i]] += 10;
 }
 
+BodyPartType BodyPartTypeFromName(std::string name) {
+  if (name == "Hand")
+    return PHand;
+  if (name == "Head")
+    return PHead;
+  if (name == "Body")
+    return PBody;
+  if (name == "Legs")
+    return PLegs;
+  if (name == "Feet")
+    return PFeet;
+  return PHand;
+}
+
 std::string NameFromWeaponType(MWeaponType weaponType) {
   switch (weaponType) {
     case (MAxe):

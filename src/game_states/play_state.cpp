@@ -267,8 +267,9 @@ void PlayState::Draw(Game *game) {
     && area->GetBlock(plyr_sc_pos.x+startx, plyr_sc_pos.y+starty,plyr_z)->enterable) {
       PrintGraphic(plyr_sc_pos.x, plyr_sc_pos.y, {"", "", "blue"});
     }
-    if ((TerminalGetMouseX() == plyr_sc_pos.x - 1 || TerminalGetMouseX() == plyr_sc_pos.x + 1
-    || TerminalGetMouseY() == plyr_sc_pos.y - 1 || TerminalGetMouseY() == plyr_sc_pos.y + 1)
+    if (((TerminalGetMouseX() == plyr_sc_pos.x - 1 || TerminalGetMouseX() == plyr_sc_pos.x + 1 || TerminalGetMouseX() == plyr_sc_pos.x)
+    && (TerminalGetMouseY() == plyr_sc_pos.y - 1 || TerminalGetMouseY() == plyr_sc_pos.y + 1 ||  TerminalGetMouseY() == plyr_sc_pos.y)
+    && !(TerminalGetMouseX() == plyr_sc_pos.x && TerminalGetMouseY() == plyr_sc_pos.y))
     && area->GetEntity(TerminalGetMouseX()+startx, TerminalGetMouseY()+starty,plyr_z) != nullptr) {
       PrintGraphic(TerminalGetMouseX(), TerminalGetMouseY(), {"", "", "blue"});
     }

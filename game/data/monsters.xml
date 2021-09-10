@@ -20,6 +20,14 @@
         <skill val="Lockpick"/>
       </minorSkills>
     </class>
+    <equipment>
+      <bodyPart bodyPartType="Hand" name="right hand"/>
+      <bodyPart bodyPartType="Hand" name="left hand"/>
+      <bodyPart bodyPartType="Head" name="head"/>
+      <bodyPart bodyPartType="Body" name="body"/>
+      <bodyPart bodyPartType="Legs" name="legs"/>
+      <bodyPart bodyPartType="Feet" name="feet"/>
+    </equipment>
   </goblin>
 
 </monsters>
