@@ -240,12 +240,24 @@ int UseItem::Do(Entity *src, World *world) {
 	  hands.push_back(&(equipment->bodyParts[i]));
         }
       }
-      for (int i = 0; i < hands.size(); ++i) {
-	if (hands[i]->equippedEntity == nullptr) {
-          hands[i]->equippedEntity = inventory->inventory[itemIndex];
+      if (hands.size() > 0) {
+        for (int i = 0; i < hands.size(); ++i) {
+	  if (hands[i]->equippedEntity == nullptr) {
+            hands[i]->equippedEntity = inventory->inventory[itemIndex];
+            inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
+	    break;
+	  }
+        }
+      }
+    }
+    if (inventory->inventory[itemIndex]->HasComponent(EC_ARMOR_ID)) {
+      std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
+      std::shared_ptr<Armor> armor_c = dynamic_pointer_cast<Armor>(inventory->inventory[itemIndex]->GetComponent(EC_ARMOR_ID));
+      for (int i = 0; i < equipment->bodyParts.size(); ++i) {
+	if (equipment->bodyParts[i].bodyPartType == armor_c->bodyPartType) {
+          equipment->bodyParts[i].equippedEntity = inventory->inventory[itemIndex];
           inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
-	  break;
-	}
+        }
       }
     }
     if (inventory->inventory[itemIndex]->HasComponent(EC_POTION_ID)) {

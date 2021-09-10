@@ -27,7 +27,7 @@ void EquipmentMenu::CustomDraw(Game* game) {
       equipmentName = dynamic_pointer_cast<Name>(bodyPart.equippedEntity->GetComponent(EC_NAME_ID))->name;
     }
     PrintGraphic(xpos, ypos + 1 + i * 2, {equipment->bodyParts[i].name + ":", fg_color, "black"});
-    PrintGraphic(xpos, ypos + 1 + i * 2 + 1, {equipmentName + ":", fg_color, "black"});
+    PrintGraphic(xpos, ypos + 1 + i * 2 + 1, {equipmentName, fg_color, "black"});
   }
 }
 
