@@ -54,7 +54,7 @@ std::vector<Point> GetDownStairPoints(Map *map) {
   std::vector<Point> walkable_points;
   for (int i = 0; i < map->width; i++)
     for (int j = 0; j < map->height; j++) {
-      if (map->GetTile(i,j)->walkable && map->GetEntity(i,j) == nullptr)
+      if (map->GetTile(i,j)->walkable && map->GetEntity(i,j) == -1)
         walkable_points.push_back({i, j});
     }
   return walkable_points;
@@ -175,6 +175,7 @@ void placeEntities(int world_x, int world_y, World *world) {
 							(uint16_t)(i+1), (uint16_t)(world_x), (uint16_t)(world_y) })));
       ent.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
       world->AddEntity(ent);
+      world->entities.back().Id = world->entities.size()-1;
     }
   }
 }
@@ -200,6 +201,7 @@ void placeItems(int world_x, int world_y, World *world) {
       ent.AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(ent_pos.x), (uint16_t)(ent_pos.y), 
 							(uint16_t)(i+1), (uint16_t)(world_x), (uint16_t)(world_y) })));
       world->AddEntity(ent);
+      world->entities.back().Id = world->entities.size()-1;
     }
   }
 }

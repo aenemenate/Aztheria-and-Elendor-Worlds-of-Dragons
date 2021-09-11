@@ -70,7 +70,9 @@ void StatusPanel::Draw(Game *game, int map_startx, int map_starty) {
     Block *block = game->world->GetArea(pos.wx, pos.wy)->GetBlock(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z);
     if (block->explored) {
       Tile  *tile  = game->world->GetArea(pos.wx, pos.wy)->GetTile(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z);
-      Entity *ent = game->world->GetArea(pos.wx, pos.wy)->GetEntity(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z);
+      Entity *ent = nullptr;
+      if (game->world->GetArea(pos.wx, pos.wy)->GetEntity(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z) != -1)
+        ent = &(game->world->entities[game->world->GetArea(pos.wx, pos.wy)->GetEntity(TerminalGetMouseX() + map_startx, TerminalGetMouseY() + map_starty, pos.z)]);
       std::string block_name = block->name;
       if (block_name == "air") 
 	block_name = tile->name;

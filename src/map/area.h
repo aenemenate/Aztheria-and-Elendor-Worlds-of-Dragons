@@ -42,7 +42,7 @@ class Area : public Map {
     ar & humidity;
     ar & terrain_type;
     ar & biome_type;
-    ent_map.resize(width*height, nullptr);
+    ent_map.resize(width*height, -1);
   }
   vector<float> height_map;
   vector<Dungeon> dungeon_floors;
@@ -66,8 +66,8 @@ public:
   void SetTile(int,int,int,Tile);
   Block *GetBlock(int,int,int);
   void SetBlock(int,int,int,Block);
-  Entity *GetEntity(int,int,int);
-  void SetEntity(int,int,int,Entity*);
+  int GetEntity(int,int,int);
+  void SetEntity(int,int,int,int);
 /* Get/set the height map value */
   float GetHeightMap(int,int);
   void SetHeightMap(int,int,float);

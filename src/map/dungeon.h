@@ -11,7 +11,7 @@ class Dungeon : public Map {
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version) {
     ar & boost::serialization::base_object<Map>(*this);
-    ent_map.resize(width*height, nullptr);
+    ent_map.resize(width*height, -1);
   }
 public:
   Dungeon() : Map() {}

@@ -14,7 +14,7 @@ void InventoryMenu::CustomDraw(Game* game) {
   selectedIndex = -1;
   for (int i = 0; i < inventory->inventory.size(); ++i) {
     std::string fg_color = "white";
-    std::shared_ptr<Name> item_name = dynamic_pointer_cast<Name>(inventory->inventory[i]->GetComponent(EC_NAME_ID));
+    std::shared_ptr<Name> item_name = dynamic_pointer_cast<Name>(game->world->entities[inventory->inventory[i]].GetComponent(EC_NAME_ID));
     if (TerminalGetMouseX() >= xpos && TerminalGetMouseX() < xpos + width && TerminalGetMouseY() == ypos + 1 + i) {
         fg_color = "green";
 	selectedIndex = i;

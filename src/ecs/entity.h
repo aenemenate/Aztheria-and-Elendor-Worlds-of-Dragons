@@ -20,13 +20,16 @@ class Entity {
   void serialize(Archive & ar, const unsigned int version) {
     RegisterEntityComponentTypes(ar);
     ar & components;
+    ar & Id;
   }
 public:
+  int Id;
   std::vector<std::shared_ptr<EntityComponent>> components;
   std::vector<std::shared_ptr<EntityAction>> actions;
 
   /* Initializer, for boost serialization */
   Entity() {}
+  Entity(int Id) : Id(Id) {}
 
   /* Check if the entity has a given component, based on Component ID. */
   bool HasComponent(int component_type) { for (auto c : components) if (c->ID == component_type) return true; return false; }

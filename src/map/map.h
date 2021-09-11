@@ -20,10 +20,10 @@ class Map {
     ar & tiles;
     ar & blocks;
     ar & name;
-    ent_map.resize(width*height, nullptr);
+    ent_map.resize(width*height, -1);
   }
 protected:
-  vector<Entity*> ent_map;
+  vector<int> ent_map;
   vector<Tile> tiles;
   vector<Block> blocks;
 public:
@@ -38,9 +38,9 @@ public:
 /* Returns true if the point is within the limit of the map */
   bool PointWithinBounds(int,int);
 /* Get the entity at the specified x and y. !note: this can return null (indicates no entity at given position) */
-  Entity *GetEntity(int,int); 
+  int GetEntity(int,int); 
 /* Set the entity at the specified x and y */
-  void SetEntity(int,int,Entity*);
+  void SetEntity(int,int,int);
 /* Get/set the tile/block at the specified x and y */
   Tile *GetTile(int,int);
   void SetTile(int,int,Tile);

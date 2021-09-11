@@ -316,9 +316,9 @@ class Inventory : public EntityComponent {
     ar & inventory;
   }
 public:
-  std::vector<Entity*> inventory;
+  std::vector<int> inventory;
   Inventory() : EntityComponent(EC_INVENTORY_ID, EC_PRIO_NULL) {}
-  Inventory(std::vector<Entity*> inventory) : inventory(inventory), EntityComponent(EC_INVENTORY_ID, EC_PRIO_NULL) {}
+  Inventory(std::vector<int> inventory) : inventory(inventory), EntityComponent(EC_INVENTORY_ID, EC_PRIO_NULL) {}
   void Tick(Entity *src, Game *game) { }
   inline std::shared_ptr<EntityComponent> GetCopy() { return std::make_shared<Inventory>(Inventory(inventory)); }
 };
@@ -343,11 +343,11 @@ class BodyPart {
   }
 public:
   BodyPartType bodyPartType;
-  Entity* equippedEntity;
+  int equippedEntity;
   std::string name;
   BodyPart(BodyPartType _bodyPartType, std::string _name) {
     bodyPartType = _bodyPartType;
-    equippedEntity = nullptr;
+    equippedEntity = -1;
     name = _name;
   }
   BodyPart() {}

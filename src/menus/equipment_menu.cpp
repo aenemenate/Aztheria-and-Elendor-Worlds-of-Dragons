@@ -21,10 +21,10 @@ void EquipmentMenu::CustomDraw(Game* game) {
     }
     BodyPart bodyPart = equipment->bodyParts[i];
     std::string equipmentName;
-    if (bodyPart.equippedEntity == nullptr)
+    if (bodyPart.equippedEntity == -1)
       equipmentName = "empty";
     else {
-      equipmentName = dynamic_pointer_cast<Name>(bodyPart.equippedEntity->GetComponent(EC_NAME_ID))->name;
+      equipmentName = dynamic_pointer_cast<Name>(game->world->entities[bodyPart.equippedEntity].GetComponent(EC_NAME_ID))->name;
     }
     PrintGraphic(xpos, ypos + 1 + i * 2, {equipment->bodyParts[i].name + ":", fg_color, "black"});
     PrintGraphic(xpos, ypos + 1 + i * 2 + 1, {equipmentName, fg_color, "black"});

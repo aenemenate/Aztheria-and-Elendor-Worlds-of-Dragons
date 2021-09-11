@@ -94,7 +94,7 @@ Graphic GetAreaGraphic(Area *area) {
 
 void Area::ClearEnts() {
   ent_map.clear();
-  ent_map.resize(width * height, nullptr);
+  ent_map.resize(width * height, -1);
   for (int i = 0; i < dungeon_floors.size(); ++i) {
     dungeon_floors[i].ClearEnts();
   }
@@ -138,22 +138,22 @@ void Area::SetBlock(int x, int y, int z, Block block) {
   }
 }
 
-Entity *Area::GetEntity(int x, int y, int z) {
+int Area::GetEntity(int x, int y, int z) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
       return ent_map[x * height + y];
     else if (z > 0 && z <= dungeon_floors.size())
       return dungeon_floors[z-1].GetEntity(x, y);
   }
-  return nullptr;
+  return -1;
 }
 
-void Area::SetEntity(int x, int y, int z, Entity *entity) {
+void Area::SetEntity(int x, int y, int z, int entityId) {
   if (PointWithinBounds(x, y)) {
     if (z == 0)
-      ent_map[x*height+y] = (entity != nullptr) ? entity : nullptr;
+      ent_map[x*height+y] = (entityId != -1) ? entityId : -1;
     else
-      dungeon_floors[z-1].SetEntity(x, y, entity);
+      dungeon_floors[z-1].SetEntity(x, y, entityId);
   }
 }
 

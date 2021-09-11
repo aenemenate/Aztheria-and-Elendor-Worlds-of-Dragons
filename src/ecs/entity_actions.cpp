@@ -9,14 +9,15 @@
 #include <string>
 #include <iostream>
 
-std::shared_ptr<MeleeWeapon> GetWeapon(Entity *src) {
+std::shared_ptr<MeleeWeapon> GetWeapon(Entity *src, World *world) {
   if (src->HasComponent(EC_EQUIPMENT_ID)) {
     std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
     std::vector<std::shared_ptr<MeleeWeapon>> weapons;
     for (int i = 0; i < equipment->bodyParts.size(); ++i) {
-      if (equipment->bodyParts[i].equippedEntity != nullptr) {
-	if (equipment->bodyParts[i].equippedEntity->HasComponent(EC_MWEAPON_ID)) {
-          weapons.push_back(dynamic_pointer_cast<MeleeWeapon>(equipment->bodyParts[i].equippedEntity->GetComponent(EC_MWEAPON_ID)));
+      if (equipment->bodyParts[i].equippedEntity != -1) {
+	Entity *equipped = &(world->entities[equipment->bodyParts[i].equippedEntity]);
+	if (equipped->HasComponent(EC_MWEAPON_ID)) {
+          weapons.push_back(dynamic_pointer_cast<MeleeWeapon>(equipped->GetComponent(EC_MWEAPON_ID)));
         }
       }
     }
@@ -43,15 +44,16 @@ Skill GetArmorSkill(std::shared_ptr<Armor> armorPiece) {
   return LightArmor;
 }
 
-int GetArmorValue(Entity *src) {
+int GetArmorValue(Entity *src, World *world) {
   int armorValue = 0;
   if (src->HasComponent(EC_EQUIPMENT_ID)) {
     std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
     std::shared_ptr<Stats> stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
     for (int i = 0; i < equipment->bodyParts.size(); ++i) {
-      if (equipment->bodyParts[i].equippedEntity != nullptr) {
-	if (equipment->bodyParts[i].equippedEntity->HasComponent(EC_ARMOR_ID)) {
-          std::shared_ptr<Armor> armorPiece = dynamic_pointer_cast<Armor>(equipment->bodyParts[i].equippedEntity->GetComponent(EC_ARMOR_ID));
+      if (equipment->bodyParts[i].equippedEntity != -1) {
+	Entity *equipped = &(world->entities[equipment->bodyParts[i].equippedEntity]);
+	if (equipped->HasComponent(EC_ARMOR_ID)) {
+          std::shared_ptr<Armor> armorPiece = dynamic_pointer_cast<Armor>(equipped->GetComponent(EC_ARMOR_ID));
           switch (armorPiece->bodyPartType) {
 	    case (PHead):
               armorValue += .33 * GetImpactYields()[armorPiece->material] * stats->skills[GetArmorSkill(armorPiece)] / 30;
@@ -131,7 +133,7 @@ int Attack(Entity *src, Entity *def, World *world) {
     std::shared_ptr<Name> def_name = dynamic_pointer_cast<Name>(def->GetComponent(EC_NAME_ID));
     if (def_stats->resources[Health] <= 0)
       return 0;
-    std::shared_ptr<MeleeWeapon> weapon = GetWeapon(src);
+    std::shared_ptr<MeleeWeapon> weapon = GetWeapon(src, world);
     bool attackLanded = rand()%100 <= (GetWeaponSkill(src, weapon) + src_stats->attributes[Speed] / 5 + src_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * src_stats->resources[Stamina] / src_stats->resources[MaxStamina]);
     if (attackLanded) {
@@ -140,7 +142,7 @@ int Attack(Entity *src, Entity *def, World *world) {
       if (!attackEvaded) {
         int weaponDamage = GetWeaponDamage(weapon);
         int damage = weaponDamage * ((double)(src_stats->attributes[Strength] + 50) / 100.0);
-        damage /= (1 + GetArmorValue(def) / damage) > 4 ? 4 : 1 + GetArmorValue(def) / damage;
+        damage /= (1 + GetArmorValue(def, world) / damage) > 4 ? 4 : 1 + GetArmorValue(def, world) / damage;
         message = src_name->name + " attacked " + def_name->name + " for " + std::to_string(damage) + " points.";
 	def_stats->resources[Health] -= damage;
         if (def_stats->resources[Health] <= 0) {
@@ -167,15 +169,15 @@ int Attack(Entity *src, Entity *def, World *world) {
     return 0;
 }
 
-int GetItem(Entity *src, Position position, Entity *item, World *world) {
+int GetItem(Entity *src, Position position, int item, World *world) {
   std::string message;
   if (src->HasComponent(EC_INVENTORY_ID)) {
     std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
     inventory->inventory.push_back(item);
     Area *curmap = world->GetArea(position.wx,position.wy);
-    curmap->SetEntity(position.x, position.y, position.z, nullptr);
+    curmap->SetEntity(position.x, position.y, position.z, -1);
     std::shared_ptr<Name> src_name = dynamic_pointer_cast<Name>(src->GetComponent(EC_NAME_ID));
-    std::shared_ptr<Name> item_name = dynamic_pointer_cast<Name>(item->GetComponent(EC_NAME_ID));
+    std::shared_ptr<Name> item_name = dynamic_pointer_cast<Name>(world->entities[item].GetComponent(EC_NAME_ID));
     message = src_name->name + " picked up " + item_name->name + ".";
     world->msgConsole.PushLine(message);
     return 1000;
@@ -231,12 +233,13 @@ int Move::Do(Entity *src, World *world) {
       if (new_z >= 0 && new_z <= curmap->GetDungeonFloors()->size()
       && !curmap->GetTile(new_x, new_y, new_z)->walkable
       || curmap->GetBlock(new_x, new_y, new_z)->solid
-      || curmap->GetEntity(new_x, new_y, new_z) != nullptr) {
-        if (curmap->GetEntity(new_x, new_y, new_z) != nullptr) {
-          if (curmap->GetEntity(new_x, new_y, new_z)->HasComponent(EC_PICKABLE_ID))
+      || curmap->GetEntity(new_x, new_y, new_z) != -1) {
+        if (curmap->GetEntity(new_x, new_y, new_z) != -1) {
+          Entity *entity = &(world->entities[curmap->GetEntity(new_x, new_y, new_z)]);
+          if (entity->HasComponent(EC_PICKABLE_ID))
 	    cost = GetItem(src, {new_x, new_y, new_z, new_wx, new_wy}, curmap->GetEntity(new_x, new_y, new_z), world);
 	  else
-            cost = Attack(src, curmap->GetEntity(new_x, new_y, new_z), world);
+            cost = Attack(src, entity, world);
         }
         new_x = pos->x;
         new_y = pos->y;
@@ -252,12 +255,13 @@ int Move::Do(Entity *src, World *world) {
       Area *newmap = world->GetArea(new_wx, new_wy);
       if (!newmap->GetTile(new_x,new_y,new_z)->walkable
       ||  newmap->GetBlock(new_x,new_y,new_z)->solid
-      ||  newmap->GetEntity(new_x, new_y, new_z) != nullptr) {
-        if (newmap->GetEntity(new_x, new_y, new_z) != nullptr) {
-          if (newmap->GetEntity(new_x, new_y, new_z)->HasComponent(EC_PICKABLE_ID))
+      ||  newmap->GetEntity(new_x, new_y, new_z) != -1) {
+        if (newmap->GetEntity(new_x, new_y, new_z) != -1) {
+          Entity *entity = &(world->entities[newmap->GetEntity(new_x, new_y, new_z)]);
+          if (entity->HasComponent(EC_PICKABLE_ID))
 	    cost = GetItem(src, {new_x, new_y, new_z, new_wx, new_wy}, newmap->GetEntity(new_x, new_y, new_z), world);
 	  else
-            cost = Attack(src, newmap->GetEntity(new_x, new_y, new_z), world);
+            cost = Attack(src, entity, world);
         }
 	new_x = pos->x;
 	new_y = pos->y;
@@ -267,8 +271,8 @@ int Move::Do(Entity *src, World *world) {
       }
     }
     if (new_x != pos->x || new_y != pos->y || new_z != pos->z || new_wx != pos->wx || new_wy != pos->wy) {
-      world->GetArea(pos->wx, pos->wy)->SetEntity(pos->x,pos->y,pos->z,nullptr);
-      world->GetArea(new_wx, new_wy)->SetEntity(new_x,new_y,new_z,src);
+      world->GetArea(pos->wx, pos->wy)->SetEntity(pos->x,pos->y,pos->z,-1);
+      world->GetArea(new_wx, new_wy)->SetEntity(new_x,new_y,new_z,src->Id);
       cost = 1000;
     }
 // set the new positions
@@ -299,7 +303,8 @@ int ActivateBlock::Do(Entity *src, World *world) {
 int UseItem::Do(Entity *src, World *world) {
   std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
   if (itemIndex < inventory->inventory.size()) {
-    if (inventory->inventory[itemIndex]->HasComponent(EC_MWEAPON_ID)) {
+    Entity *item = &(world->entities[inventory->inventory[itemIndex]]);
+    if (item->HasComponent(EC_MWEAPON_ID)) {
       // equip weapon
       std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
       std::vector<BodyPart*> hands;
@@ -310,7 +315,7 @@ int UseItem::Do(Entity *src, World *world) {
       }
       if (hands.size() > 0) {
         for (int i = 0; i < hands.size(); ++i) {
-	  if (hands[i]->equippedEntity == nullptr) {
+	  if (hands[i]->equippedEntity == -1) {
             hands[i]->equippedEntity = inventory->inventory[itemIndex];
             inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
 	    break;
@@ -318,18 +323,20 @@ int UseItem::Do(Entity *src, World *world) {
         }
       }
     }
-    if (inventory->inventory[itemIndex]->HasComponent(EC_ARMOR_ID)) {
+    if (item->HasComponent(EC_ARMOR_ID)) {
       std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
-      std::shared_ptr<Armor> armor_c = dynamic_pointer_cast<Armor>(inventory->inventory[itemIndex]->GetComponent(EC_ARMOR_ID));
+      std::shared_ptr<Armor> armor_c = dynamic_pointer_cast<Armor>(item->GetComponent(EC_ARMOR_ID));
       for (int i = 0; i < equipment->bodyParts.size(); ++i) {
 	if (equipment->bodyParts[i].bodyPartType == armor_c->bodyPartType) {
-          equipment->bodyParts[i].equippedEntity = inventory->inventory[itemIndex];
-          inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
+	  if (equipment->bodyParts[i].equippedEntity == -1) {
+            equipment->bodyParts[i].equippedEntity = inventory->inventory[itemIndex];
+            inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
+	  }
         }
       }
     }
-    if (inventory->inventory[itemIndex]->HasComponent(EC_POTION_ID)) {
-      std::shared_ptr<Potion> potion_c = dynamic_pointer_cast<Potion>(inventory->inventory[itemIndex]->GetComponent(EC_POTION_ID));
+    if (item->HasComponent(EC_POTION_ID)) {
+      std::shared_ptr<Potion> potion_c = dynamic_pointer_cast<Potion>(item->GetComponent(EC_POTION_ID));
       std::shared_ptr<Stats> src_stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
       src_stats->resources[Health]  += potion_c->healthValue;
       src_stats->resources[Magicka] += potion_c->magickaValue;
@@ -350,9 +357,9 @@ int UseItem::Do(Entity *src, World *world) {
 int Unequip::Do(Entity *src, World *world) {
   std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
   std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
-  if (equipment->bodyParts[itemIndex].equippedEntity != nullptr) {
+  if (equipment->bodyParts[itemIndex].equippedEntity != -1) {
     inventory->inventory.push_back(equipment->bodyParts[itemIndex].equippedEntity);
-    equipment->bodyParts[itemIndex].equippedEntity = nullptr;
+    equipment->bodyParts[itemIndex].equippedEntity = -1;
   }
   return 0;
 }

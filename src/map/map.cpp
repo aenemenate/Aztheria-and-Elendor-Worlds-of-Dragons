@@ -18,13 +18,13 @@ Map::Map(uint16_t width, uint16_t height) {
   this->name = "";
   tiles.resize(width*height);
   blocks.resize(width*height);
-  ent_map.resize(width*height, nullptr);
+  ent_map.resize(width*height, -1);
 }
 
 bool Map::PointWithinBounds(int x, int y) { return (x >= 0 && y >= 0 && x < width && y < height); }
 
-Entity *Map::GetEntity(int x, int y) { return PointWithinBounds(x, y) ? ent_map[x*height+y] : nullptr; }
-void Map::SetEntity(int x, int y, Entity *entity) { if (PointWithinBounds(x, y)) ent_map[x*height+y] = (entity != nullptr) ? entity : nullptr; }
+int Map::GetEntity(int x, int y) { return PointWithinBounds(x, y) ? ent_map[x*height+y] : -1; }
+void Map::SetEntity(int x, int y, int entId) { if (PointWithinBounds(x, y)) ent_map[x*height+y] = entId; }
 
 Tile *Map::GetTile(int x, int y) { return PointWithinBounds(x, y) ? &(tiles[x*width+y]) : nullptr; }
 void Map::SetTile(int x, int y, Tile tile) { if (PointWithinBounds(x, y)) tiles[x*height+y] = tile; }

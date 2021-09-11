@@ -111,7 +111,7 @@ void PlayState::HandleEvents(Game *game) {
       else if (TerminalGetMouseX()+startx == plyr_pos.x + 1 || TerminalGetMouseX()+startx == plyr_pos.x - 1
               || TerminalGetMouseY()+starty == plyr_pos.y + 1 || TerminalGetMouseY()+starty == plyr_pos.y - 1) {
 	if (game->world->GetArea(plyr_pos.wx, plyr_pos.wy)->GetEntity(
-		TerminalGetMouseX()+startx, TerminalGetMouseY()+starty, plyr_pos.z) != nullptr) {
+		TerminalGetMouseX()+startx, TerminalGetMouseY()+starty, plyr_pos.z) != -1) {
           game->world->entities[0].actions.push_back(std::shared_ptr<EntityAction>(new Move(TerminalGetMouseX()+startx - plyr_pos.x,
 											    TerminalGetMouseY()+starty - plyr_pos.y,
 											    0)));
@@ -217,7 +217,9 @@ void PlayState::Draw(Game *game) {
     &&  point.y - starty >= 0) {
       Tile *tile = area->GetTile(point.x, point.y, point.z);
       Block *block = area->GetBlock(point.x, point.y, point.z);
-      Entity *entity = area->GetEntity(point.x, point.y, point.z);
+      Entity* entity = nullptr;
+      if (area->GetEntity(point.x, point.y, point.z) != -1)
+        entity = &(game->world->entities[area->GetEntity(point.x, point.y, point.z)]);
       if (entity == nullptr) {
         if (block->gr.ch != " ") {
 	  std::string fg_color = ((tile->isSnowy) ? "white" : block->gr.fgcolor);
@@ -270,7 +272,7 @@ void PlayState::Draw(Game *game) {
     if (((TerminalGetMouseX() == plyr_sc_pos.x - 1 || TerminalGetMouseX() == plyr_sc_pos.x + 1 || TerminalGetMouseX() == plyr_sc_pos.x)
     && (TerminalGetMouseY() == plyr_sc_pos.y - 1 || TerminalGetMouseY() == plyr_sc_pos.y + 1 ||  TerminalGetMouseY() == plyr_sc_pos.y)
     && !(TerminalGetMouseX() == plyr_sc_pos.x && TerminalGetMouseY() == plyr_sc_pos.y))
-    && area->GetEntity(TerminalGetMouseX()+startx, TerminalGetMouseY()+starty,plyr_z) != nullptr) {
+    && area->GetEntity(TerminalGetMouseX()+startx, TerminalGetMouseY()+starty,plyr_z) != -1) {
       PrintGraphic(TerminalGetMouseX(), TerminalGetMouseY(), {"", "", "blue"});
     }
   }

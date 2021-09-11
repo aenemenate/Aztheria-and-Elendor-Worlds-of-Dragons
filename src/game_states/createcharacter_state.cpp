@@ -170,7 +170,7 @@ void CreateCharacter(Game* game) {
   if (numAttributesSelected != 3 || numMajorSkillsSelected != 4 || numMinorSkillsSelected != 4 || nameBox.text == "")
     return;
   game->world = new World(1,1,1,1,1);
-  Entity player;
+  Entity player = Entity(0);
   player.AddComponent(std::make_shared<Renderable>(Renderable({"@", "yellow", "black"})));
   player.AddComponent(std::make_shared<Name>(Name(std::string{nameBox.text})));
   player.AddComponent(std::make_shared<Fov>(Fov(28)));

@@ -82,7 +82,7 @@ void World::SetEnts() {
     if (entity->HasComponent(EC_POSITION_ID)) {
       Position pos = (dynamic_pointer_cast<EntPosition>(entity->GetComponent(EC_POSITION_ID)))->position;
       int map_idx = pos.wx * width + pos.wy;
-      areas[map_idx].SetEntity(pos.x, pos.y, pos.z, entity);
+      areas[map_idx].SetEntity(pos.x, pos.y, pos.z, e);
     }
   }
 }

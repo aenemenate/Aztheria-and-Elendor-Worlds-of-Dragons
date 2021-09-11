@@ -27,7 +27,7 @@ std::vector<Point> GetWalkablePoints(Map *map) {
   std::vector<Point> walkable_points;
   for (int i = 0; i < map->width; i++)
     for (int j = 0; j < map->height; j++) {
-      if (map->GetTile(i,j)->walkable && map->GetEntity(i,j) == nullptr)
+      if (map->GetTile(i,j)->walkable && map->GetEntity(i,j) == -1)
         walkable_points.push_back({i, j});
     }
   return walkable_points;
@@ -146,6 +146,7 @@ void WorldGen::PlaceEntities(World* world) {
       ent.AddComponent(std::make_shared<EntPosition>(EntPosition({ (uint16_t)(ent_pos.x), (uint16_t)(ent_pos.y), 0, world_x, world_y })));
       ent.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
       world->AddEntity(ent);
+      world->entities.back().Id = world->entities.size() - 1;
     }
   }
 }

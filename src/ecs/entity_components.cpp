@@ -22,8 +22,8 @@ void Fov::Tick(Entity *src, Game *game) {
           map_ptr->GetTile(temp_pos->x, temp_pos->y, temp_pos->z)->explored = true;
           map_ptr->GetBlock(temp_pos->x, temp_pos->y, temp_pos->z)->explored = true;
 	}
-        if (map_ptr->GetEntity(temp_pos->x,temp_pos->y, pos->z) != nullptr) {
-	  visibleEntities.push_back(*(map_ptr->GetEntity(temp_pos->x,temp_pos->y, pos->z)));
+        if (map_ptr->GetEntity(temp_pos->x,temp_pos->y, pos->z) != -1) {
+	  visibleEntities.push_back(world->entities[map_ptr->GetEntity(temp_pos->x,temp_pos->y, pos->z)]);
 	} 
       }
   }
