@@ -159,10 +159,10 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
   binomial_distribution<int> distribution(INT_MAX - 1,.5);
   int dice_roll = distribution(generator);
 // initialize the world with the seed
-  Entity player = game->world->entities[0];
+  std::vector<Entity> entities = game->world->entities;
   game->CleanupResources();
   game->world = new World(size,size,156,156,slot);
-  game->world->AddEntity(player);
+  game->world->entities = entities;
   game->world->seed = dice_roll;
 // generate terrain and determine temperature
   for (int i = 0; i < game->world->width; i++)
@@ -179,4 +179,5 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
   GeneratePlants(game->world);                 // generates plants
   PlaceEntities(game->world);
   DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
+  game->world->SetEnts();
 }

@@ -8,6 +8,7 @@
 #include "../input_funcs.h"
 #include "../ecs/entity.h"
 #include "../world/world.h"
+#include "../world_gen/entitygen_helper.h"
 
 #include <algorithm>
 #include <sstream>
@@ -204,6 +205,7 @@ void CreateCharacter(Game* game) {
   player.AddComponent(std::make_shared<Stats>(Stats(uClass)));
   player.AddComponent(uClass);
   game->world->AddEntity(player);
+  EquipEntity(0, game->world);
   game->PushState(CreateWorldState::Instance());
   game->Update();
 }

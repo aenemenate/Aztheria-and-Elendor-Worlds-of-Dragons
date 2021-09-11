@@ -7,6 +7,7 @@
 #include "../pathfinder.h"
 #include "../xml/xml_parser.h"
 #include "../materials.h"
+#include "entitygen_helper.h"
 
 #include <cmath>
 #include <chrono>
@@ -58,26 +59,6 @@ std::vector<Point> GetDownStairPoints(Map *map) {
         walkable_points.push_back({i, j});
     }
   return walkable_points;
-}
-
-Entity MakeWeaponOfType(MWeaponType weaponType, Material material) {
-  Entity entity = Entity();
-  entity.AddComponent(std::make_shared<Renderable>(Renderable({"/", GetMaterialColors()[material], "black"})));
-  entity.AddComponent(std::make_shared<Name>(Name(std::string{GetMaterialNames()[material] + " " + NameFromWeaponType(weaponType)})));
-  entity.AddComponent(std::make_shared<MeleeWeapon>(MeleeWeapon(material, weaponType)));
-  entity.AddComponent(std::make_shared<NotSolid>(NotSolid()));
-  entity.AddComponent(std::make_shared<Pickable>(Pickable()));
-  return entity;
-}
-
-Entity MakeArmorOfType(BodyPartType bodyPartType, Material material) {
-  Entity entity = Entity();
-  entity.AddComponent(std::make_shared<Renderable>(Renderable({"$", GetMaterialColors()[material], "black"})));
-  entity.AddComponent(std::make_shared<Name>(Name(std::string{GetMaterialNames()[material] + " " + ArmorNameFromInfo(bodyPartType, material)})));
-  entity.AddComponent(std::make_shared<Armor>(Armor(material, bodyPartType)));
-  entity.AddComponent(std::make_shared<NotSolid>(NotSolid()));
-  entity.AddComponent(std::make_shared<Pickable>(Pickable()));
-  return entity;
 }
 
 std::vector<Entity> GetPotions() {
@@ -176,6 +157,7 @@ void placeEntities(int world_x, int world_y, World *world) {
       ent.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(world->time))));
       world->AddEntity(ent);
       world->entities.back().Id = world->entities.size()-1;
+      EquipEntity(world->entities.size()-1, world);
     }
   }
 }
