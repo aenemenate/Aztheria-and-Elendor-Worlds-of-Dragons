@@ -111,19 +111,20 @@ int GetWeaponStaminaCost(std::shared_ptr<MeleeWeapon> weapon) {
   if (weapon != nullptr) {
     switch (weapon->weaponType) {
       case(MAxe):
-        return 3 * GetShearYields()[weapon->material] * 1.5;
+        return 10 * 1.5;
       case(MSword):
-        return 3 * GetShearYields()[weapon->material];
+        return 10;
       case(MDagger):
-        return 3 * GetShearYields()[weapon->material] * .5;
+        return 10 * .5;
       case(MSpear):
-        return 3 * GetShearYields()[weapon->material] * 1.25;
+        return 10 * 1.25;
       case(MMace):
-        return 3 * GetImpactYields()[weapon->material] * 1.5;
+        return 10 * 1.5;
     }
   }
-  return 3 * GetImpactYields()[Bone];
+  return 10 * .5;
 }
+
 int Attack(Entity *src, Entity *def, World *world) {
   std::string message;
   srand(time(0));
@@ -138,7 +139,7 @@ int Attack(Entity *src, Entity *def, World *world) {
     bool attackLanded = rand()%100 <= (GetWeaponSkill(src, weapon) + src_stats->attributes[Speed] / 5 + src_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * src_stats->resources[Stamina] / src_stats->resources[MaxStamina]);
     if (attackLanded) {
-      bool attackEvaded = rand()%100 <= (src_stats->attributes[Speed] / 5 + def_stats->attributes[Luck] / 10) 
+      bool attackEvaded = rand()%100 <= (def_stats->attributes[Speed] / 5 + def_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * def_stats->resources[Stamina] / def_stats->resources[MaxStamina]);
       if (!attackEvaded) {
         int weaponDamage = GetWeaponDamage(weapon);
@@ -286,6 +287,8 @@ int Move::Do(Entity *src, World *world) {
   if (cost > 0) {
     std::shared_ptr<Stats> src_stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
     src_stats->resources[Stamina] += src_stats->resources[MaxStamina]/20;
+    if (src_stats->resources[Stamina] >= src_stats->resources[MaxStamina])
+      src_stats->resources[Stamina] = src_stats->resources[MaxStamina];
   }
   return cost;
 }

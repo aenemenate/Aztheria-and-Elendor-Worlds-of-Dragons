@@ -15,9 +15,7 @@ void MsgConsole::PrintLines() {
   if (start_line < 0) start_line = 0;
   for (int i = start_line; i < lines.size(); ++i) {
     if (rawtime - lines[i].rawtime <= 10) {
-      ChangeLayer(1);
       PrintGraphic(0, line, {lines[i].value, "191,255,255,255", ""});
-      ChangeLayer(0);
       ++line;
     }
   }
