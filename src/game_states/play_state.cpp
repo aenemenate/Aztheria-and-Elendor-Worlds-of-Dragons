@@ -12,12 +12,14 @@
 #include "../menus/map_menu.h"
 #include "../menus/inventory_menu.h"
 #include "../menus/equipment_menu.h"
+#include "../menus/character_menu.h"
 
 #include <algorithm>
 
 MapMenu map_menu;
 InventoryMenu inventory_menu;
 EquipmentMenu equipment_menu;
+CharacterMenu character_menu;
 StatusPanel status_panel;
 vector<Button> pmenu_buttons;
 int menu_caret = 0;
@@ -48,6 +50,9 @@ void PlayState::Init(Game *game) {
   equipment_menu = EquipmentMenu(1, 28, 
 				 20, 12);
   equipment_menu.SetShow(false);
+  character_menu = CharacterMenu(23, 0, 
+				 20, 34);
+  character_menu.SetShow(false);
 }
 
 void PlayState::Cleanup() {
@@ -65,7 +70,7 @@ void PlayState::HandleEvents(Game *game) {
   if (TerminalWasResized())
     this->Init(game);
   // if none of menus are showing
-  if (!paused && !map_menu.GetShow() && !inventory_menu.GetShow() && !equipment_menu.GetShow()) {
+  if (!paused && !map_menu.GetShow() && !inventory_menu.GetShow() && !equipment_menu.GetShow() && !character_menu.GetShow()) {
     switch (TerminalGetKey()) {
       case MTK_M:
         map_menu.SetShow(true);
@@ -75,6 +80,10 @@ void PlayState::HandleEvents(Game *game) {
         break;
       case MTK_E:
         equipment_menu.SetShow(true);
+        break;
+      case MTK_C:
+	CharacterMenu::SetSelectedEntity(0);
+        character_menu.SetShow(true);
         break;
       case MTK_ESCAPE:
         paused = true;
@@ -136,12 +145,13 @@ void PlayState::HandleEvents(Game *game) {
         paused = false;
         break;
     }
-  else if (map_menu.GetShow() || inventory_menu.GetShow() || equipment_menu.GetShow()) {
+  else if (map_menu.GetShow() || inventory_menu.GetShow() || equipment_menu.GetShow() || character_menu.GetShow()) {
     switch (TerminalGetKey()) {
       case MTK_ESCAPE:
         inventory_menu.SetShow(false);
         map_menu.SetShow(false);
         equipment_menu.SetShow(false);
+        character_menu.SetShow(false);
         break;
       case MTK_M:
         map_menu.SetShow(!map_menu.GetShow());
@@ -152,12 +162,16 @@ void PlayState::HandleEvents(Game *game) {
       case MTK_E:
         equipment_menu.SetShow(!equipment_menu.GetShow());
 	break;
+      case MTK_C:
+	CharacterMenu::SetSelectedEntity(0);
+        character_menu.SetShow(!character_menu.GetShow());
+	break;
     }
   }
 }
 
 void PlayState::Update(Game *game) {
-  status_panel.Update(game);
+  status_panel.Update(game, &character_menu);
   if (paused)
     for (int b=0;b<pmenu_buttons.size();b++)
       pmenu_buttons[b].Update(game);
@@ -177,6 +191,7 @@ void PlayState::Update(Game *game) {
   map_menu.Update(game);
   inventory_menu.Update(game);
   equipment_menu.Update(game);
+  character_menu.Update(game);
 }
 
 void PlayState::Draw(Game *game) {
@@ -274,8 +289,9 @@ void PlayState::Draw(Game *game) {
       PrintGraphic(TerminalGetMouseX(), TerminalGetMouseY(), {"", "", "blue"});
     }
   }
+  game->world->msgConsole.PrintLines();
   map_menu.Draw(game);
   inventory_menu.Draw(game);
   equipment_menu.Draw(game);
-  game->world->msgConsole.PrintLines();
+  character_menu.Draw(game);
 }

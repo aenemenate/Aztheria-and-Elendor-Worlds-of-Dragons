@@ -179,5 +179,4 @@ void WorldGen::GenerateWorld(Game *game, int size, int slot) {
   GeneratePlants(game->world);                 // generates plants
   PlaceEntities(game->world);
   DungeonGen::PlaceDungeons(game->world);      // puts all dungeons on the world
-  game->world->SetEnts();
 }

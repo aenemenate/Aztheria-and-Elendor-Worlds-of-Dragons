@@ -243,6 +243,10 @@ Resource ResourceFromName(std::string name);
 
 Skill SkillFromName(std::string name);
 
+std::string NameFromAttribute(Attribute att);
+
+std::string NameFromSkill(Skill skill);
+
 class Class : public EntityComponent {
   friend class boost::serialization::access;
   template<class Archive>

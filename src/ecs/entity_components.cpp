@@ -192,6 +192,46 @@ Skill SkillFromName(std::string name) {
     return HeavyArmor;
 }
 
+std::string NameFromAttribute(Attribute att) {
+    if (att == Strength) return "Strength";
+    if (att == Intelligence) return "Intelligence";
+    if (att == Willpower) return "Willpower";
+    if (att == Dexterity) return "Dexterity";
+    if (att == Speed) return "Speed";
+    if (att == Endurance) return "Endurance";
+    if (att == Personality) return "Personality";
+    if (att == Luck) return "Luck";
+    return "";
+}
+
+std::string NameFromSkill(Skill skill) {
+    if (skill == HeavyArmor) return "Heavy Armor";
+    if (skill == Spear) return "Spears";
+    if (skill == Blocking) return "Blocking";
+    if (skill == Brawling) return "Brawling";
+    if (skill == Forging) return "Forging";
+    if (skill == HeavyWeapons) return "Heavy Weapons";
+    if (skill == LongBlades) return "Long Blades";
+    if (skill == LightArmor) return "Light Armor";
+    if (skill == Marksmanship) return "Marksmanship";
+    if (skill == Sneaking) return "Sneaking";
+    if (skill == Acrobatics) return "Acrobatics";
+    if (skill == Swimming) return "Swimming";
+    if (skill == ShortBlade) return "Short Blades";
+    if (skill == Unarmored) return "Unarmored";
+    if (skill == Illusion) return "Illusion";
+    if (skill == Mercantile) return "Mercantile";
+    if (skill == Speech) return "Speech";
+    if (skill == Alchemy) return "Alchemy";
+    if (skill == Conjuration) return "Conjuration";
+    if (skill == Enchant) return "Enchanting";
+    if (skill == Lockpick) return "Lockpick";
+    if (skill == Destruction) return "Destruction";
+    if (skill == Restoration) return "Restoration";
+    if (skill == Crafting) return "Crafting";
+    return "HeavyArmor";
+}
+
 
 void Stats::SetAttributes(std::shared_ptr<Class> uClass) {
   attributes[Strength] = 40;
