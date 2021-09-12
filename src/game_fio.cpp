@@ -29,7 +29,6 @@ void GameFIO::LoadWorld(Game *game, int slot) {
   catch(const std::exception& e) {
     std::cerr << e.what() << '\n';
   }
-  game->world->SetEnts();
 }
 
 void GameFIO::SaveWorld(Game *game) {

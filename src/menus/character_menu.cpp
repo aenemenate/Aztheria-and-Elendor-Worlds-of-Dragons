@@ -14,6 +14,11 @@ void CharacterMenu::CustomDraw(Game* game) {
   PrintGraphic(xpos, ypos+1,{"ATTRIBUTES:", "white", "black"});
   for (int i = 0; i < selStats->attributes.size(); ++i) {
     PrintGraphic(xpos, ypos + 2 + i, {NameFromAttribute((Attribute)i), "220,220,220", "black"});
+    for (int j = xpos + NameFromAttribute((Attribute)i).length(); 
+	 j < xpos + width - to_string(selStats->attributes[(Attribute)i]).length();
+	 ++j) {
+      PrintGraphic(j, ypos + 2 + i, {"_", "220,220,220", "black"});
+    }
     PrintGraphic(xpos+width-to_string(selStats->attributes[(Attribute)i]).length(), ypos + 2 + i, 
 		{to_string(selStats->attributes[(Attribute)i]), "220,220,220", "black"});
   }
@@ -25,6 +30,11 @@ void CharacterMenu::CustomDraw(Game* game) {
     if (std::count(selClass->minorSkills.begin(), selClass->minorSkills.end(), (Skill)i) > 0)
       bg_color = "dark yellow";
     PrintGraphic(xpos, ypos + 2 + selStats->attributes.size() + 1 + i, {NameFromSkill((Skill)i), "220,220,220", bg_color});
+    for (int j = xpos + NameFromSkill((Skill)i).length(); 
+	 j < xpos + width - to_string(selStats->skills[(Skill)i]).length();
+	 ++j) {
+      PrintGraphic(j, ypos + 2 + selStats->attributes.size() + 1 + i, {"_", "220,220,220", "black"});
+    }
     PrintGraphic(xpos+width-to_string(selStats->skills[(Skill)i]).length(), ypos + 2 + selStats->attributes.size() + 1 + i, 
 		{to_string(selStats->skills[(Skill)i]), "220,220,220", "black"});
   }

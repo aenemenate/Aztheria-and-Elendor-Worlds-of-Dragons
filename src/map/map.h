@@ -17,6 +17,7 @@ class Map {
   {
     ar & width;
     ar & height;
+    ar & ent_map;
     ar & tiles;
     ar & blocks;
     ar & name;
