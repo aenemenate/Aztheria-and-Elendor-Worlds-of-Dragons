@@ -15,7 +15,7 @@ void Fov::Tick(Entity *src, Game *game) {
     std::shared_ptr<EntPosition> pos_c = dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID));
     Position *pos = &(pos_c->position);
     Area* map_ptr = world->GetArea(pos->wx, pos->wy);
-    fov_circle(game->settings.get_fov_settings(), map_ptr, &visiblepoints, pos->x, pos->y, pos->z, viewradius);
+    fov_circle(game->settings.get_fov_settings(), map_ptr, world, &visiblepoints, pos->x, pos->y, pos->z, pos->wx, pos->wy, viewradius);
       for (int vp = 0; vp < visiblepoints.size(); vp++) {
         Position *temp_pos = &(visiblepoints[vp]);
 	if (src->HasComponent(EC_PLAYER_ID)) {

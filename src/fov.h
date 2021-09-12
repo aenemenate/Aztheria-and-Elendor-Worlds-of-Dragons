@@ -77,7 +77,7 @@ typedef /*@null@*/ unsigned *height_array_t;
 
 typedef struct {
     /** Opacity test callback. */
-    /*@null@*/ bool (*opaque)(void *map, int x, int y, int z);
+    /*@null@*/ bool (*opaque)(void *map, void *world, int x, int y, int z, int wx, int wy);
 
     /** Lighting callback to set lighting on a map tile. */
     /*@null@*/ void (*apply)(void *map, int x, int y, int z, int dx, int dy, void *src);
@@ -131,7 +131,7 @@ void fov_settings_init(fov_settings_type *settings);
  * circle with radius R by precalculating, which consumes more memory
  * at the rate of 4*(R+2) bytes per R used in calls to fov_circle. 
  * Each radius is only calculated once so that it can be used again. 
- * Use fov_free() to free this precalculated data's memory.
+ * Use fov_free() to free this precalculated data\'s memory.
  *
  * - FOV_SHAPE_CIRCLE: Limit the FOV to a circle with radius R by
  * calculating on-the-fly.
@@ -186,7 +186,7 @@ void fov_settings_set_opaque_apply(fov_settings_type *settings, fov_opaque_apply
  * \param settings Pointer to data structure containing settings.
  * \param f The function called to test whether a map tile is opaque.
  */
-void fov_settings_set_opacity_test_function(fov_settings_type *settings, bool (*f)(void *map, int x, int y, int z));
+void fov_settings_set_opacity_test_function(fov_settings_type *settings, bool (*f)(void *map, void *world, int x, int y, int z, int wx, int wy));
 
 /**
  * Set the function used to apply lighting to a map tile.
@@ -214,8 +214,8 @@ void fov_settings_free(fov_settings_type *settings);
  * \param source_y y-axis coordinate from which to start.
  * \param radius Euclidean distance from (x,y) after which to stop.
  */
-void fov_circle(fov_settings_type *settings, void *map, void *source,
-                int source_x, int source_y, int source_z, unsigned radius
+void fov_circle(fov_settings_type *settings, void *map, void *world, void *source,
+                int source_x, int source_y, int source_z, int source_wx, int source_wy, unsigned radius
 );
 
 /**

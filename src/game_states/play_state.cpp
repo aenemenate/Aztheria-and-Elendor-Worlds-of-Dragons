@@ -42,13 +42,11 @@ void PlayState::Init(Game *game) {
 			max(0, term_height/2 - (game->world->height/2+1)), 
 			game->world->width, game->world->height);
   map_menu.SetShow(false);
-  inventory_menu = InventoryMenu(max(0, term_width/2 - 20/2),
-			max(0, term_height/2 - (26/2+1)), 
-			20, 26);
+  inventory_menu = InventoryMenu(1, 0, 
+				 20, 26);
   inventory_menu.SetShow(false);
-  equipment_menu = EquipmentMenu(max(0, term_width/2 - 20/2),
-			max(0, term_height/2 - (12/2+1)), 
-			20, 12);
+  equipment_menu = EquipmentMenu(1, 28, 
+				 20, 12);
   equipment_menu.SetShow(false);
 }
 

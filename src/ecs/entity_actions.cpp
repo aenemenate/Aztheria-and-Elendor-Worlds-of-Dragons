@@ -126,6 +126,7 @@ int GetWeaponStaminaCost(std::shared_ptr<MeleeWeapon> weapon) {
 }
 int Attack(Entity *src, Entity *def, World *world) {
   std::string message;
+  srand(time(0));
   if (src->HasComponent(EC_STATS_ID) && def->HasComponent(EC_STATS_ID)) {
     std::shared_ptr<Stats> src_stats = dynamic_pointer_cast<Stats>(src->GetComponent(EC_STATS_ID));
     std::shared_ptr<Stats> def_stats = dynamic_pointer_cast<Stats>(def->GetComponent(EC_STATS_ID));

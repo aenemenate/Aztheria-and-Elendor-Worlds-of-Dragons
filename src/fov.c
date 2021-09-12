@@ -67,10 +67,13 @@ Slope from @ to X
 typedef struct {
     /*@observer@*/ fov_settings_type *settings;
     /*@observer@*/ void *map;
+    void *world;
     /*@observer@*/ void *source;
     int source_x;
     int source_y;
     int source_z;
+    int source_wx;
+    int source_wy;
     unsigned radius;
 } fov_private_data_type;
 /** \endcond */
@@ -103,8 +106,8 @@ void fov_settings_set_opaque_apply(fov_settings_type *settings,
 }
 
 void fov_settings_set_opacity_test_function(fov_settings_type *settings,
-                                            bool (*f)(void *map,
-                                                      int x, int y, int z)) {
+                                            bool (*f)(void *map, void *world,
+                                                      int x, int y, int z, int wx, int wy)) {
     settings->opaque = f;
 }
 
@@ -250,7 +253,7 @@ static float fov_slope(float dx, float dy) {
         for (dy = dy0; dy <= dy1; ++dy) {                                                       \
             ry = data->source_##ry signy dy;                                                    \
                                                                                                 \
-            if (settings->opaque(data->map, x, y, z)) {                                         \
+            if (settings->opaque(data->map, data->world, x, y, z, data->source_wx, data->source_wy)) {                                         \
                 if (settings->opaque_apply == FOV_OPAQUE_APPLY && (apply_edge || dy > 0)) {     \
                     settings->apply(data->map, x, y, z, x - data->source_x, y - data->source_y, data->source);         \
                 }                                                                               \
@@ -316,19 +319,25 @@ static void _fov_circle(fov_private_data_type *data, int source_z) {
 
 void fov_circle(fov_settings_type *settings,
                 void *map,
+		void *world,
                 void *source,
                 int source_x,
                 int source_y,
                 int source_z,
+		int source_wx,
+		int source_wy,
                 unsigned radius) {
     fov_private_data_type data;
 
     data.settings = settings;
     data.map = map;
+    data.world = world;
     data.source = source;
     data.source_x = source_x;
     data.source_y = source_y;
     data.source_z = source_z;
+    data.source_wx = source_wx;
+    data.source_wy = source_wy;
     data.radius = radius;
 
     _fov_circle(&data, source_z);

@@ -13,7 +13,7 @@ void Game::CleanupResources() {
 
 void Game::Init() {
   running = true;
-  SetTerminal("window.size=60x40");
+  SetTerminal("window.size=60x42");
 // set values
   world = nullptr;
 }
