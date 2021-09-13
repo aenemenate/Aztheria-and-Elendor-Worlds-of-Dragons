@@ -111,18 +111,18 @@ int GetWeaponStaminaCost(std::shared_ptr<MeleeWeapon> weapon) {
   if (weapon != nullptr) {
     switch (weapon->weaponType) {
       case(MAxe):
-        return 10 * 1.5;
+        return 35;
       case(MSword):
-        return 10;
+        return 18;
       case(MDagger):
-        return 10 * .5;
+        return 10;
       case(MSpear):
-        return 10 * 1.25;
+        return 25;
       case(MMace):
-        return 10 * 1.5;
+        return 40;
     }
   }
-  return 10 * .5;
+  return 10;
 }
 
 int Attack(Entity *src, Entity *def, World *world) {
