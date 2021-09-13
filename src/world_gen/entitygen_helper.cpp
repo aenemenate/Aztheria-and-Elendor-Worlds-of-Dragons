@@ -24,6 +24,38 @@ Entity MakeArmorOfType(BodyPartType bodyPartType, Material material) {
   return entity;
 }
 
+Entity MakePotionOfType(PotionType type, Resource resource) {
+  std::string potionName;
+  std::string potionColor;
+  std::string potionType;
+  int healthValue = 0, magickaValue = 0, staminaValue = 0;
+  if (resource == Health) { 
+    potionName = "health";
+    potionColor = "red";
+    healthValue = 10 * type;
+  }
+  if (resource == Magicka) {
+    potionName = "magicka";
+    potionColor = "dark blue";
+    magickaValue = 10 * type;
+  }
+  if (resource == Stamina) {
+    potionName = "stamina";
+    potionColor = "dark yellow";
+    staminaValue = 10 * type;
+  }
+  if (type == Minor) potionType = "minor ";
+  if (type == Normal) potionType = "";
+  if (type == Major) potionType = "major ";
+  Entity entity = Entity();
+  entity.AddComponent(std::make_shared<Renderable>(Renderable({"&", potionColor, "black"})));
+  entity.AddComponent(std::make_shared<Name>(Name(std::string{potionType + potionName + " potion"})));
+  entity.AddComponent(std::make_shared<Potion>(Potion(healthValue, magickaValue, staminaValue)));
+  entity.AddComponent(std::make_shared<NotSolid>(NotSolid()));
+  entity.AddComponent(std::make_shared<Pickable>(Pickable()));
+  return entity;
+}
+
 MWeaponType GetWeaponTypeFromSkills(Entity *src) {
   std::shared_ptr<Class> uclass = dynamic_pointer_cast<Class>(src->GetComponent(EC_CLASS_ID));
   Skill weaponSkill = Brawling;

@@ -63,12 +63,15 @@ std::vector<Point> GetDownStairPoints(Map *map) {
 
 std::vector<Entity> GetPotions() {
   std::vector<Entity> items;
-  items.push_back(Entity());
-  items[items.size() - 1].AddComponent(std::make_shared<Renderable>(Renderable({"&", "red", "black"})));
-  items[items.size() - 1].AddComponent(std::make_shared<Name>(Name(std::string{"minor health potion"})));
-  items[items.size() - 1].AddComponent(std::make_shared<Potion>(Potion(15, 0, 0)));
-  items[items.size() - 1].AddComponent(std::make_shared<NotSolid>(NotSolid()));
-  items[items.size() - 1].AddComponent(std::make_shared<Pickable>(Pickable()));
+  items.push_back(MakePotionOfType(Minor, Health));
+  items.push_back(MakePotionOfType(Normal, Health));
+  items.push_back(MakePotionOfType(Major, Health));
+  items.push_back(MakePotionOfType(Minor, Magicka));
+  items.push_back(MakePotionOfType(Normal, Magicka));
+  items.push_back(MakePotionOfType(Major, Magicka));
+  items.push_back(MakePotionOfType(Minor, Stamina));
+  items.push_back(MakePotionOfType(Normal, Stamina));
+  items.push_back(MakePotionOfType(Major, Stamina));
   return items;
 }
 
