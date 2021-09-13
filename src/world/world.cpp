@@ -27,20 +27,22 @@ void World::Update(Game *game) {
         std::shared_ptr<ActionTime> actionTime = dynamic_pointer_cast<ActionTime>(entities[e].GetComponent(EC_ACTIONTIME_ID));
         int count = 0;
         while (actionTime->time <= time && count < 5) {
-          /*if (entities[e].HasComponent(EC_POSITION_ID)) {
+          if (entities[e].HasComponent(EC_POSITION_ID)) {
             Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
             if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
-                && pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)*/
+                && pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
               entities[e].Tick(game, EC_PRIO_PRE);
-//          }
+	    else
+	      actionTime->time = time;
+          }
           entities[e].Act(this);
-/*          if (entities[e].HasComponent(EC_POSITION_ID)) {
+          if (entities[e].HasComponent(EC_POSITION_ID)) {
             Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
             if (pos.wx >= plyr_pos.wx - 1 && pos.wx <= plyr_pos.wx + 1
                 && pos.wy >= plyr_pos.wy - 1 && pos.wy <= plyr_pos.wy + 1
-                && pos.z >= plyr_pos.z - 1 && pos.z <= plyr_pos.z + 1)*/
+                && pos.z >= plyr_pos.z - 1 && pos.z <= plyr_pos.z + 1)
               entities[e].Tick(game, EC_PRIO_POST);
-//          }
+          }
               ++count;
         }
       }
