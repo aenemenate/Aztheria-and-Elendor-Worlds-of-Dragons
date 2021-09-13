@@ -71,19 +71,19 @@ int GetArmorValue(Entity *src, World *world) {
   return armorValue;
 }
 
-int GetWeaponDamage(std::shared_ptr<MeleeWeapon> weapon) {
+int GetWeaponDamage(std::shared_ptr<MeleeWeapon> weapon, std::shared_ptr<Stats> userStats) {
   if (weapon != nullptr) {
     switch (weapon->weaponType) {
       case(MAxe):
-        return GetShearYields()[weapon->material] * 1.5;
+        return GetShearYields()[weapon->material] * 1.5 * userStats->skills[HeavyWeapons] / 100;
       case(MSword):
-        return GetShearYields()[weapon->material];
+        return GetShearYields()[weapon->material] * userStats->skills[LongBlades] / 100;
       case(MDagger):
-        return GetShearYields()[weapon->material] * .5;
+        return GetShearYields()[weapon->material] * .5 * userStats->skills[ShortBlade] / 100;
       case(MSpear):
-        return GetShearYields()[weapon->material] * 1.25;
+        return GetShearYields()[weapon->material] * 1.25 * userStats->skills[Spear] / 100;
       case(MMace):
-        return GetImpactYields()[weapon->material] * 1.5;
+        return GetImpactYields()[weapon->material] * 1.5 * userStats->skills[HeavyWeapons] / 100;
     }
   }
   return GetImpactYields()[Bone];
@@ -125,6 +125,24 @@ int GetWeaponStaminaCost(std::shared_ptr<MeleeWeapon> weapon) {
   return 10;
 }
 
+int GetWeaponTimeCost(std::shared_ptr<MeleeWeapon> weapon) {
+  if (weapon != nullptr) {
+    switch (weapon->weaponType) {
+      case(MAxe):
+        return 3000;
+      case(MSword):
+        return 1500;
+      case(MDagger):
+        return 1000;
+      case(MSpear):
+        return 2000;
+      case(MMace):
+        return 3000;
+    }
+  }
+  return 1000;
+}
+
 int Attack(Entity *src, Entity *def, World *world) {
   std::string message;
   srand(time(0));
@@ -142,7 +160,7 @@ int Attack(Entity *src, Entity *def, World *world) {
       bool attackEvaded = rand()%100 <= (def_stats->attributes[Speed] / 5 + def_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * def_stats->resources[Stamina] / def_stats->resources[MaxStamina]);
       if (!attackEvaded) {
-        int weaponDamage = GetWeaponDamage(weapon);
+        int weaponDamage = GetWeaponDamage(weapon, src_stats);
         int damage = weaponDamage * ((double)(src_stats->attributes[Strength] + 50) / 100.0);
         damage /= (1 + GetArmorValue(def, world) / damage) > 4 ? 4 : 1 + GetArmorValue(def, world) / damage;
         message = src_name->name + " attacked " + def_name->name + " for " + std::to_string(damage) + " points.";
@@ -165,7 +183,8 @@ int Attack(Entity *src, Entity *def, World *world) {
     }
     src_stats->resources[Stamina] -= GetWeaponStaminaCost(weapon);
     if (src_stats->resources[Stamina] < 0) src_stats->resources[Stamina] = 0;
-    return 1000;
+    int cost = GetWeaponTimeCost(weapon);
+    return cost;
   }
   else
     return 0;

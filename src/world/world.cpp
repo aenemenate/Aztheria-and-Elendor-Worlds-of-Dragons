@@ -27,9 +27,8 @@ void World::Update(Game *game) {
       }
   }
 // act, only allowing other entities to act if the player does
-  if (entities[0].Act(this))
-    for (int e = 1; e < entities.size(); ++e)
-      entities[e].Act(this);
+  for (int e = 0; e < entities.size(); ++e)
+    entities[e].Act(this);
 // tick post-action components
   for (int e = 0; e < entities.size(); ++e) {
       if (entities[e].HasComponent(EC_POSITION_ID)) {
