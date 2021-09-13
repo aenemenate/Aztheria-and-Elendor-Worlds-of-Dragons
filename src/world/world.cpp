@@ -10,39 +10,44 @@ World::World(uint8_t width, uint8_t height, uint16_t map_w, uint16_t map_h, int 
   areas.resize(width*height, Area(map_w,map_h));
   seed = 0;
   this->slot = slot;
-  time = Time(0,0,0,0,1,1,1);
+  time = Time(0,0,0,0,0,0,1);
   lastUpdateHour = 8;
 }
 
 void World::Update(Game *game) {
   Entity *plyr = &(entities[0]);
   Position plyr_pos = (dynamic_pointer_cast<EntPosition>(plyr->GetComponent(EC_POSITION_ID)))->position;
-// tick pre-action components
-  for (int e = 0; e < entities.size(); ++e) {
-      if (entities[e].HasComponent(EC_POSITION_ID)) {
-        Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
-        if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
-            && pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)
-          entities[e].Tick(game, EC_PRIO_PRE);
-      }
-  }
-// act, only allowing other entities to act if the player does
-  for (int e = 0; e < entities.size(); ++e)
-    entities[e].Act(this);
-// tick post-action components
-  for (int e = 0; e < entities.size(); ++e) {
-      if (entities[e].HasComponent(EC_POSITION_ID)) {
-        Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
-        if (pos.wx >= plyr_pos.wx - 1 && pos.wx <= plyr_pos.wx + 1
-            && pos.wy >= plyr_pos.wy - 1 && pos.wy <= plyr_pos.wy + 1
-            && pos.z >= plyr_pos.z - 1 && pos.z <= plyr_pos.z + 1)
-          entities[e].Tick(game, EC_PRIO_POST);
-      }
-  }
-  std::shared_ptr<ActionTime> plyrActionTime = dynamic_pointer_cast<ActionTime>(plyr->GetComponent(EC_ACTIONTIME_ID));
-// if the player performed an action, jump to their time
-  if (time < plyrActionTime->time)
+// act
+  entities[0].Tick(game, EC_PRIO_PRE);
+  if (entities[0].Act(this)) {
+    std::shared_ptr<ActionTime> plyrActionTime = dynamic_pointer_cast<ActionTime>(plyr->GetComponent(EC_ACTIONTIME_ID));
     time = Time(plyrActionTime->time);
+    for (int e = 1; e < entities.size(); ++e) {
+      if (entities[e].HasComponent(EC_ACTIONTIME_ID)) {
+        std::shared_ptr<ActionTime> actionTime = dynamic_pointer_cast<ActionTime>(entities[e].GetComponent(EC_ACTIONTIME_ID));
+        int count = 0;
+        while (actionTime->time <= time && count < 5) {
+          /*if (entities[e].HasComponent(EC_POSITION_ID)) {
+            Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
+            if (pos.wx >= plyr_pos.wx - 2 && pos.wx <= plyr_pos.wx + 2
+                && pos.wy >= plyr_pos.wy - 2 && pos.wy <= plyr_pos.wy + 2)*/
+              entities[e].Tick(game, EC_PRIO_PRE);
+//          }
+          entities[e].Act(this);
+/*          if (entities[e].HasComponent(EC_POSITION_ID)) {
+            Position pos = (dynamic_pointer_cast<EntPosition>(entities[e].GetComponent(EC_POSITION_ID)))->position;
+            if (pos.wx >= plyr_pos.wx - 1 && pos.wx <= plyr_pos.wx + 1
+                && pos.wy >= plyr_pos.wy - 1 && pos.wy <= plyr_pos.wy + 1
+                && pos.z >= plyr_pos.z - 1 && pos.z <= plyr_pos.z + 1)*/
+              entities[e].Tick(game, EC_PRIO_POST);
+//          }
+              ++count;
+        }
+      }
+    }
+  } 
+  entities[0].Tick(game, EC_PRIO_POST);
+// if the player performed an action, jump to their time
 // update world once per 3 hours
   if (time.hour % 3 == 0 && lastUpdateHour != time.hour) {
     UpdatePlants(this);

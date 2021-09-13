@@ -176,7 +176,7 @@ void CreateCharacter(Game* game) {
   player.AddComponent(std::make_shared<Name>(Name(std::string{nameBox.text})));
   player.AddComponent(std::make_shared<Fov>(Fov(28)));
   player.AddComponent(std::make_shared<Player>(Player(true)));
-  player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time())));
+  player.AddComponent(std::make_shared<ActionTime>(ActionTime(Time(0,0,0,0,0,0,1))));
   player.AddComponent(std::make_shared<Inventory>(Inventory()));
   std::vector<BodyPart> bodyParts;
   bodyParts.push_back(BodyPart(PHand, "right hand"));

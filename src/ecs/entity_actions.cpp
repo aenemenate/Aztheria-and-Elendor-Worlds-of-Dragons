@@ -414,6 +414,13 @@ int DropItem::Do(Entity *src, World *world) {
       srand(time(0));
       int drop_index = rand() % drop_positions.size();
       Position drop_position = drop_positions[drop_index];
+      if (item->HasComponent(EC_POSITION_ID)) {
+	std::shared_ptr<EntPosition> item_pos_c = dynamic_pointer_cast<EntPosition>(item->GetComponent(EC_POSITION_ID));
+	item_pos_c->position = drop_position;
+      }
+      else {
+        item->AddComponent(std::make_shared<EntPosition>(EntPosition(drop_position)));
+      }
       curmap->SetEntity(drop_position.x, drop_position.y, src_pos->z, inventory->inventory[itemIndex]);
       inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
       return 1000;

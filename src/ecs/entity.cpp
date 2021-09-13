@@ -32,7 +32,8 @@ bool Entity::Act(World *world) {
       int cost = actions[0]->Do(this, world);
       actionTime->time.IncrMs(cost * speedMult);
       actions.erase(actions.begin());
-      return true;
+      if (cost > 0)
+        return true;
     }
   }
   return false;

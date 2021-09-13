@@ -20,9 +20,22 @@ struct Time {
   int ms, second, minute, hour, day, month, year;
 
 // constructors, either choose a time or start from 0
-  Time() { ms = 0; second = 0; minute = 0; hour = 8; day = 0; month = 0; year = 0; }
-  Time(const Time& time) { ms = time.ms; second = time.second; minute = time.minute; hour = time.hour; day = time.day; month = time.month; year = time.year; }
-  Time(int ms, int second, int minute, int hour, int day, int month, int year) : ms(ms), second(second), hour(hour), day(day), month(month), year(year) {}
+  Time() { 
+    ms = 0; second = 0; 
+    minute = 0; hour = 8; 
+    day = 0; month = 0; 
+    year = 0; 
+  }
+
+  Time(const Time& time) { 
+    ms = time.ms; second = time.second; 
+    minute = time.minute; hour = time.hour; 
+    day = time.day; month = time.month; 
+    year = time.year; 
+  }
+
+  Time(int ms, int second, int minute, int hour, int day, int month, int year) : ms(ms), second(second), minute(minute), hour(hour), 
+										day(day), month(month), year(year) {}
 
   friend bool operator== (const Time &t1, const Time &t2) {
     return t1.ms == t2.ms && t1.second == t2.second && t1.minute == t2.minute && t1.hour == t2.hour
@@ -32,15 +45,39 @@ struct Time {
     return !(t1 == t2);
   }
   friend bool operator>  (const Time &t1, const Time &t2) {
-    return t1.ms > t2.ms || t1.second > t2.second || t1.minute > t2.minute || t1.hour > t2.hour
-	|| t1.day > t2.day || t1.month > t2.month || t1.year > t2.year;
+    if (t1.year > t2.year) return true;
+    if (t1.year < t2.year) return false;
+    if (t1.month > t2.month) return true;
+    if (t1.month < t2.month) return false;
+    if (t1.day > t2.day) return true;
+    if (t1.day < t2.day) return false;
+    if (t1.hour > t2.hour) return true;
+    if (t1.hour < t2.hour) return false;
+    if (t1.minute > t2.minute) return true;
+    if (t1.minute < t2.minute) return false;
+    if (t1.second > t2.second) return true;
+    if (t1.second < t2.second) return false;
+    if (t1.ms > t2.ms) return true;
+    return false;
   }
   friend bool operator>= (const Time &t1, const Time &t2) {
     return t1 > t2 || t1 == t2 ;
   }
   friend bool operator<  (const Time &t1, const Time &t2) {
-    return t1.ms < t2.ms || t1.second < t2.second || t1.minute < t2.minute || t1.hour < t2.hour
-	|| t1.day < t2.day || t1.month < t2.month || t1.year < t2.year;
+    if (t1.year < t2.year) return true;
+    if (t1.year > t2.year) return false;
+    if (t1.month < t2.month) return true;
+    if (t1.month > t2.month) return false;
+    if (t1.day < t2.day) return true;
+    if (t1.day > t2.day) return false;
+    if (t1.hour < t2.hour) return true;
+    if (t1.hour > t2.hour) return false;
+    if (t1.minute < t2.minute) return true;
+    if (t1.minute > t2.minute) return false;
+    if (t1.second < t2.second) return true;
+    if (t1.second > t2.second) return false;
+    if (t1.ms < t2.ms) return true;
+    return false;
   }
   friend bool operator<= (const Time &t1, const Time &t2) {
     return t1 < t2 || t1 == t2;
@@ -81,7 +118,7 @@ struct Time {
 
   void IncrDay(int _day) {
     day += _day;
-    while (day >= 31) {
+    while (day >= 30) {
       day -= 30;
       IncrMonth(1);
     }
@@ -89,7 +126,7 @@ struct Time {
 
   void IncrMonth(int _month) {
     month += _month;
-    while (month >= 13) {
+    while (month >= 12) {
       month -= 12;
       IncrYear(1);
     }
