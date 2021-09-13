@@ -262,7 +262,7 @@ void PlayState::Draw(Game *game) {
     DrawBorder({term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4}, "white", "black");
     PrintGraphic(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
   }
-  else {
+  else if (!map_menu.GetShow() && !inventory_menu.GetShow() && !equipment_menu.GetShow() && !character_menu.GetShow()) {
   // draw path if necessary
     if (TerminalRightMouseHeld() && TerminalGetMouseX() < map_term_width
     && TerminalGetMouseX() >= 0 && TerminalGetMouseY() >= 0

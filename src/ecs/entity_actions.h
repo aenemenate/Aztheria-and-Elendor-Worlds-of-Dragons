@@ -18,6 +18,7 @@ public:
 #define EA_ACTIVATEBLOCK_ID	1
 #define EA_USEITEM_ID		2
 #define EA_UNEQUIP_ID		3
+#define EA_DROPITEM_ID		4
 
 int Attack(Entity *src, Entity *def, World *world);
 
@@ -54,5 +55,13 @@ public:
   int itemIndex;
   Unequip() : EntityAction() {}
   Unequip(int itemIndex) : itemIndex(itemIndex), EntityAction(EA_UNEQUIP_ID) {}
+  int Do(Entity *src, World *world);
+};
+
+class DropItem : public EntityAction {
+public:
+  int itemIndex;
+  DropItem() : EntityAction() {}
+  DropItem(int itemIndex) : itemIndex(itemIndex), EntityAction(EA_DROPITEM_ID) {}
   int Do(Entity *src, World *world);
 };

@@ -326,6 +326,7 @@ int UseItem::Do(Entity *src, World *world) {
 	  }
         }
       }
+      return 4000;
     }
     if (item->HasComponent(EC_ARMOR_ID)) {
       std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
@@ -338,6 +339,7 @@ int UseItem::Do(Entity *src, World *world) {
 	  }
         }
       }
+      return 2000;
     }
     if (item->HasComponent(EC_POTION_ID)) {
       std::shared_ptr<Potion> potion_c = dynamic_pointer_cast<Potion>(item->GetComponent(EC_POTION_ID));
@@ -364,6 +366,40 @@ int Unequip::Do(Entity *src, World *world) {
   if (equipment->bodyParts[itemIndex].equippedEntity != -1) {
     inventory->inventory.push_back(equipment->bodyParts[itemIndex].equippedEntity);
     equipment->bodyParts[itemIndex].equippedEntity = -1;
+    if (equipment->bodyParts[itemIndex].bodyPartType == PHand)
+      return 2000;
+    return 4000;
   }
+  return 0;
+}
+
+int DropItem::Do(Entity *src, World *world) {
+  std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
+  if (itemIndex < inventory->inventory.size()) {
+    Entity *item = &(world->entities[inventory->inventory[itemIndex]]);
+    std::shared_ptr<EntPosition> src_pos_c = dynamic_pointer_cast<EntPosition>(src->GetComponent(EC_POSITION_ID));
+    Position *src_pos = &(src_pos_c->position);
+    std::vector<Position> drop_positions;
+    Area *curmap = world->GetArea(src_pos->wx,src_pos->wy);
+    for (uint16_t i = src_pos->x - 1; i <= src_pos->x + 1; ++i) {
+      for (uint16_t j = src_pos->y - 1; j <= src_pos->y + 1; ++j) {
+	if (curmap->GetBlock (i, j, src_pos->z) != nullptr
+	&& !curmap->GetBlock (i, j, src_pos->z)->solid
+	&&  curmap->GetTile  (i, j, src_pos->z) != nullptr
+	&&  curmap->GetTile  (i,j, src_pos->z)->walkable
+	&&  curmap->GetEntity(i, j, src_pos->z) == -1)
+	  drop_positions.push_back({i, j, src_pos->z, src_pos->wx, src_pos->wy});
+      }
+    }
+    if (drop_positions.size() > 0) {
+      srand(time(0));
+      int drop_index = rand() % drop_positions.size();
+      Position drop_position = drop_positions[drop_index];
+      curmap->SetEntity(drop_position.x, drop_position.y, src_pos->z, inventory->inventory[itemIndex]);
+      inventory->inventory.erase(inventory->inventory.begin() + itemIndex);
+      return 1000;
+    }
+  }
+  
   return 0;
 }
