@@ -23,6 +23,22 @@ void PrintHealthBar(int x, int y, int length, double percent, std::string color)
   }
 }
 
+std::string GetTruncatedString(std::string original) {
+  int lastSpaceIndex = 0;
+  std::string newString = original;
+  if (original.length() > 18) {
+    for (int i = 0; i < original.length(); ++i) {
+      if (original[i] == ' ' && i < 18) {
+        lastSpaceIndex = i;
+      }
+    }
+    if (lastSpaceIndex > 0) {
+      newString[lastSpaceIndex] = '\n';
+    }
+  }
+  return newString;
+}
+
 void StatusPanel::Update(Game *game, CharacterMenu *characterMenu) {
   if (curSelectedEntity != -1)
     if (TerminalGetKey() == (MTK_MOUSE_LEFT|MTK_KEY_RELEASED)) {
@@ -100,6 +116,7 @@ void StatusPanel::Draw(Game *game, int map_startx, int map_starty) {
       if (ent != nullptr)
         if (ent->HasComponent(EC_NAME_ID))
           block_name = dynamic_pointer_cast<Name>(ent->GetComponent(EC_NAME_ID))->name;
+      block_name = GetTruncatedString(block_name);
       PrintGraphic(start_x(term_width) + 1, term_height - 3, {block_name, "white", "black"});
     }
   }
