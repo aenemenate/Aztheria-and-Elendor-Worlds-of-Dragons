@@ -289,7 +289,7 @@ void PlayState::Draw(Game *game) {
       PrintGraphic(TerminalGetMouseX(), TerminalGetMouseY(), {"", "", "blue"});
     }
   }
-  game->world->msgConsole.PrintLines();
+  game->world->msgConsole.PrintLines(game);
   map_menu.Draw(game);
   inventory_menu.Draw(game);
   equipment_menu.Draw(game);

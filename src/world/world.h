@@ -11,7 +11,6 @@ using namespace std;
 
 class Area;
 class Entity;
-class Game;
 
 /* World has a width, height, vector of maps, and vector of entities
  * entities[0] is always the player. No exceptions. (Unless you choose

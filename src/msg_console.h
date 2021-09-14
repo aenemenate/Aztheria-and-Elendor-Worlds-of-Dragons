@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+class Game;
+
 class Line  {
 public:
   std::string value;
@@ -17,5 +19,5 @@ class MsgConsole {
 public:
   std::vector<Line> lines;
   void PushLine(std::string value);
-  void PrintLines();
+  void PrintLines(Game *game);
 };
