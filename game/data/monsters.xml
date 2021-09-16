@@ -1,6 +1,6 @@
 <monsters>
 
-  <goblin>
+  <monster>
     <name value="goblin"/>
     <renderable ch="g" fgcolor="green" bgcolor=""/>
     <fov viewradius="10"/>
@@ -28,6 +28,65 @@
       <bodyPart bodyPartType="Legs" name="legs"/>
       <bodyPart bodyPartType="Feet" name="feet"/>
     </equipment>
-  </goblin>
+  </monster>
+
+  <monster>
+    <name value="goblin slugger"/>
+    <renderable ch="s" fgcolor="green" bgcolor=""/>
+    <fov viewradius="14"/>
+    <monsterai type="thrower"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Speed"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="ShortBlade"/>
+        <skill val="LightArmor"/>
+        <skill val="Sneaking"/>
+      </majorSkills>
+      <minorSkills>
+        <skill val="Lockpick"/>
+      </minorSkills>
+    </class>
+    <equipment>
+      <bodyPart bodyPartType="Hand" name="right hand"/>
+      <bodyPart bodyPartType="Hand" name="left hand"/>
+      <bodyPart bodyPartType="Head" name="head"/>
+      <bodyPart bodyPartType="Body" name="body"/>
+      <bodyPart bodyPartType="Legs" name="legs"/>
+      <bodyPart bodyPartType="Feet" name="feet"/>
+    </equipment>
+  </monster>
+
+  <monster>
+    <name value="feral imp"/>
+    <renderable ch="i" fgcolor="brown" bgcolor=""/>
+    <fov viewradius="10"/>
+    <monsterai type="melee"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="HeavyWeapons"/>
+        <skill val="LightArmor"/>
+        <skill val="Sneaking"/>
+      </majorSkills>
+      <minorSkills>
+      </minorSkills>
+    </class>
+    <equipment>
+      <bodyPart bodyPartType="Hand" name="right hand"/>
+      <bodyPart bodyPartType="Hand" name="left hand"/>
+      <bodyPart bodyPartType="Head" name="head"/>
+      <bodyPart bodyPartType="Body" name="body"/>
+      <bodyPart bodyPartType="Legs" name="legs"/>
+      <bodyPart bodyPartType="Feet" name="feet"/>
+    </equipment>
+  </monster>
 
 </monsters>
