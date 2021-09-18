@@ -5,6 +5,7 @@
 #include "../map/area.h"
 #include "../ecs/entity.h"
 
+MapMenu MapMenu::mapMenu;
 
 void MapMenu::CustomDraw(Game* game) {
 // draw world map

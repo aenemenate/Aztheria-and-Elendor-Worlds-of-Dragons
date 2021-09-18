@@ -6,6 +6,7 @@
 #include "../map/area.h"
 #include "../ecs/entity.h"
 
+CharacterMenu CharacterMenu::characterMenu;
 int currentlySelectedEntity = 0;
 
 void CharacterMenu::CustomDraw(Game* game) {

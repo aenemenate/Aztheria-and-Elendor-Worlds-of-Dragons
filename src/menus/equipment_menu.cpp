@@ -6,6 +6,7 @@
 #include "../map/area.h"
 #include "../ecs/entity.h"
 
+EquipmentMenu EquipmentMenu::equipmentMenu;
 int selectedEquipmentIndex = -1;
 
 void EquipmentMenu::CustomDraw(Game* game) {

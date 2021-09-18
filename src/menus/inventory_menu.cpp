@@ -6,6 +6,7 @@
 #include "../map/area.h"
 #include "../ecs/entity.h"
 
+InventoryMenu InventoryMenu::inventoryMenu;
 int selectedIndex = -1;
 
 void InventoryMenu::CustomDraw(Game* game) {
