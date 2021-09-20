@@ -156,6 +156,7 @@ void PlayState::HandleEvents(Game *game) {
         break;
       case MTK_L:
         LootMenu::Instance()->SetShow(false);
+	break;
       case MTK_M:
         MapMenu::Instance()->SetShow(!MapMenu::Instance()->GetShow());
 	break;
