@@ -4,6 +4,8 @@
 #include "../map/area.h"
 #include "entity.h"
 #include "../materials.h"
+#include "../menus/loot_menu.h"
+#include "../menus/inventory_menu.h"
 
 #include <random>
 #include <string>
@@ -143,6 +145,17 @@ int GetWeaponTimeCost(std::shared_ptr<MeleeWeapon> weapon) {
   return 1000;
 }
 
+int UnequipAll(Entity *src) {
+  std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
+  std::shared_ptr<Equipment> equipment = dynamic_pointer_cast<Equipment>(src->GetComponent(EC_EQUIPMENT_ID));
+  for (int i = 0; i < equipment->bodyParts.size(); ++i) {
+    if (equipment->bodyParts[i].equippedEntity != -1)
+      inventory->inventory.push_back(equipment->bodyParts[i].equippedEntity);
+    equipment->bodyParts[i].equippedEntity = -1;
+  }
+  return 0;
+}
+
 int Attack(Entity *src, Entity *def, World *world) {
   std::string message;
   srand(time(0));
@@ -151,8 +164,15 @@ int Attack(Entity *src, Entity *def, World *world) {
     std::shared_ptr<Stats> def_stats = dynamic_pointer_cast<Stats>(def->GetComponent(EC_STATS_ID));
     std::shared_ptr<Name> src_name = dynamic_pointer_cast<Name>(src->GetComponent(EC_NAME_ID));
     std::shared_ptr<Name> def_name = dynamic_pointer_cast<Name>(def->GetComponent(EC_NAME_ID));
-    if (def_stats->resources[Health] <= 0)
+    if (def_stats->resources[Health] <= 0) {
+      if (def->HasComponent(EC_INVENTORY_ID) && src->HasComponent(EC_PLAYER_ID)) {
+        UnequipAll(def);
+	LootMenu::SetSelectedEntity(def->Id);
+	LootMenu::Instance()->SetShow(true);
+	InventoryMenu::Instance()->SetShow(true);
+      }
       return 0;
+    }
     std::shared_ptr<MeleeWeapon> weapon = GetWeapon(src, world);
     bool attackLanded = rand()%100 <= (GetWeaponSkill(src, weapon) + src_stats->attributes[Speed] / 5 + src_stats->attributes[Luck] / 10) 
 			* (0.75 + 0.5 * src_stats->resources[Stamina] / src_stats->resources[MaxStamina]);
@@ -200,7 +220,8 @@ int GetItem(Entity *src, Position position, int item, World *world) {
     std::shared_ptr<Name> src_name = dynamic_pointer_cast<Name>(src->GetComponent(EC_NAME_ID));
     std::shared_ptr<Name> item_name = dynamic_pointer_cast<Name>(world->entities[item].GetComponent(EC_NAME_ID));
     message = src_name->name + " picked up " + item_name->name + ".";
-    world->msgConsole.PushLine(message);
+    if (src->HasComponent(EC_PLAYER_ID))
+      world->msgConsole.PushLine(message);
     return 1000;
   }
   return 0;
@@ -427,5 +448,16 @@ int DropItem::Do(Entity *src, World *world) {
     }
   }
   
+  return 0;
+}
+
+int GetFromBody::Do(Entity *src, World *world) {
+  std::shared_ptr<Inventory> inventory = dynamic_pointer_cast<Inventory>(src->GetComponent(EC_INVENTORY_ID));
+  std::shared_ptr<Inventory> bodyInventory = dynamic_pointer_cast<Inventory>(body->GetComponent(EC_INVENTORY_ID));
+  if (itemIndex != -1 && itemIndex < bodyInventory->inventory.size()) {
+    inventory->inventory.push_back(bodyInventory->inventory[itemIndex]);
+    bodyInventory->inventory.erase(bodyInventory->inventory.begin() + itemIndex);
+    return 2000;
+  }
   return 0;
 }

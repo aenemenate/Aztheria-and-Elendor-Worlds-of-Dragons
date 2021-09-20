@@ -97,6 +97,9 @@ Entity entityFromNode(xml_node<> *node) {
     std::shared_ptr<Class> class_c = dynamic_pointer_cast<Class>(entity.GetComponent(EC_CLASS_ID));
     entity.components.push_back(std::make_shared<Stats>(Stats(class_c)));
   }
+  if (entity.HasComponent(EC_EQUIPMENT_ID)) {
+    entity.components.push_back(std::make_shared<Inventory>(Inventory()));
+  }
   return entity;
 }
 

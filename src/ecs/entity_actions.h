@@ -19,6 +19,7 @@ public:
 #define EA_USEITEM_ID		2
 #define EA_UNEQUIP_ID		3
 #define EA_DROPITEM_ID		4
+#define EA_GETFROMBODY_ID	5
 
 int Attack(Entity *src, Entity *def, World *world);
 
@@ -63,5 +64,14 @@ public:
   int itemIndex;
   DropItem() : EntityAction() {}
   DropItem(int itemIndex) : itemIndex(itemIndex), EntityAction(EA_DROPITEM_ID) {}
+  int Do(Entity *src, World *world);
+};
+
+class GetFromBody : public EntityAction {
+public:
+  int itemIndex;
+  Entity *body;
+  GetFromBody() : EntityAction() {}
+  GetFromBody(int itemIndex, Entity *body) : itemIndex(itemIndex), body(body), EntityAction(EA_GETFROMBODY_ID) {}
   int Do(Entity *src, World *world);
 };

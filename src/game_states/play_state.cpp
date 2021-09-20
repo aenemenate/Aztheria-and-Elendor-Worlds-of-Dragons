@@ -13,6 +13,7 @@
 #include "../menus/inventory_menu.h"
 #include "../menus/equipment_menu.h"
 #include "../menus/character_menu.h"
+#include "../menus/loot_menu.h"
 
 #include <algorithm>
 
@@ -46,6 +47,8 @@ void PlayState::Init(Game *game) {
   EquipmentMenu::Instance()->SetShow(false);
   *(CharacterMenu::Instance()) = CharacterMenu(23, 0, 20, 34);
   CharacterMenu::Instance()->SetShow(false);
+  *(LootMenu::Instance()) = LootMenu(23, 0, 20, 26);
+  LootMenu::Instance()->SetShow(false);
 }
 
 void PlayState::Cleanup() {
@@ -63,7 +66,9 @@ void PlayState::HandleEvents(Game *game) {
   if (TerminalWasResized())
     this->Init(game);
   // if none of menus are showing
-  if (!paused && !MapMenu::Instance()->GetShow() && !InventoryMenu::Instance()->GetShow() && !EquipmentMenu::Instance()->GetShow() && !CharacterMenu::Instance()->GetShow()) {
+  if (!paused && !MapMenu::Instance()->GetShow() && !InventoryMenu::Instance()->GetShow() 
+  && !EquipmentMenu::Instance()->GetShow() && !CharacterMenu::Instance()->GetShow()
+  && !LootMenu::Instance()->GetShow()) {
     switch (TerminalGetKey()) {
       case MTK_M:
         MapMenu::Instance()->SetShow(true);
@@ -138,14 +143,19 @@ void PlayState::HandleEvents(Game *game) {
         paused = false;
         break;
     }
-  else if (MapMenu::Instance()->GetShow() || InventoryMenu::Instance()->GetShow() || EquipmentMenu::Instance()->GetShow() || CharacterMenu::Instance()->GetShow()) {
+  else if (MapMenu::Instance()->GetShow() || InventoryMenu::Instance()->GetShow() 
+       || EquipmentMenu::Instance()->GetShow() || CharacterMenu::Instance()->GetShow()
+       || LootMenu::Instance()->GetShow()) {
     switch (TerminalGetKey()) {
       case MTK_ESCAPE:
         InventoryMenu::Instance()->SetShow(false);
         MapMenu::Instance()->SetShow(false);
         EquipmentMenu::Instance()->SetShow(false);
         CharacterMenu::Instance()->SetShow(false);
+	LootMenu::Instance()->SetShow(false);
         break;
+      case MTK_L:
+        LootMenu::Instance()->SetShow(false);
       case MTK_M:
         MapMenu::Instance()->SetShow(!MapMenu::Instance()->GetShow());
 	break;
@@ -185,6 +195,7 @@ void PlayState::Update(Game *game) {
   InventoryMenu::Instance()->Update(game);
   EquipmentMenu::Instance()->Update(game);
   CharacterMenu::Instance()->Update(game);
+  LootMenu::Instance()->Update(game);
 }
 
 void PlayState::Draw(Game *game) {
@@ -255,7 +266,9 @@ void PlayState::Draw(Game *game) {
     DrawBorder({term_width/2-7,term_width/2+8,term_height/2-2,term_height/2+4}, "white", "black");
     PrintGraphic(pmenu_buttons[menu_caret].GetX()-2, term_height/2 + menu_caret*2, {">", "white", "black"});
   }
-  else if (!MapMenu::Instance()->GetShow() && !InventoryMenu::Instance()->GetShow() && !EquipmentMenu::Instance()->GetShow() && !CharacterMenu::Instance()->GetShow()) {
+  else if (!MapMenu::Instance()->GetShow() && !InventoryMenu::Instance()->GetShow() 
+       && !EquipmentMenu::Instance()->GetShow() && !CharacterMenu::Instance()->GetShow()
+       && !LootMenu::Instance()->GetShow()) {
   // draw path if necessary
     if (TerminalRightMouseHeld() && TerminalGetMouseX() < map_term_width
     && TerminalGetMouseX() >= 0 && TerminalGetMouseY() >= 0
@@ -287,4 +300,5 @@ void PlayState::Draw(Game *game) {
   EquipmentMenu::Instance()->Draw(game);
   CharacterMenu::Instance()->Draw(game);
   MapMenu::Instance()->Draw(game);
+  LootMenu::Instance()->Draw(game);
 }
