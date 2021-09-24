@@ -89,4 +89,34 @@
     </equipment>
   </monster>
 
+  <monster>
+    <name value="polyxaler"/>
+    <renderable ch="p" fgcolor="pink" bgcolor=""/>
+    <fov viewradius="10"/>
+    <monsterai type="melee"/>
+    <class>
+      <majorAttributes>
+        <attribute val="Strength"/>
+        <attribute val="Dexterity"/>
+        <attribute val="Luck"/>
+      </majorAttributes>
+      <majorSkills>
+        <skill val="Illusion"/>
+        <skill val="LightArmor"/>
+	<skill val="Restoration"/>
+      </majorSkills>
+      <minorSkills>
+        <skill val="Destruction"/>
+      </minorSkills>
+    </class>
+    <equipment>
+      <bodyPart bodyPartType="Hand" name="right hand"/>
+      <bodyPart bodyPartType="Hand" name="left hand"/>
+      <bodyPart bodyPartType="Head" name="head"/>
+      <bodyPart bodyPartType="Body" name="body"/>
+      <bodyPart bodyPartType="Legs" name="legs"/>
+      <bodyPart bodyPartType="Feet" name="feet"/>
+    </equipment>
+  </monster>
+
 </monsters>

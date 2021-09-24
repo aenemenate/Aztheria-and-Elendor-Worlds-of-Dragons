@@ -148,27 +148,28 @@ void PlayState::HandleEvents(Game *game) {
        || LootMenu::Instance()->GetShow()) {
     switch (TerminalGetKey()) {
       case MTK_ESCAPE:
-        InventoryMenu::Instance()->SetShow(false);
-        MapMenu::Instance()->SetShow(false);
-        EquipmentMenu::Instance()->SetShow(false);
-        CharacterMenu::Instance()->SetShow(false);
+	InventoryMenu::Instance()->SetShow(false);
+	MapMenu::Instance()->SetShow(false);
+	EquipmentMenu::Instance()->SetShow(false);
+	CharacterMenu::Instance()->SetShow(false);
 	LootMenu::Instance()->SetShow(false);
-        break;
+	break;
       case MTK_L:
-        LootMenu::Instance()->SetShow(false);
+	LootMenu::Instance()->SetShow(false);
+	InventoryMenu::Instance()->SetShow(false);
 	break;
       case MTK_M:
-        MapMenu::Instance()->SetShow(!MapMenu::Instance()->GetShow());
+	MapMenu::Instance()->SetShow(!MapMenu::Instance()->GetShow());
 	break;
       case MTK_I:
-        InventoryMenu::Instance()->SetShow(!InventoryMenu::Instance()->GetShow());
+	InventoryMenu::Instance()->SetShow(!InventoryMenu::Instance()->GetShow());
 	break;
       case MTK_E:
-        EquipmentMenu::Instance()->SetShow(!EquipmentMenu::Instance()->GetShow());
+	EquipmentMenu::Instance()->SetShow(!EquipmentMenu::Instance()->GetShow());
 	break;
       case MTK_C:
 	CharacterMenu::SetSelectedEntity(0);
-        CharacterMenu::Instance()->SetShow(!CharacterMenu::Instance()->GetShow());
+	CharacterMenu::Instance()->SetShow(!CharacterMenu::Instance()->GetShow());
 	break;
     }
   }
